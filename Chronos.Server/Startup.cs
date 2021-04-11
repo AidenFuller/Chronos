@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 
 namespace Chronos.Server
 {
@@ -33,7 +35,11 @@ namespace Chronos.Server
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Chronos.Server", Version = "v1" });
             });
 
-            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<AppDbContext>(optionsBuilder =>
+            {
+                optionsBuilder.UseSqlite(@"Data Source=Application.db;Cache=Shared");
+            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
