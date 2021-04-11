@@ -48,3 +48,10 @@ Thumbs.db
 *.mov
 *.wmv
 
+Chronos/bin
+Chronos/obj
+Chronos.Server/bin
+Chronos.Server/obj
+Chronos.Client/bin
+Chronos.Client/obj
+
