@@ -32,6 +32,8 @@ namespace Chronos.Server
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Chronos.Server", Version = "v1" });
             });
+
+            services.AddDbContext<AppDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
