@@ -10,7 +10,7 @@ namespace Chronos.Server
     public class AppDbContext : DbContext
     {
         public DbSet<Course> Courses { get; set; }
-        
+        public DbSet<Degree> Degrees { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
