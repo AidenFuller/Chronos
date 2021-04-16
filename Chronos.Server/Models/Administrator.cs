@@ -9,7 +9,7 @@ namespace Chronos.Server.Models
     public class Administrator
     {
         [Key]
-        public Index UserID { get; set; }
+        public int UserID { get; set; }
         public string Username { get; set; }
         public string PassHash { get; set; }
     }
