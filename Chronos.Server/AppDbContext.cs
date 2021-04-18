@@ -11,6 +11,7 @@ namespace Chronos.Server
     {
         public DbSet<Course> Courses { get; set; }
         public DbSet<Degree> Degrees { get; set; }
+        public DbSet<Degree> CoreCourse { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
