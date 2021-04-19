@@ -14,7 +14,7 @@ namespace Chronos.Server.Models
         public string Name { get; set; }
         public string CourseCode { get; set; }
         public AvailableCampus Campus { get; set; }
-        public decimal Cost { get; set; }
+        public double Cost { get; set; }
         public int Units { get; set; }
     }
 }
