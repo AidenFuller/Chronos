@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos.Client", "..\Chronos.Client\Chronos.Client.csproj", "{5F7A0EC1-9DD1-453D-AFB5-0AF2F7B9DA6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Client", "..\Chronos.Client\Chronos.Client.csproj", "{5F7A0EC1-9DD1-453D-AFB5-0AF2F7B9DA6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos.Server", "..\Chronos.Server\Chronos.Server.csproj", "{0622FA05-B42A-4BB3-AD9F-A30DF65E49F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronos.Server", "..\Chronos.Server\Chronos.Server.csproj", "{0622FA05-B42A-4BB3-AD9F-A30DF65E49F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronos.Shared", "Chronos.Shared\Chronos.Shared.csproj", "{AD3DA7C3-EED2-412A-ABE8-74A3052A6E5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{0622FA05-B42A-4BB3-AD9F-A30DF65E49F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0622FA05-B42A-4BB3-AD9F-A30DF65E49F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0622FA05-B42A-4BB3-AD9F-A30DF65E49F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD3DA7C3-EED2-412A-ABE8-74A3052A6E5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3DA7C3-EED2-412A-ABE8-74A3052A6E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD3DA7C3-EED2-412A-ABE8-74A3052A6E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD3DA7C3-EED2-412A-ABE8-74A3052A6E5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

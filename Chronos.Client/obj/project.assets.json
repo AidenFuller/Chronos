@@ -337,6 +337,16 @@
         "runtime": {
           "lib/net5.0/System.Net.Http.Json.dll": {}
         }
+      },
+      "Chronos.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/Chronos.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Chronos.Shared.dll": {}
+        }
       }
     },
     "net5.0/browser-wasm": {
@@ -674,6 +684,16 @@
         },
         "runtime": {
           "lib/net5.0/System.Net.Http.Json.dll": {}
+        }
+      },
+      "Chronos.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/Chronos.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Chronos.Shared.dll": {}
         }
       }
     }
@@ -1233,10 +1253,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "Chronos.Shared/1.0.0": {
+      "type": "project",
+      "path": "../Chronos/Chronos.Shared/Chronos.Shared.csproj",
+      "msbuildProject": "../Chronos/Chronos.Shared/Chronos.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net5.0": [
+      "Chronos.Shared >= 1.0.0",
       "Microsoft.AspNetCore.Components.WebAssembly >= 5.0.1",
       "Microsoft.AspNetCore.Components.WebAssembly.Authentication >= 5.0.1",
       "Microsoft.AspNetCore.Components.WebAssembly.DevServer >= 5.0.1",
@@ -1275,7 +1301,11 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\repos\\Chronos\\Chronos\\Chronos.Shared\\Chronos.Shared.csproj": {
+              "projectPath": "D:\\repos\\Chronos\\Chronos\\Chronos.Shared\\Chronos.Shared.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
