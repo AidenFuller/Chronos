@@ -19,4 +19,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Chronos\Chronos.Shared\Chronos.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
