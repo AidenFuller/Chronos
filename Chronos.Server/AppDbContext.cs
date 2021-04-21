@@ -10,6 +10,9 @@ namespace Chronos.Server
     public class AppDbContext : DbContext
     {
         public DbSet<Course> Courses { get; set; }
+       
+        public DbSet<Major> Majors { get; set; }
+        
         public DbSet<Degree> Degrees { get; set; }
         public DbSet<CoreCourse> CoreCourses { get; set; }
 
