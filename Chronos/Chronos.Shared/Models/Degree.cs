@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace Chronos.Server.Models
+namespace Chronos.Shared.Models
 {
     public class Degree
     {

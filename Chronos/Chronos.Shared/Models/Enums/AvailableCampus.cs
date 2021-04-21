@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Chronos.Server.Models.Enums
+namespace Chronos.Shared.Models.Enums
 {
     public enum AvailableCampus
     {
