@@ -13,6 +13,8 @@ namespace Chronos.Server
        
         public DbSet<Major> Majors { get; set; }
         
+        public DbSet<Degree> Degrees { get; set; }
+        public DbSet<CoreCourse> CoreCourses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
