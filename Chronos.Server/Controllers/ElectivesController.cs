@@ -28,8 +28,8 @@ namespace Chronos.Server.Controllers
             //Return all courses that are in either of the lists.
             return
                 from course in db.Courses
-                join corecourseID in NotCoreCourseIDs on course.CourseID !equals corecourseID
-                join majorcourseID in NotMajorCourseIDs on course.CourseID !equals majorcourseID
+                join corecourseID in NotCoreCourseIDs on course.CourseID equals corecourseID
+                join majorcourseID in NotMajorCourseIDs on course.CourseID equals majorcourseID
                 select course;
         }
     }
