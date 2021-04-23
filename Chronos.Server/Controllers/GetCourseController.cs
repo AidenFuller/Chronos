@@ -15,7 +15,7 @@ namespace Chronos.Server.Controllers
         public Course Get(int courseID)
         {
             using var db = new AppDbContext();
-            Course SelectedCourse = db.Courses.First(i => i.CourseID == courseID);
+            Course SelectedCourse = db.Courses.Find(i => i.CourseID == courseID);
 
             return SelectedCourse;
         }
