@@ -16,11 +16,9 @@ namespace Chronos.Server.Controllers
         {
             using var db = new AppDbContext();
             IEnumerable<int> MajorIDs = db.Majors.Where(i => i.MajorID == MajorID).Select(i => i.MajorID);
-            
-            return
-                 from Major in db.Majors
-                 join id in MajorIDs on Major.MajorID equals id
-                 select Major;
+
+            return db.Majors;
+               
         }
     }
 }
