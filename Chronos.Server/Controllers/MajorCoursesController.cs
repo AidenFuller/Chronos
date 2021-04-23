@@ -18,12 +18,12 @@ namespace Chronos.Server.Controllers
             using var db = new AppDbContext();
 
             //Select all courses where the MajorID is the given ID and return their course IDs
-            IEnumerable<int> CourseIDs = db.MajorCourses.Where(i => i.MajorID == MajorID).Select(i => i.CourseID);
+            IEnumerable<int> courseIDs = db.MajorCourses.Where(i => i.MajorID == MajorID).Select(i => i.CourseID);
 
             //Grabs all courses from the course table  where the ID is in CourseIDs
             return
                 from course in db.Courses
-                join id in CourseIDs on course.CourseID equals id
+                join id in courseIDs on course.CourseID equals id
                 select course;
         }
     }
