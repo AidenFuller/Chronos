@@ -12,10 +12,10 @@ namespace Chronos.Server.Controllers
     [ApiController]
     public class MajorController : ControllerBase
     {
-        public IEnumerable<Major> Get(int degreeID)
+        public IEnumerable<Major> Get(int MajorID)
         {
             using var db = new AppDbContext();
-            IEnumerable<int> MajorIDs = db.Degrees.Where(i => i.DegreeID == degreeID).Select(i => i.MajorID);
+            IEnumerable<int> MajorIDs = db.Majors.Where(i => i.MajorID == MajorID).Select(i => i.MajorID);
             
             return
                  from Major in db.Majors

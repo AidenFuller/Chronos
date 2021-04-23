@@ -11,9 +11,6 @@ namespace Chronos.Shared.Models
     {
         [Key]
         public int DegreeID { get; set; } //Primary key
-
-        public int MajorID { get; set; } //Foreign Key
-
         public string Name { get; set; }
         public int UnitLength { get; set; }
         public bool InternationalsAllowed { get; set; }
