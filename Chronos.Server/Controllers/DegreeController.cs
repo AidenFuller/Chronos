@@ -15,9 +15,7 @@ namespace Chronos.Server.Controllers
         public Degree Get(int degreeID)
         {
             using var db = new AppDbContext();
-            Degree Degree = db.Degrees.Find(degreeID);
-
-            return Degree;
+            return db.Degrees.Find(degreeID);
         }
     }
 }
