@@ -10,7 +10,7 @@ namespace Chronos.Shared.Models
     public class Degree
     {
         [Key]
-        public int DegreeID { get; set; } //Primary key
+        public int DegreeID { get; set; }
         public string Name { get; set; }
         public int UnitLength { get; set; }
         public bool InternationalsAllowed { get; set; }
