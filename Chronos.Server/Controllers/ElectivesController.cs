@@ -19,17 +19,20 @@ namespace Chronos.Server.Controllers
             //Instance of DB
             using var db = new AppDbContext();
 
-            //Select all courseID where it is a core course for the given Degree ID
-            IEnumerable<int> NotCoreCourseIDs = db.CoreCourses.Where(i => i.DegreeID != DegreeID).Select(i => i.CourseID);
-            //Select all courses where it is a  major core course for the given Major ID
-            IEnumerable<int> NotMajorCourseIDs = db.MajorCourses.Where(i => i.IsCore == true && i.MajorID == MajorID).Select(i => i.CourseID);
+            //Select all courseID that IS NOT equal not the given courseID
+            IEnumerable<int> notCoreCourseIDs = db.CoreCourses.Where(i => i.DegreeID != DegreeID).Select(i => i.CourseID);
+            //Select all courseID where the course IS NOT a core course for the given Major ID
+            IEnumerable<int> notMajorCourseIDs = db.MajorCourses.Where(i => i.IsCore == false && i.MajorID == MajorID).Select(i => i.CourseID);
 
-            
-            //Return all courses that are NOT in either of the lists.
+            //These 2 lists now contain
+            // - All courses are that are not core for the given ID
+            // - All non-core majors for the given majorID
+
+            //Return all courses that are in either of the lists
             return
                 from course in db.Courses
-                join corecourseID in NotCoreCourseIDs on course.CourseID !equals corecourseID
-                join majorcourseID in NotMajorCourseIDs on course.CourseID !equals majorcourseID
+                join coreCourseID in notCoreCourseIDs on course.CourseID equals coreCourseID
+                join majorCourseID in notMajorCourseIDs on course.CourseID equals majorCourseID
                 select course;
         }
     }
