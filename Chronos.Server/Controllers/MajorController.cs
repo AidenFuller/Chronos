@@ -1,6 +1,5 @@
-﻿using Chronos.Shared.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Chronos.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +11,18 @@ namespace Chronos.Server.Controllers
     [ApiController]
     public class MajorController : ControllerBase
     {
-        public IEnumerable<Major> Get(int MajorID)
+        [HttpGet]
+        public Major Get(int MajorID)
         {
             using var db = new AppDbContext();
-            IEnumerable<int> MajorIDs = db.Majors.Where(i => i.MajorID == MajorID).Select(i => i.MajorID);
 
-            return db.Majors;
-               
+            //Geting just a Single Major degree
+            return db.Majors.Find(MajorID);
+
+            //Alternatively
+            //Major sMajor = db.Majors.Find(MajorID);
+            //return sMajor;
+
         }
     }
 }
