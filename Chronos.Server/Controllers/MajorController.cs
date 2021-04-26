@@ -19,10 +19,6 @@ namespace Chronos.Server.Controllers
             //Geting just a Single Major degree
             return db.Majors.Find(MajorID);
 
-            //Alternatively
-            //Major sMajor = db.Majors.Find(MajorID);
-            //return sMajor;
-
         }
     }
 }
