@@ -14,6 +14,7 @@ namespace Chronos.Server.Controllers
     {
 
         //Add Course to Degree
+        [HttpPost]
         public bool Post(int degreeID, int courseID)
         {
             //TODO: Make composite key and prevent duplicates?
@@ -27,7 +28,7 @@ namespace Chronos.Server.Controllers
             c.DegreeID = degreeID;
 
             //Add to DB
-            db.Add(c);
+            db.CoreCourses.Add(c);
             db.SaveChanges();
             
             return true;
