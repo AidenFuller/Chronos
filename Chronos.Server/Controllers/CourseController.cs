@@ -11,6 +11,17 @@ namespace Chronos.Server.Controllers
     [ApiController]
     public class CourseController : ControllerBase
     {
+        //This is a post command that will add a new course to the Database. 
+        [HttpPost]
+        public bool Post(Course c) 
+        {
+            using var db = new AppDbContext();
+
+            db.Courses.Add(c);
+            db.SaveChanges();
+
+            return true;
+        }
         [HttpGet]
         public Course Get(int courseID)
         {
