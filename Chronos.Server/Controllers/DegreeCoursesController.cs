@@ -12,6 +12,27 @@ namespace Chronos.Server.Controllers
     [ApiController]
     public class DegreeCoursesController : ControllerBase
     {
+
+        //Add Course to Degree
+        [HttpPost]
+        public bool Post(int degreeID, int courseID)
+        {
+            //TODO: Make composite key and prevent duplicates?
+            using var db = new AppDbContext();
+
+            //Create Object
+            CoreCourse c = new CoreCourse();
+
+            //Modify object
+            c.CourseID = courseID;
+            c.DegreeID = degreeID;
+
+            //Add to DB
+            db.CoreCourses.Add(c);
+            db.SaveChanges();
+            
+            return true;
+        }
         public IEnumerable<Course> Get(int degreeID)
         {
             using var db = new AppDbContext();
