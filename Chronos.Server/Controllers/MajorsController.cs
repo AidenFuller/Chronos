@@ -17,14 +17,13 @@ namespace Chronos.Server.Controllers
         {
             using var db = new AppDbContext();
 
-            //Need some help here
-            IEnumerable<int> MajorIDs = db.Degrees.Where(i => i.DegreeID == DegreeID).Select(i => i.MajorID);
+            //Getting majors using degreeID
+            IEnumerable<int> MajorIDs = db.Majors.Where(i => i.DegreeID == DegreeID).Select(i => i.MajorID);
 
             return
               from Major in db.Majors
               join id in MajorIDs on Major.MajorID equals id
               select Major;
-
         }
     }
 }
