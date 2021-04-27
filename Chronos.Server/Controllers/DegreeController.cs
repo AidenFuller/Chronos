@@ -11,6 +11,17 @@ namespace Chronos.Server.Controllers
     [ApiController]
     public class DegreeController : ControllerBase
     {
+        [HttpPost]
+        public bool Post(Degree degree)
+        {
+            using var db = new AppDbContext();
+
+            db.Degrees.Add(degree);
+            db.SaveChanges();
+
+            return true;
+        }
+
         [HttpGet]
         public Degree Get(int degreeID)
         {
