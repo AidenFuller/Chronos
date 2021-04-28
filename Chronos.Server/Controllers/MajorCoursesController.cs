@@ -12,6 +12,27 @@ namespace Chronos.Server.Controllers
     [ApiController]
     public class MajorCoursesController : ControllerBase
     {
+
+
+        //AddCourseToMajor
+        [HttpPost]
+        public bool Post(int courseID, int majorID)
+        {
+            using var db = new AppDbContext();
+
+            //Create Object
+            MajorCourse c = new MajorCourse();
+
+            //Modify object
+            c.CourseID = courseID;
+            c.MajorID = majorID;
+
+            //Add to DB
+            db.MajorCourses.Add(c);
+            db.SaveChanges();
+
+            return true;
+        }
         public IEnumerable<Course> Get(int MajorID)
         {
             //Instance of DB
