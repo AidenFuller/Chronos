@@ -12,7 +12,7 @@ namespace Chronos.Server.Controllers
     [ApiController]
     public class ElectivesController : ControllerBase
     {
-
+        [HttpGet]
         public IEnumerable<Course> Get(int DegreeID, int MajorID)
         {
 
