@@ -33,6 +33,8 @@ namespace Chronos.Server.Controllers
             
             return true;
         }
+
+        [HttpGet]
         public IEnumerable<Course> Get(int degreeID)
         {
             using var db = new AppDbContext();
