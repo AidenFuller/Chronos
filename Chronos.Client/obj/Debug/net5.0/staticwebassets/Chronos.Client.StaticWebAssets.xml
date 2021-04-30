@@ -1,5 +1,0 @@
-﻿<StaticWebAssets Version="1.0">
-  <ContentRoot BasePath="/" Path="D:\repos\Chronos\Chronos.Client\bin\Debug\net5.0\wwwroot\" />
-  <ContentRoot BasePath="/" Path="D:\repos\Chronos\Chronos.Client\obj\Debug\net5.0\scopedcss\bundle\" />
-  <ContentRoot BasePath="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication" Path="C:\Users\aiden\.nuget\packages\microsoft.aspnetcore.components.webassembly.authentication\5.0.1\build\..\staticwebassets\" />
-</StaticWebAssets>
