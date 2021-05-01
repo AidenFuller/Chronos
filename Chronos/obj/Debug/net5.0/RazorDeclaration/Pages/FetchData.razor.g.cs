@@ -21,7 +21,7 @@ using System.Net.Http;
 #nullable disable
 #nullable restore
 #line 2 "D:\repos\Chronos\Chronos\_Imports.razor"
-using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authorization;
 
 #line default
 #line hidden
@@ -63,28 +63,35 @@ using Microsoft.AspNetCore.Components.Web.Virtualization;
 #nullable disable
 #nullable restore
 #line 8 "D:\repos\Chronos\Chronos\_Imports.razor"
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 9 "D:\repos\Chronos\Chronos\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "D:\repos\Chronos\Chronos\_Imports.razor"
+#line 9 "D:\repos\Chronos\Chronos\_Imports.razor"
 using Chronos;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "D:\repos\Chronos\Chronos\_Imports.razor"
+#line 10 "D:\repos\Chronos\Chronos\_Imports.razor"
 using Chronos.Shared;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 11 "D:\repos\Chronos\Chronos\_Imports.razor"
+using Chronos.Models;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 12 "D:\repos\Chronos\Chronos\_Imports.razor"
+using Chronos.Services;
 
 #line default
 #line hidden
@@ -98,30 +105,19 @@ using Chronos.Shared;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 37 "D:\repos\Chronos\Chronos\Pages\FetchData.razor"
+#line 38 "D:\repos\Chronos\Chronos\Pages\FetchData.razor"
        
     private WeatherForecast[] forecasts;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
-
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
     }
 
 #line default
 #line hidden
 #nullable disable
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private HttpClient Http { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private WeatherForecastService ForecastService { get; set; }
     }
 }
 #pragma warning restore 1591

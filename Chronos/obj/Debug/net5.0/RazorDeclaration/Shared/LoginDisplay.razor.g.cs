@@ -21,7 +21,14 @@ using System.Net.Http;
 #nullable disable
 #nullable restore
 #line 2 "D:\repos\Chronos\Chronos\_Imports.razor"
-using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authorization;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 3 "D:\repos\Chronos\Chronos\_Imports.razor"
+using Microsoft.AspNetCore.Components.Authorization;
 
 #line default
 #line hidden
@@ -56,42 +63,35 @@ using Microsoft.AspNetCore.Components.Web.Virtualization;
 #nullable disable
 #nullable restore
 #line 8 "D:\repos\Chronos\Chronos\_Imports.razor"
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 9 "D:\repos\Chronos\Chronos\_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "D:\repos\Chronos\Chronos\_Imports.razor"
+#line 9 "D:\repos\Chronos\Chronos\_Imports.razor"
 using Chronos;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 11 "D:\repos\Chronos\Chronos\_Imports.razor"
+#line 10 "D:\repos\Chronos\Chronos\_Imports.razor"
 using Chronos.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 1 "D:\repos\Chronos\Chronos\Shared\LoginDisplay.razor"
-using Microsoft.AspNetCore.Components.Authorization;
+#line 11 "D:\repos\Chronos\Chronos\_Imports.razor"
+using Chronos.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "D:\repos\Chronos\Chronos\Shared\LoginDisplay.razor"
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+#line 12 "D:\repos\Chronos\Chronos\_Imports.razor"
+using Chronos.Services;
 
 #line default
 #line hidden
@@ -103,20 +103,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
         {
         }
         #pragma warning restore 1998
-#nullable restore
-#line 17 "D:\repos\Chronos\Chronos\Shared\LoginDisplay.razor"
-      
-    private async Task BeginSignOut(MouseEventArgs args)
-    {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
-    }
-
-#line default
-#line hidden
-#nullable disable
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private SignOutSessionStateManager SignOutManager { get; set; }
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager Navigation { get; set; }
     }
 }
 #pragma warning restore 1591
