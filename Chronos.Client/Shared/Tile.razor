@@ -1,0 +1,44 @@
+﻿
+<div class="Tile" style="border-style:solid; border-radius:20px; width:@widthPX; height:@heightPX; display: inline-block">
+    <h3>Tile</h3>
+
+    <button @onclick="updateWidth">Click me</button>
+</div>
+
+
+@code {
+    private int Semester; //CHANGE TO ENUM
+    private int height = 100;
+    private int width = 200;
+
+    private string heightPX;
+    private string widthPX;
+
+    private int year;
+
+
+
+
+
+
+    //Allows thw with to be changed by the parent timetable
+    public void setWidth(int w)
+    {
+        width = w;
+        updateWidth();
+    }
+
+
+    private void updateWidth()
+    {
+        width = width + 10;
+        widthPX = (width) + "px";
+    }
+
+    private void updateHeight()
+    {
+
+        heightPX = height + "PX";
+    }
+    //Code for the tile's width functionality, NOT THE CONTENTS
+}
