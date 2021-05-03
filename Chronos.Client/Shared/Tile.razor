@@ -7,18 +7,15 @@
 
 
 @code {
-    private int Semester; //CHANGE TO ENUM
+    private int Semester; //POTENTIALLY CAN BE REMOVED
+    private int year;
+
+
     private int height = 100;
     private int width = 200;
 
     private string heightPX;
     private string widthPX;
-
-    private int year;
-
-
-
-
 
 
     //Allows thw with to be changed by the parent timetable
@@ -38,7 +35,7 @@
     private void updateHeight()
     {
 
-        heightPX = height + "PX";
+        heightPX = height + "px";
     }
     //Code for the tile's width functionality, NOT THE CONTENTS
 }
