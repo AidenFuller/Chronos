@@ -1,41 +1,124 @@
 ﻿
-<div class="Tile" style="border-style:solid; border-radius:20px; width:@widthPX; height:@heightPX; display: inline-block">
-    <h3>Tile</h3>
+<style>
+    .Tile{
+        border-style:solid;
+        border-radius:20px; 
+        display: inline-block;
+        text-align: center;
 
-    <button @onclick="updateWidth">Click me</button>
+        /*font-size: small;*/
+    }
+
+    .Tile:hover{
+        transition: .2s;
+        transform: scale(1.1)
+    }
+
+    .Elective{
+        background-color: #F2DD60
+
+    }
+
+    .Directed{
+        background-color: #458EE7
+    }
+
+    .Core{
+        background-color: #404040
+    }
+
+    .AddElective {
+        background-color: #ffffff;
+        border-color: #000000;
+        color: #F2DD60
+    }
+    .AddDirected {
+        background-color: #ffffff;
+        border-color: #000000;
+        color: #458EE7;
+    }
+
+</style>
+<div class="Tile @tileClass" style="width:@width; height:@height;">
+
+    @if (courseCode == null)
+    {
+        @if (tileType == 0)
+        {
+            //Core Course -- Should never go down this path
+            <h1> ERROR </h1>
+        }
+        else if (tileType == 1)
+        {
+            //Directed Course
+            <h1>+</h1>
+        }
+        else
+        {
+            //Elective
+            <h1>+</h1>
+        }
+    }
+    else
+    {
+        <h3> @courseCode </h3>
+        <p> courseTitle </p>
+    }
+
 </div>
 
 
 @code {
-    private int Semester; //POTENTIALLY CAN BE REMOVED
-    private int year;
+
+    [Parameter] public int tileType { get; set; } //MAKE THIS AN ENUM
+    [Parameter] public string courseCode { get; set; }
+    private string width = "200px";
+    private string height = "100px";
 
 
-    private int height = 100;
-    private int width = 200;
-
-    private string heightPX;
-    private string widthPX;
-
+    private string tileClass;
 
     //Allows thw with to be changed by the parent timetable
-    public void setWidth(int w)
+    public void setWidth(string w)
     {
         width = w;
-        updateWidth();
     }
 
-
-    private void updateWidth()
+    public void update()
     {
-        width = width + 10;
-        widthPX = (width) + "px";
+        switch (tileType)
+        {
+            case 0:
+                tileClass = "Core";
+                break;
+            case 1:
+                if (courseCode == null)
+                {
+                    tileClass = "AddDirected";
+                }
+                else
+                {
+                    tileClass = "Directed";
+                }
+
+                break;
+            case 2:
+                if (courseCode == null)
+                {
+                    tileClass = "AddElective";
+                }
+                else
+                {
+                    tileClass = "Elective";
+                }
+                break;
+        }
     }
 
-    private void updateHeight()
+
+    protected override void OnInitialized()
     {
-
-        heightPX = height + "px";
+        update();
     }
-    //Code for the tile's width functionality, NOT THE CONTENTS
+
 }
