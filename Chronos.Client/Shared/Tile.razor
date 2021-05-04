@@ -62,7 +62,7 @@
     else
     {
         <h3> @courseCode </h3>
-        <p> courseTitle </p>
+        <p> @courseTitle </p>
     }
 
 </div>
@@ -71,8 +71,13 @@
 @code {
 
     [Parameter] public int tileType { get; set; } //MAKE THIS AN ENUM
-    [Parameter] public string courseCode { get; set; }
-    private string width = "200px";
+    [Parameter] public int courseID { get; set; } = -1;
+
+    public string width { get; set; } = "200px";
+
+    private string courseCode = "GetCourseCode";
+    private string courseTitle = "GetCourseTitle";
+
     private string height = "100px";
 
 
@@ -92,7 +97,7 @@
                 tileClass = "Core";
                 break;
             case 1:
-                if (courseCode == null)
+                if (courseID == -1)
                 {
                     tileClass = "AddDirected";
                 }
@@ -103,7 +108,7 @@
 
                 break;
             case 2:
-                if (courseCode == null)
+                if (courseID == -1)
                 {
                     tileClass = "AddElective";
                 }
