@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 
 namespace Chronos.Shared.enums
 {
-    public class Class
+    public enum TileType
     {
+        Core,
+        Directed,
+        Elective
     }
 }
