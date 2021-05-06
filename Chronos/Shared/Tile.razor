@@ -1,4 +1,6 @@
-﻿<style>
+﻿@inject CourseService courseService;
+
+<style>
     .Tile {
         border-style: solid;
         border-radius: 20px;
@@ -68,9 +70,26 @@
 @code {
 
     [Parameter] public int tileType { get; set; } //MAKE THIS AN ENUM
-    [Parameter] public int courseID { get; set; } = -1;
+    [Parameter]
+    public int CourseID
+    {
+        get
+        {
+            return courseID;
+        }
+        set
+        {
+            courseID = value;
+            updateCourseDetails();
 
-    public string width { get; set; } = "200px";
+        }
+
+
+    }
+
+    private int courseID = -1;
+
+    private string width { get; set; } = "200px";
 
     private string courseCode = "GetCourseCode()";
     private string courseTitle = "GetCourseTitle";
@@ -86,7 +105,7 @@
         width = w;
     }
 
-    public void update()
+    public void updateTileType()
     {
         switch (tileType)
         {
@@ -117,10 +136,24 @@
         }
     }
 
+    private async void updateCourseDetails()
+    {
+        if (courseID == -1)
+        {
+            return;
+        }
+
+        
+        Course course = await courseService.GetCourseAsync(courseID);
+        courseTitle = course.Name;
+        courseCode = course.CourseCode;  
+        
+        
+    }
 
     protected override void OnInitialized()
     {
-        update();
+        updateTileType();
     }
 
 }
