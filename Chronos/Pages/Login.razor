@@ -1,4 +1,5 @@
 ﻿@inject DegreeService degreeService
+@inject CourseService courseService 
 
 <h1>Welcome to Chronos!</h1>
 <div>
@@ -40,17 +41,17 @@
                     <option value="SemesterWithAdditional">Semester 1/2 but willing to do Winter/Summer courses.</option>
                 </select>
             </form>
-            @*<EditForm Model="Courses" OnValidSubmit="SubmitResults">
-                <BlazoredTypeahead SearchMethod= "SearchCourses" @bind-Value="Courses.">
-                    <SelectedTemplate>
-                        @context.CourseCode
+            <EditForm Model="Courses" OnValidSubmit="SubmitResults">
+                <BlazoredTypeahead SearchMethod= "SearchCourses" @bind-Value="SelectedCourse">
+                    <SelectedTemplate Context="course">
+                        @course.CourseCode (@course.Name)
                     </SelectedTemplate>
-                    <ResultTemplate>
-                        @context.CourseCode (@context.courseID) 
+                    <ResultTemplate Context="course">
+                        @course.CourseCode (@course.CourseID) 
                     </ResultTemplate>
                 </BlazoredTypeahead>
-                <ValidationMessage For="@(() => MyFormModel.SelectedCourse)" />
-            </EditForm>*@
+                <ValidationMessage For="@(() => SelectedCourse)" />
+            </EditForm>
         </div>
     </section>
 </div>
@@ -66,9 +67,10 @@
         IEnumerable<Degree> degreesFromDB = await degreeService.GetAllDegreesAsync(); //Grabs all the degrees from the database.
 
         degrees = degreesFromDB.Select(i => (i.DegreeID, i.Name));      //Create a new List for the Degrees that will hold the names and IDs.
+        Courses = await courseService.GetAllCoursesAsync();
     }
 
-    [Parameter] protected IEnumerable<Course> Courses { get; set; }
+    protected IEnumerable<Course> Courses { get; set; }
     private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
         return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower())).ToList());
@@ -76,6 +78,7 @@
 
     private String Username;
     private IEnumerable<(int, String)> degrees;
+    private Course SelectedCourse;
 
     //private String Password;
 
