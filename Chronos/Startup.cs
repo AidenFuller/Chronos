@@ -47,6 +47,42 @@ namespace Chronos
             services.AddScoped<ElectiveService>();
             services.AddScoped<MajorCourseService>();
             services.AddScoped<MajorService>();
+
+
+            using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
+
+            
+            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [CoreCourses]");
+            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [MajorCourses]");
+            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Majors]");
+            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Courses]");
+            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Degrees]");
+           
+            db.SaveChanges();
+
+            db.Database.Migrate();
+
+
+            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = "Computer Science", UnitLength = 240 });
+            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = "Software Engineering", UnitLength = 360 });
+
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP1010", Name = "Computing Fundamentals", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10});
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2050", Name = "Web Engineering", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG1110", Name = "Object Oriented Programming", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 1, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 3, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 1, DegreeID = 2 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 3, DegreeID = 2 });
+
+            db.Majors.Add(new Models.Major() { DegreeID = 1, Name = "Software Development" });
+            db.Majors.Add(new Models.Major() { DegreeID = 1, Name = "Cyber Security" });
+
+            db.MajorCourses.Add(new Models.MajorCourse() { IsCore = false, MajorID = 1, CourseID = 2 });
+            db.MajorCourses.Add(new Models.MajorCourse() { IsCore = false, MajorID = 2, CourseID = 2 });
+
+            db.SaveChanges();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
