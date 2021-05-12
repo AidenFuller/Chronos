@@ -1,16 +1,16 @@
 ﻿@inject DegreeService degreeService
 @inject CourseService courseService 
 
-<h1>Welcome to Chronos!</h1>
+<h1 class="heading-for-landing">Welcome to Chronos!</h1>
 <div>
     <section>
-        <h4>Please login below. (IN WORK)</h4>
+        <h4 class="heading-for-landing">Please login below. (IN WORK)</h4>
         <hr />
-        <div>
-            <form action="login" method="POST">
-                <label for="username">Username: </label><br />
+        <div class="login-center">
+            <form action="login" method="POST" >
+                <label class="login-box-ui" for="username">Username: </label><br />
                 <input type="text" id="username" name="username" />
-                <label for="password">Password: </label>
+                <label class="login-box-ui" for="password">Password: </label>
                 <input type="password" id="password" name="password" />
                 <hr />
                 <input id="btn" type="submit" value="Login" name="button" />
@@ -22,9 +22,9 @@
 </div>
 <div>
     <section>
-        <h4>Please insert your information below:</h4>
+        <h4 class="heading-for-landing">Please insert your information below:</h4>
         <hr />
-        <div>
+        <div class="form-alignment-left">
             <form action="login" method="POST">
                 <select name="degree">
                     <option value=""> Select a Degree</option>
@@ -41,6 +41,8 @@
                     <option value="SemesterWithAdditional">Semester 1/2 but willing to do Winter/Summer courses.</option>
                 </select>
             </form>
+        </div>
+        <div class="form-alignment-right">
             <EditForm Model="Courses" OnValidSubmit="SubmitResults">
                 <BlazoredTypeahead SearchMethod= "SearchCourses" @bind-Value="SelectedCourse">
                     <SelectedTemplate Context="course">
@@ -55,7 +57,7 @@
         </div>
     </section>
 </div>
-<div>
+<div class="additional-information">
     <h4>Information regarding this Project</h4>
     <p>You can do this!</p>
 </div>

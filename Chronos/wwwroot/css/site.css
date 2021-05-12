@@ -48,3 +48,45 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.login-box-ui
+{
+    font-weight: bold;
+}
+
+.heading-for-landing
+{
+    text-align: center;
+}
+
+div.form-alignment-left
+{
+    position: relative;
+    display: block;
+    width: 2em;
+    height: 2em;
+    align-items: start;
+}
+
+div.form-alignment-right
+{
+    position: absolute;
+    right: 0.75em;
+    display: block;
+    width: 500px;
+    height: 200px;
+}
+
+div.additional-information
+{
+    position: relative;
+    display: block;
+    padding-top: 100px;
+}
+
+div.login-center
+{
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
