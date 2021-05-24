@@ -42,12 +42,13 @@ a, .btn-link {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss 
+{
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
 
 .login-box-ui
 {
@@ -66,6 +67,7 @@ div.form-alignment-left
     width: 2em;
     height: 2em;
     align-items: start;
+    padding-bottom: 3em;
 }
 
 div.form-alignment-right
@@ -89,4 +91,11 @@ div.login-center
     margin: auto;
     width: 50%;
     padding: 10px;
+}
+
+select.degree-selection
+{
+    height: 2em;
+    width: 10em;
+    border: 1px solid #26b050;
 }
