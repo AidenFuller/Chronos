@@ -16,17 +16,30 @@ namespace Chronos.Services
             db = dbContext;
         }
 
-        public async Task<bool> AddCourseAsync(Course c) 
+        public async Task<bool> AddCourseAsync(Course c)
         {
             await db.Courses.AddAsync(c);
             await db.SaveChangesAsync();
 
             return true;
         }
-        
+
         public async Task<Course> GetCourseAsync(int courseID)
         {
             return await db.Courses.FindAsync(courseID);
         }
+
+        public async Task<PrerequisiteCourse> GetPrerequisiteCourseAsync(int PrerequisiteID)
+        {
+            IEnumerable<int> courseIDs = db.PrerequisiteCourse.Where(i => i.PrerequisiteID == PrerequisiteID).Select(i => i.CourseID);
+
+            return
+
+             (PrerequisiteCourse)(from course in db.Courses
+                                  join id in courseIDs on course.CourseID equals id
+                                  select course);
+
+        }
+
     }
 }
