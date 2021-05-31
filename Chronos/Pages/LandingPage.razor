@@ -45,7 +45,11 @@
 </div>
 <hr />
 <div class="center-button">
+<<<<<<< HEAD
     <button class="button-for-admin" @onclick="ToggleAdminLogin">Admin Login</button>
+=======
+    <button class = "button-for-admin" @onclick="ToggleAdminLogin">Admin Login</button>
+>>>>>>> 0225cf1891dd118de0bbcb41f2afdcd61419f3bb
 </div>
 <div>
     <section style="display:@ShowAdminLogin">
@@ -85,16 +89,27 @@
         return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower())).ToList());
     }
 
+    private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none";
     private String Username;
     private IEnumerable<(int, String)> degrees;
     private IList<Course> SelectedCourse;
     private bool IsItDisabled;
+    private bool IsAdminLoginThere = false;
 
     //private String Password;
 
     private void SubmitResults()
     {
+<<<<<<< HEAD
 
+=======
+
+    }
+
+    private void ToggleAdminLogin()
+    {
+        IsAdminLoginThere = !IsAdminLoginThere;
+>>>>>>> 0225cf1891dd118de0bbcb41f2afdcd61419f3bb
     }
 
 
