@@ -27,17 +27,19 @@
         </div>
         <div class="form-alignment-left-search">
             <h4>Please insert the courses you have completed here. </h4>
-            <EditForm Model="Courses" OnValidSubmit="SubmitResults" class="form-alignment-left-search">
-                <BlazoredTypeahead SearchMethod= "SearchCourses" @bind-Value="SelectedCourse">
-                    <SelectedTemplate Context="course">
-                        @course.CourseCode (@course.Name)
-                    </SelectedTemplate>
-                    <ResultTemplate Context="course">
-                        @course.CourseCode (@course.Name) 
-                    </ResultTemplate>
-                </BlazoredTypeahead>
-                <ValidationMessage For="@(() => SelectedCourse)" />
-            </EditForm>
+            <BlazoredTypeahead SearchMethod="SearchCourses"
+                               @bind-Values="SelectedCourse"
+                               Disabled="IsItDisabled"
+                               EnableDropDown="true"
+                               placeholder="Please enter a course...">
+                <SelectedTemplate Context="course">
+                    @course.CourseCode (@course.Name)
+                </SelectedTemplate>
+                <ResultTemplate Context="course">
+                    @course.CourseCode (@course.Name)
+                </ResultTemplate>
+            </BlazoredTypeahead>
+            <!--<button @onclick="@(() => IsItDisabled = !IsItDisabled)">@(IsItDisabled ? "Enable" : "Disable")</button>-->
         </div>
     </section>
 </div>
@@ -87,7 +89,8 @@
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none";
     private String Username;
     private IEnumerable<(int, String)> degrees;
-    private Course SelectedCourse;
+    private IList<Course> SelectedCourse;
+    private bool IsItDisabled;
     private bool IsAdminLoginThere = false;
 
     //private String Password;
