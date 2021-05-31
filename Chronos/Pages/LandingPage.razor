@@ -2,65 +2,69 @@
 @inject CourseService courseService 
 
 <h1 class="heading-for-landing">Welcome to Chronos!</h1>
-<section>
-    <div>
+<div>
+    <section>
+        <h4 class="heading-for-landing">Please insert your information below:</h4>
         <hr />
-        <div>
-            <h4 class="heading-for-landing">Please insert your information below:</h4>
-            <hr />
-            <div class="form-alignment-left">
-                <form action="login" method="POST">
-                    <select class="degree-selection" name="degree">
-                        <option value=""> Select a Degree</option>
-                        @foreach (var d in degrees)
-                        {
-                            <option value="@d.Item1">@d.Item2</option>
-                        }
-                    </select>
-                    <select name="semester">
-                        <option value=""> What type of Semester are you doing></option>
-                        <option value="Semester">Semester 1/2</option>
-                        <option value="Part Time">Part Time Semester</option>
-                        <option value="Trimester">Trimester</option>
-                        <option value="SemesterWithAdditional">Semester 1/2 but willing to do Winter/Summer courses.</option>
-                    </select>
-                </form>
-            </div>
-            <div>
-                <BlazoredTypeahead SearchMethod="SearchCourses"
-                                   @bind-Values="SelectedCourse"
-                                   Disabled="IsItDisabled"
-                                   EnableDropDown="true"
-                                   placeholder="Please enter a course...">
-                    <SelectedTemplate Context="course">
-                        @course.CourseCode (@course.Name) 
-                    </SelectedTemplate>
-                    <ResultTemplate Context="course">
-                        @course.CourseCode (@course.Name) 
-                    </ResultTemplate>
-                </BlazoredTypeahead>
-                <button @onclick="@(() => IsItDisabled = !IsItDisabled)">@(IsItDisabled ? "Enable" : "Disable")</button>
-            </div>
+        <div class="form-alignment-left">
+            <form action="login" method="POST">
+                <select name="degree" class="degree-selection">
+                    <option value=""> Select a Degree</option>
+                    @foreach (var d in degrees)
+                    {
+                        <option value="@d.Item1">@d.Item2</option>
+                    }
+                </select>
+                <br />
+                <select name="semester" class="semester-selection">
+                    <option value=""> What type of Semester are you doing></option>
+                    <option value="Semester">Semester 1/2</option>
+                    <option value="Part Time">Part Time Semester</option>
+                    <option value="Trimester">Trimester</option>
+                    <option value="SemesterWithAdditional">Semester 1/2 but willing to do Winter/Summer courses.</option>
+                </select>
+            </form>
         </div>
-    </div>
-</section>
-<section>
-
-    <h4 class="heading-for-landing">Please login below. (IN WORK)</h4>
-    <hr />
-    <div class="login-center">
-        <!--Hide behind a button?-->
-        <form action="login" method="POST">
-            <label class="login-box-ui" for="username">Username: </label>
-            <input type="text" id="username" name="username" />
-            <label class="login-box-ui" for="password">Password: </label>
-            <input type="password" id="password" name="password" />
-            <hr />
-            <input id="btn" type="submit" value="Login" name="button" />
-            <input id="btn" type="reset" value="Reset" />
-        </form>
-    </div>  
-</section>
+        <div class="form-alignment-left-search">
+            <h4>Please insert the courses you have completed here. </h4>
+            <BlazoredTypeahead SearchMethod="SearchCourses"
+                               @bind-Values="SelectedCourse"
+                               Disabled="IsItDisabled"
+                               EnableDropDown="true"
+                               placeholder="Please enter a course...">
+                <SelectedTemplate Context="course">
+                    @course.CourseCode (@course.Name)
+                </SelectedTemplate>
+                <ResultTemplate Context="course">
+                    @course.CourseCode (@course.Name)
+                </ResultTemplate>
+            </BlazoredTypeahead>
+            <!--<button @onclick="@(() => IsItDisabled = !IsItDisabled)">@(IsItDisabled ? "Enable" : "Disable")</button>-->
+        </div>
+    </section>
+</div>
+<hr />
+<div class="center-button">
+    <button class = "button-for-admin" @onclick="ToggleAdminLogin">Admin Login</button>
+</div>
+<div>
+    <section style="display:@ShowAdminLogin">
+        <h4 class="heading-for-landing">Please login below. (IN WORK)</h4>
+        <hr />
+        <div class="login-center">
+            <form action="login" method="POST">
+                <label class="login-box-ui" for="username">Username: </label>
+                <input type="text" id="username" name="username" />
+                <label class="login-box-ui" for="password">Password: </label>
+                <input type="password" id="password" name="password" />
+                <hr />
+                <input id="btn" type="submit" value="Login" name="button" />
+                <input id="btn" type="reset" value="Reset" />
+            </form>
+        </div>
+        <hr />
+    </section>
+</div>
 <div class="additional-information">
     <h4>Information regarding this Project</h4>
     <p>You can do this!</p>
@@ -82,17 +86,24 @@
         return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower())).ToList());
     }
 
+    private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none";
     private String Username;
     private IEnumerable<(int, String)> degrees;
     private IList<Course> SelectedCourse;
     private bool IsItDisabled;
+    private bool IsAdminLoginThere = false;
 
     //private String Password;
 
     private void SubmitResults()
-        {
+    {
 
-        }
+    }
+
+    private void ToggleAdminLogin()
+    {
+        IsAdminLoginThere = !IsAdminLoginThere;
+    }
 
 
 

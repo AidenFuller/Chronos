@@ -42,12 +42,13 @@ a, .btn-link {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss 
+{
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
 
 .login-box-ui
 {
@@ -62,10 +63,8 @@ a, .btn-link {
 div.form-alignment-left
 {
     position: relative;
-    display: block;
-    width: 2em;
-    height: 2em;
-    align-items: start;
+    padding-bottom: 2em;
+    padding-top: 2em;
 }
 
 div.form-alignment-right
@@ -75,6 +74,7 @@ div.form-alignment-right
     display: block;
     width: 500px;
     height: 200px;
+    margin-bottom: 5em;
 }
 
 div.additional-information
@@ -89,4 +89,53 @@ div.login-center
     margin: auto;
     width: 50%;
     padding: 10px;
+    text-align: center;
+}
+
+div.form-alignment-left-search 
+{
+    position: relative;
+    width: 80%;
+}
+
+div.form-alignment-left-sem 
+{
+    position: relative;
+    display: block;
+    align-items: start;
+    margin-bottom: 5em;
+}
+
+div.center-button 
+{
+    text-align: center;
+    margin: auto;
+    padding: 2em;
+}
+select.degree-selection 
+{
+    height: 2em;
+    width: 10em;
+    border: 1px solid #26b050;
+}
+
+select.semester-selection 
+{
+    height: 2em;
+    width: 20em;
+    border: 1px solid #26b050;
+}
+
+section.admin-login
+{
+    display: none;
+}
+
+button.button-for-admin
+{
+    border: 3px solid #26b050;
+    text-align: center;
+    margin: auto;
+    height: 20%;
+    width: 30%;
 }
