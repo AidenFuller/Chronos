@@ -1,4 +1,5 @@
-﻿@inject CourseService courseService;
+﻿@inject CourseService courseService
+@using Chronos.Shared.Enums;
 
 <style>
     .Tile {
@@ -6,6 +7,11 @@
         border-radius: 20px;
         display: inline-block;
         text-align: center;
+
+        
+
+        float: left;
+        margin: 5px;
         /*font-size: small;*/
     }
 
@@ -23,13 +29,13 @@
     }
 
     .Core {
-        background-color: #404040
+        background-color: #808080
     }
 
     .AddElective {
         background-color: #ffffff;
         border-color: #000000;
-        color: #F2DD60
+        color: #F2DD60;
     }
 
     .AddDirected {
@@ -38,82 +44,57 @@
         color: #458EE7;
     }
 </style>
-<div class="Tile @tileClass" style="width:@width; height:@height;">
 
-    @if (courseID == -1)
+
+<button class="Tile @tileClass" style="width:@Width; height:@Height;" @onclick="Clicked">
+
+    @if (Course is null)
     {
-        @if (tileType == 0)
+        @if (Type == TileType.Core)
         {
             //Core Course -- Should never go down this path
-            <h1> ERROR </h1>
-        }
-        else if (tileType == 1)
-        {
-            //Directed Course
-            <h1>+</h1>
+            <h3>Error</h3>
         }
         else
         {
-            //Elective
+            //Directed Course or Elective
             <h1>+</h1>
         }
     }
     else
     {
-        <h3> @courseCode </h3>
-        <p> @courseTitle </p>
+        //Course
+        <h3> @Course.CourseCode </h3>
+        <p> @Course.Name </p>
     }
 
-</div>
+</button>
 
 
 @code {
 
-    [Parameter] public int tileType { get; set; } //MAKE THIS AN ENUM
     [Parameter]
-    public int CourseID
+    public TileType Type { get; set; }
+
+    [Parameter]
+    public Course Course { get; set; }
+
+    [Parameter]
+    public string Width { get; set; } = "200px";
+
+    private string Height = "100px";
+
+    private string tileClass; //CSS class based on TileType
+
+    public void UpdateTileType()
     {
-        get
+        switch (Type)
         {
-            return courseID;
-        }
-        set
-        {
-            courseID = value;
-            updateCourseDetails();
-
-        }
-
-
-    }
-
-    private int courseID = -1;
-
-    private string width { get; set; } = "200px";
-
-    private string courseCode = "GetCourseCode()";
-    private string courseTitle = "GetCourseTitle";
-
-    private string height = "100px";
-
-
-    private string tileClass;
-
-    //Allows thw with to be changed by the parent timetable
-    public void setWidth(string w)
-    {
-        width = w;
-    }
-
-    public void updateTileType()
-    {
-        switch (tileType)
-        {
-            case 0:
+            case TileType.Core:
                 tileClass = "Core";
                 break;
-            case 1:
-                if (courseID == -1)
+            case TileType.Directed:
+                if (Course is null)
                 {
                     tileClass = "AddDirected";
                 }
@@ -123,8 +104,8 @@
                 }
 
                 break;
-            case 2:
-                if (courseID == -1)
+            case TileType.Elective:
+                if (Course is null)
                 {
                     tileClass = "AddElective";
                 }
@@ -135,25 +116,19 @@
                 break;
         }
     }
-
-    private async void updateCourseDetails()
-    {
-        if (courseID == -1)
-        {
-            return;
-        }
-
-        
-        Course course = await courseService.GetCourseAsync(courseID);
-        courseTitle = course.Name;
-        courseCode = course.CourseCode;  
-        
-        
-    }
-
     protected override void OnInitialized()
     {
-        updateTileType();
+        Console.WriteLine("Testing");
+        UpdateTileType();
+    }
+
+    void Clicked()
+    {
+        if (Course is not null)
+        {
+            Console.WriteLine(Course.Name);
+        }
+
     }
 
 }
