@@ -40,7 +40,6 @@ namespace Chronos
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddScoped<WeatherForecastService>();
             services.AddScoped<CourseService>();
             services.AddScoped<DegreeCourseService>();
             services.AddScoped<DegreeService>();
