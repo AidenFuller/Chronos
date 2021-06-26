@@ -117,6 +117,7 @@ select.degree-selection
     height: 2em;
     width: 10em;
     border: 1px solid #26b050;
+    margin-bottom: 0.5em;
 }
 
 select.semester-selection 
@@ -124,8 +125,15 @@ select.semester-selection
     height: 2em;
     width: 20em;
     border: 1px solid #26b050;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
+div.checklistColumns
+{
+    column-count: 3;
+    column-gap: 2em;
+}
 section.admin-login
 {
     display: none;
