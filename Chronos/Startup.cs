@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Blazored.Modal;
 namespace Chronos
 {
     public class Startup
@@ -47,6 +47,8 @@ namespace Chronos
             services.AddScoped<ElectiveService>();
             services.AddScoped<MajorCourseService>();
             services.AddScoped<MajorService>();
+
+            services.AddBlazoredModal();
 
 
             using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
