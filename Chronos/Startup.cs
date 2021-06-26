@@ -33,20 +33,22 @@ namespace Chronos
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value));
+
+            
+            services.AddTransient((services) => new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<AppDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddScoped<WeatherForecastService>();
-            services.AddScoped<CourseService>();
-            services.AddScoped<DegreeCourseService>();
-            services.AddScoped<DegreeService>();
-            services.AddScoped<ElectiveService>();
-            services.AddScoped<MajorCourseService>();
-            services.AddScoped<MajorService>();
+            services.AddTransient<WeatherForecastService>();
+            services.AddTransient<CourseService>();
+            services.AddTransient<DegreeCourseService>();
+            services.AddTransient<DegreeService>();
+            services.AddTransient<ElectiveService>();
+            services.AddTransient<MajorCourseService>();
+            services.AddTransient<MajorService>();
 
 
             using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
