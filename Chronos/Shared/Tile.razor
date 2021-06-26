@@ -1,0 +1,134 @@
+﻿@inject CourseService courseService
+@using Chronos.Shared.Enums;
+
+<style>
+    .Tile {
+        border-style: solid;
+        border-radius: 20px;
+        display: inline-block;
+        text-align: center;
+
+        
+
+        float: left;
+        margin: 5px;
+        /*font-size: small;*/
+    }
+
+        .Tile:hover {
+            transition: .2s;
+            transform: scale(1.1)
+        }
+
+    .Elective {
+        background-color: #F2DD60
+    }
+
+    .Directed {
+        background-color: #458EE7
+    }
+
+    .Core {
+        background-color: #808080
+    }
+
+    .AddElective {
+        background-color: #ffffff;
+        border-color: #000000;
+        color: #F2DD60;
+    }
+
+    .AddDirected {
+        background-color: #ffffff;
+        border-color: #000000;
+        color: #458EE7;
+    }
+</style>
+
+
+<button class="Tile @tileClass" style="width:@Width; height:@Height;" @onclick="Clicked">
+
+    @if (Course is null)
+    {
+        @if (Type == TileType.Core)
+        {
+            //Core Course -- Should never go down this path
+            <h3>Error</h3>
+        }
+        else
+        {
+            //Directed Course or Elective
+            <h1>+</h1>
+        }
+    }
+    else
+    {
+        //Course
+        <h3> @Course.CourseCode </h3>
+        <p> @Course.Name </p>
+    }
+
+</button>
+
+
+@code {
+
+    [Parameter]
+    public TileType Type { get; set; }
+
+    [Parameter]
+    public Course Course { get; set; }
+
+    [Parameter]
+    public string Width { get; set; } = "200px";
+
+    private string Height = "100px";
+
+    private string tileClass; //CSS class based on TileType
+
+    public void UpdateTileType()
+    {
+        switch (Type)
+        {
+            case TileType.Core:
+                tileClass = "Core";
+                break;
+            case TileType.Directed:
+                if (Course is null)
+                {
+                    tileClass = "AddDirected";
+                }
+                else
+                {
+                    tileClass = "Directed";
+                }
+
+                break;
+            case TileType.Elective:
+                if (Course is null)
+                {
+                    tileClass = "AddElective";
+                }
+                else
+                {
+                    tileClass = "Elective";
+                }
+                break;
+        }
+    }
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("Testing");
+        UpdateTileType();
+    }
+
+    void Clicked()
+    {
+        if (Course is not null)
+        {
+            Console.WriteLine(Course.Name);
+        }
+
+    }
+
+}
