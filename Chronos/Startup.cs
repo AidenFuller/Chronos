@@ -32,9 +32,6 @@ namespace Chronos
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
-
-            
             services.AddTransient((services) => new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<AppDbContext>();
@@ -42,13 +39,12 @@ namespace Chronos
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddTransient<WeatherForecastService>();
-            services.AddTransient<CourseService>();
-            services.AddTransient<DegreeCourseService>();
-            services.AddTransient<DegreeService>();
-            services.AddTransient<ElectiveService>();
-            services.AddTransient<MajorCourseService>();
-            services.AddTransient<MajorService>();
+            services.AddScoped<CourseService>();
+            services.AddScoped<DegreeCourseService>();
+            services.AddScoped<DegreeService>();
+            services.AddScoped<ElectiveService>();
+            services.AddScoped<MajorCourseService>();
+            services.AddScoped<MajorService>();
 
 
             using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
