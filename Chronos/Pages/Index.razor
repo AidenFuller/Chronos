@@ -1,7 +1,14 @@
 ﻿@page "/"
+@inject DegreeCourseService service
 
-<h1>Hello, world!</h1>
+<DegreePlan BlocksPerYear="2" Courses="@Courses" UnitsPerBlock="40"/>
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code
+{      
+    List<Course> Courses;
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = (await service.GetCoreCoursesAsync(1)).ToList();
+    }
+}

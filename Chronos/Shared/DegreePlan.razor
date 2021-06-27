@@ -1,0 +1,69 @@
+﻿<div style="width: 100%; height: 100%" class="degreeplan">
+    <CascadingValue Value="this">
+        @if (BlockedCourses == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
+            {
+                <div style="display: block;">
+                    @for (int i = 0; i < BlocksPerYear; i++)
+                    {
+                        <div style="display: inline-block; width: @($"{100/BlocksPerYear}%"); height: 150px;" class="year-row">
+                            <TileSlot Courses="@BlockedCourses[i+(j*BlocksPerYear)]" />
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </CascadingValue>
+</div>
+
+
+@code {
+    [Parameter] public List<Course> Courses { get; set; }
+    [Parameter] public int BlocksPerYear { get; set; } = 2;
+    [Parameter] public int UnitsPerBlock { get; set; } = 40;
+    [Parameter] public Degree Degree { get; set; }
+
+    private List<List<Course>> BlockedCourses;
+    private int blockSize = 2;
+    public Course DragPayload { get; set; }
+    public List<Course> DragFrom { get; set; }
+
+    private List<int> blockCount { get; set; }
+
+    public async Task UpdateDegreePlanAsync(List<Course> dragTo, Course draggedOn)
+    {
+        Utilities.Swap(Courses, Courses.IndexOf(DragPayload), Courses.IndexOf(draggedOn));
+        Utilities.SwapValues(BlockedCourses, DragPayload, draggedOn);
+        StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        int countPerBlock = UnitsPerBlock / 10;
+
+        Queue<Course> cache = new Queue<Course>(Courses.Take(Courses.Count));
+
+        if (BlockedCourses == null)
+        {
+            BlockedCourses = new List<List<Course>>();
+            while (cache.Count > 0)
+            {
+                List<Course> tempCourses = new List<Course>();
+                int loopCount = Math.Min(cache.Count, countPerBlock);
+                for (int j = 0; j < loopCount; j++)
+                {
+                    tempCourses.Add(cache.Dequeue());
+                }
+                BlockedCourses.Add(tempCourses);
+            }
+        }
+    }
+
+
+
+}
