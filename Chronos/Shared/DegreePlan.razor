@@ -11,6 +11,11 @@
                 <div style="display: block;">
                     @for (int i = 0; i < BlocksPerYear; i++)
                     {
+                        if (i + (j * BlocksPerYear) >= BlockedCourses.Count)
+                        {
+                            continue;
+                        }
+
                         <div style="display: inline-block; width: @($"{100/BlocksPerYear}%"); height: 150px;" class="year-row">
                             <TileSlot Courses="@BlockedCourses[i+(j*BlocksPerYear)]" />
                         </div>
@@ -46,7 +51,7 @@
     {
         int countPerBlock = UnitsPerBlock / 10;
 
-        Queue<Course> cache = new Queue<Course>(Courses.Take(Courses.Count));
+        Queue<Course> cache = new Queue<Course>(Courses.OrderBy(c => c.CourseCode[4..]));
 
         if (BlockedCourses == null)
         {
@@ -57,7 +62,10 @@
                 int loopCount = Math.Min(cache.Count, countPerBlock);
                 for (int j = 0; j < loopCount; j++)
                 {
-                    tempCourses.Add(cache.Dequeue());
+                    Course tc = cache.Dequeue();
+                    tempCourses.Add(tc);
+
+                    Console.WriteLine(tc.CourseCode);
                 }
                 BlockedCourses.Add(tempCourses);
             }
