@@ -60,11 +60,13 @@ a, .btn-link {
     text-align: center;
 }
 
-div.form-alignment-left
+div.form-alignment-left:after
 {
-    position: relative;
     padding-bottom: 2em;
-    padding-top: 2em;
+    position: relative;
+    content: "";
+    display: table;
+    clear: both;
 }
 
 div.form-alignment-right
@@ -132,7 +134,7 @@ select.semester-selection
 div.checklistColumns
 {
     column-count: 3;
-    column-gap: 2em;
+    column-gap: 3em;
 }
 section.admin-login
 {
@@ -147,3 +149,19 @@ button.button-for-admin
     height: 20%;
     width: 30%;
 }
+
+.column-left 
+{
+    float: left;
+    width: 50%;
+    padding-bottom: 2em;
+}
+
+.column-right
+{
+    float: right;
+    width: 50%;
+    padding-bottom: 2em;
+}
+
+
