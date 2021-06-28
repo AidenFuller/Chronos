@@ -29,17 +29,11 @@ namespace Chronos.Services
             return await db.Courses.FindAsync(courseID);
         }
 
-        public async Task<PrerequisiteCourse> GetPrerequisiteCourseAsync(int PrerequisiteCourseID)
+        public async Task<IEnumerable<Course>> GetPrerequisiteCoursesAsync(int CourseID)
         {
-            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.PrerequisiteCourseID == PrerequisiteCourseID).Select(i => i.CourseID);
+            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.CourseID == CourseID).Select(i => i.PrerequisiteCourseID);
 
-            return
-
-             (PrerequisiteCourse)(from course in db.Courses
-                                  join id in courseIDs on course.CourseID equals id
-                                  select course);
-
+            return db.Courses.Where(i => courseIDs.Contains(i.CourseID));
         }
-
     }
 }
