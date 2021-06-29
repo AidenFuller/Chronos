@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Blazored.Modal;
 namespace Chronos
 {
     public class Startup
@@ -32,9 +32,6 @@ namespace Chronos
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
-
-            
             services.AddTransient((services) => new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<AppDbContext>();
@@ -42,13 +39,14 @@ namespace Chronos
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddTransient<WeatherForecastService>();
-            services.AddTransient<CourseService>();
-            services.AddTransient<DegreeCourseService>();
-            services.AddTransient<DegreeService>();
-            services.AddTransient<ElectiveService>();
-            services.AddTransient<MajorCourseService>();
-            services.AddTransient<MajorService>();
+            services.AddScoped<CourseService>();
+            services.AddScoped<DegreeCourseService>();
+            services.AddScoped<DegreeService>();
+            services.AddScoped<ElectiveService>();
+            services.AddScoped<MajorCourseService>();
+            services.AddScoped<MajorService>();
+
+            services.AddBlazoredModal();
 
 
             using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
@@ -85,6 +83,8 @@ namespace Chronos
 
             db.SaveChanges();
 
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,12 +110,21 @@ namespace Chronos
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "ALLOW-FROM https://www.newcastle.edu.au/");
+                await next();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+
         }
     }
 }
