@@ -87,6 +87,8 @@ namespace Chronos
 
             db.SaveChanges();
 
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -112,12 +114,21 @@ namespace Chronos
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "ALLOW-FROM https://www.newcastle.edu.au/");
+                await next();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+
         }
     }
 }
