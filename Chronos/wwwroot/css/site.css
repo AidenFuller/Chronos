@@ -60,13 +60,13 @@ a, .btn-link {
     text-align: center;
 }
 
-div.form-alignment-left:after
+div.form-alignment-center
 {
     padding-bottom: 2em;
+    padding-left: 18%;
+    padding-right: 18%;
     position: relative;
-    content: "";
-    display: table;
-    clear: both;
+    text-align: center;
 }
 
 div.form-alignment-right
@@ -114,12 +114,17 @@ div.center-button
     margin: auto;
     padding: 2em;
 }
-select.degree-selection 
+
+.degree-selection 
 {
     height: 2em;
     width: 10em;
     border: 1px solid #26b050;
-    margin-bottom: 0.5em;
+}
+
+div.degree-div
+{
+    padding-bottom: 2em;
 }
 
 select.semester-selection 
@@ -127,15 +132,18 @@ select.semester-selection
     height: 2em;
     width: 20em;
     border: 1px solid #26b050;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+}
+
+div.semester-div
+{
+    padding-bottom: 2em;
 }
 
 div.checklistColumns
 {
     column-count: 3;
-    column-gap: 3em;
 }
+
 section.admin-login
 {
     display: none;

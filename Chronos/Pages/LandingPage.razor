@@ -7,22 +7,23 @@
         <h4 class="heading-for-landing">Please insert your information below:</h4>
         <hr />
         <br />
-        <div class="form-alignment-left">
+        <div class="form-alignment-center">
             <form action="login" method="POST">
-                <div class="column-left">
+                <div class="degree-div">
                     <h4>Choose your Degree</h4>
-                    <select name="degree" class="degree-selection">
-                        <option value=""> Select a Degree</option>
-                        @foreach (var d in degrees)
-                        {
-                            <option value="@d.Item1">@d.Item2</option>
-                        }
-                    </select>
+                    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value ="SelectedDegree" placeholder ="Please search for your degree...">
+                        <SelectedTemplate Context="degree">
+                            Bachelor Of @degree.Name
+                        </SelectedTemplate>
+                        <ResultTemplate Context="degree">
+                            Bachelor Of @degree.Name
+                        </ResultTemplate>
+                    </BlazoredTypeahead>
                 </div>
-                <div class="column-left">
+                <div class="semester-div">
                     <h4>Choose your semester</h4>
                     <select name="semester" class="semester-selection">
-                        <option value=""> What type of Semester are you doing?</option>
+                        <option value=""> Select a Semester Type</option>
                         <option value="Semester">Semester 1/2</option>
                         <option value="Part Time">Part Time Semester</option>
                         <option value="Trimester">Trimester</option>
@@ -49,9 +50,7 @@
                     <label for="Online">Online Campus</label><br />
                 </div>
             </form>
-        </div>
-        <br />
-        <div class="form-alignment-left-search">
+            <br />
             <h4>Please insert the courses you have completed here. </h4>
             <BlazoredTypeahead SearchMethod="SearchCourses"
                                @bind-Values="SelectedCourse"
@@ -65,7 +64,9 @@
                     @course.CourseCode (@course.Name)
                 </ResultTemplate>
             </BlazoredTypeahead>
+
             <!--<button @onclick="@(() => IsItDisabled = !IsItDisabled)">@(IsItDisabled ? "Enable" : "Disable")</button>-->
+            <input type="submit" value ="Submit">
         </div>
     </section>
 </div>
@@ -99,21 +100,25 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        IEnumerable<Degree> degreesFromDB = await degreeService.GetAllDegreesAsync(); //Grabs all the degrees from the database.
-
-        degrees = degreesFromDB.Select(i => (i.DegreeID, i.Name));      //Create a new List for the Degrees that will hold the names and IDs.
+        Degrees = await degreeService.GetAllDegreesAsync(); //Grabs all the degrees from the database.
         Courses = await courseService.GetAllCoursesAsync();
     }
 
+    protected IEnumerable<Degree>  Degrees { get; set; }
     protected IEnumerable<Course> Courses { get; set; }
     private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
         return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower())).ToList());
     }
 
+    private async Task<IEnumerable<Degree>> SearchDegrees(string search)
+    {
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList());
+    }
+
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none";
     private String Username;
-    private IEnumerable<(int, String)> degrees;
+    private Degree SelectedDegree;
     private IList<Course> SelectedCourse;
     private bool IsItDisabled;
     private bool IsAdminLoginThere = false;
