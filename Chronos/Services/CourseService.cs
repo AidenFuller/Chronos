@@ -28,6 +28,10 @@ namespace Chronos.Services
         {
             return await db.Courses.FindAsync(courseID);
         }
+        public async Task<IEnumerable<Course>> GetAllCoursesAsync()
+        {
+            return db.Courses;
+        }
 
         public async Task<IEnumerable<Course>> GetPrerequisiteCoursesAsync(int CourseID)
         {

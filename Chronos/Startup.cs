@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Blazored.Modal;
 namespace Chronos
 {
     public class Startup
@@ -46,6 +46,8 @@ namespace Chronos
             services.AddScoped<MajorCourseService>();
             services.AddScoped<MajorService>();
 
+            services.AddBlazoredModal();
+
 
             using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
 
@@ -65,13 +67,67 @@ namespace Chronos
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = "Software Engineering", UnitLength = 360 });
 
             db.Courses.Add(new Models.Course() { CourseCode = "COMP1010", Name = "Computing Fundamentals", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10});
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG2050", Name = "Web Engineering", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
             db.Courses.Add(new Models.Course() { CourseCode = "SENG1110", Name = "Object Oriented Programming", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "MATH1110", Name = "Mathematics for Engineering, Science & Technology 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "ENGG1003", Name = "Introduction to Procedural Programming", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP1140", Name = "Database and Information Management", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "MATH1510", Name = "Discrete Mathematics", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG1050", Name = "Web Technologies", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG1120", Name = "Data Structures", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2130", Name = "System Analysis and Design", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "INFT2031", Name = "System and Network Adminstration", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3260", Name = "Data Security", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2050", Name = "Web Engineering", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP2230", Name = "Algorithms", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP2240", Name = "Operating Systems", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2250", Name = "System and Network Security", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2260", Name = "Human-Computer Interaction", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP2270", Name = "Theory of Computation", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3500", Name = "Security Attacks Analysis and Mitigation Strategies", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3851A", Name = "Computer Science Work Integrated Learning Project Part A", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3330", Name = "Machine Intelligence", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3600", Name = "Security Standards and Practices in Industry", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3851B", Name = "Computer Science Work Integrated Learning Project Part B", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "ELEC3500", Name = "Telecommunication Networks", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "ELEC1710", Name = "Digital and Computer Electronics 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+
+
+
 
             db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 1, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 2, DegreeID = 1 });
             db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 3, DegreeID = 1 });
-            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 1, DegreeID = 2 });
-            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 3, DegreeID = 2 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 4, DegreeID = 1 });
+
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 5, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 6, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 7, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 8, DegreeID = 1 });
+
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 9, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 10, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 11, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 12, DegreeID = 1 });
+
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 13, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 14, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 15, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 16, DegreeID = 1 });
+
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 17, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 18, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 19, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 20, DegreeID = 1 });
+
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 21, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 22, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 23, DegreeID = 1 });
+            db.CoreCourses.Add(new Models.CoreCourse() { CourseID = 24, DegreeID = 1 });
 
             db.Majors.Add(new Models.Major() { DegreeID = 1, Name = "Software Development" });
             db.Majors.Add(new Models.Major() { DegreeID = 1, Name = "Cyber Security" });
@@ -80,6 +136,8 @@ namespace Chronos
             db.MajorCourses.Add(new Models.MajorCourse() { IsCore = false, MajorID = 2, CourseID = 2 });
 
             db.SaveChanges();
+
+
 
         }
 
@@ -106,12 +164,21 @@ namespace Chronos
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "ALLOW-FROM https://www.newcastle.edu.au/");
+                await next();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+
         }
     }
 }
