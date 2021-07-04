@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Blazored.Modal;
 namespace Chronos
 {
     public class Startup
@@ -45,6 +45,8 @@ namespace Chronos
             services.AddScoped<ElectiveService>();
             services.AddScoped<MajorCourseService>();
             services.AddScoped<MajorService>();
+
+            services.AddBlazoredModal();
 
 
             using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
@@ -135,6 +137,8 @@ namespace Chronos
 
             db.SaveChanges();
 
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -160,12 +164,21 @@ namespace Chronos
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "ALLOW-FROM https://www.newcastle.edu.au/");
+                await next();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+
         }
     }
 }

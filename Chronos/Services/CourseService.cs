@@ -28,6 +28,10 @@ namespace Chronos.Services
         {
             return await db.Courses.FindAsync(courseID);
         }
+        public async Task<IEnumerable<Course>> GetAllCoursesAsync()
+        {
+            return db.Courses;
+        }
 
         public async Task<PrerequisiteCourse> GetPrerequisiteCourseAsync(int PrerequisiteCourseID)
         {
@@ -39,7 +43,7 @@ namespace Chronos.Services
                                   join id in courseIDs on course.CourseID equals id
                                   select course);
 
-        }
 
+        }
     }
 }

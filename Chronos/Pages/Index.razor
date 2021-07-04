@@ -1,14 +1,2 @@
 ﻿@page "/"
-@inject DegreeCourseService service
 
-<DegreePlan BlocksPerYear="2" Courses="@Courses" UnitsPerBlock="40"/>
-
-
-@code
-{      
-    List<Course> Courses;
-    protected override async Task OnInitializedAsync()
-    {
-        Courses = (await service.GetCoreCoursesAsync(1)).ToList();
-    }
-}

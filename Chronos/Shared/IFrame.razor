@@ -1,0 +1,7 @@
+﻿<iframe src="@url" title="TItle" width="500px" height="500px"></iframe>
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; }
+    
+    [Parameter] public String url { get; set; }
+
+}
