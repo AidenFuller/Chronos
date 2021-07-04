@@ -20,6 +20,10 @@
             transform: scale(1.1)
         }
 
+    .droppable {
+        background-color: greenyellow;
+    }
+
     .Elective {
         background-color: #F2DD60
     }
@@ -46,7 +50,11 @@
 </style>
 
 
-<button class="Tile @tileClass" style="width:@Width; height:@Height;" @onclick="Clicked">
+<button class="Tile @tileClass" style="width:@Width; height:@Height;" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+     ondragover="event.preventDefault()"
+     @ondrop="HandleDrop"
+     @ondragenter="HandleDragEnter"
+     @ondragleave="HandleDragLeave">
 
     @if (Course is null)
     {
@@ -72,6 +80,12 @@
 
 
 @code {
+
+    [CascadingParameter]
+    DegreePlan Plan { get; set; }
+
+    [CascadingParameter]
+    TileSlot Slot { get; set; }
 
     [Parameter]
     public TileType Type { get; set; }
@@ -129,6 +143,37 @@
             Console.WriteLine(Course.Name);
         }
 
+    }
+
+    private void HandleDragStart()
+    {
+        Plan.DragPayload = Course;
+        Plan.DragFrom = Slot.Courses;
+    }
+
+
+    string dropClass = "";
+
+    private void HandleDragEnter()
+    {
+        if (Course.CourseID != Plan.DragPayload.CourseID)
+        {
+            dropClass = "droppable";
+        }
+    }
+
+    private void HandleDragLeave()
+    {
+        dropClass = "";
+    }
+
+    private async Task HandleDrop()
+    {
+        dropClass = "";
+        if (Course.CourseID == Plan.DragPayload.CourseID) return;
+        await Plan.UpdateDegreePlanAsync(Slot.Courses, Course);
+
+        Console.WriteLine("spam");
     }
 
 }

@@ -1,0 +1,10 @@
+﻿<CascadingValue Value="this">
+    @foreach (Course course in Courses)
+    {
+        <Tile Course=@course />
+    }
+</CascadingValue>
+
+@code {
+    [Parameter] public List<Course> Courses { get; set; }
+}
