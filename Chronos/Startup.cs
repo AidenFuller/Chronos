@@ -61,9 +61,6 @@ namespace Chronos
            
             db.SaveChanges();
 
-            //db.Database.Migrate();
-
-
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = "Computer Science", UnitLength = 240 });
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = "Software Engineering", UnitLength = 360 });
 
