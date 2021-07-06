@@ -15,12 +15,13 @@ namespace Chronos.Services
 
         public async Task<IEnumerable<Degree>> GetAllDegreesAsync()
         {
-            return db.Degrees;
+            return db.Degrees; //Returns allt he degrees. 
         }
 
         public async Task<bool> AddDegreeAsync(Degree degree)
         {
-            await db.Degrees.AddAsync(degree);
+            //This will add and save the new Degree in the database. 
+            await db.Degrees.AddAsync(degree); 
             await db.SaveChangesAsync();
 
             return true;
@@ -28,7 +29,7 @@ namespace Chronos.Services
 
         public async Task<Degree> GetDegreeAsync(int degreeID)
         {
-            return await db.Degrees.FindAsync(degreeID);
+            return await db.Degrees.FindAsync(degreeID); //This will return a specific degree. 
         }
     }
 }
