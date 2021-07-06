@@ -108,7 +108,7 @@
     protected IEnumerable<Course> Courses { get; set; }
     private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
-        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower())).ToList());
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).ToList());
     }
 
     private async Task<IEnumerable<Degree>> SearchDegrees(string search)
