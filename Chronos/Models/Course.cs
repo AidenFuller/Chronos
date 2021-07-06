@@ -12,5 +12,6 @@ namespace Chronos.Models
         public AvailableCampus Campus { get; set; }
         public double Cost { get; set; }
         public int Units { get; set; }
+        public CourseRuntime Runtime { get; set; }
     }
 }

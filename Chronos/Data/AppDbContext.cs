@@ -17,6 +17,6 @@ namespace Chronos.Data
         public DbSet<CoreCourse> CoreCourses { get; set; }
         public DbSet<Administrator> Administrators { get; set; }
         public DbSet<MajorCourse> MajorCourses { get; set; }
-        public  DbSet<PrerequisiteCourse> PrerequisiteCourses { get; set; }
+        public DbSet<PrerequisiteCourse> PrerequisiteCourses { get; set; }
     }
 }
