@@ -61,6 +61,8 @@
     public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn)
     {
         Utilities.SwapValues(BlockedCourses, DragPayload, draggedOn);
+        draggedOn.Status = 0;
+        DragPayload.Status = 0;
         StateHasChanged();
     }
 

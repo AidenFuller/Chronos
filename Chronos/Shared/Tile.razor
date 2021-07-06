@@ -161,7 +161,7 @@
 
         switch (Data.Status)
         {
-            case ErrorStatus.Error & ErrorStatus.Warning:
+            case ErrorStatus.Error | ErrorStatus.Warning:
             case ErrorStatus.Error:
                 tileClass = "Error";
                 break;
@@ -170,11 +170,7 @@
                 break;
         }
     }
-    protected override void OnInitialized()
-    {
-        Console.WriteLine("Testing");
-        UpdateTileType();
-    }
+
 
     void Clicked()
     {
@@ -190,10 +186,10 @@
                 //ContentScrollable = true,
                 Class = "Tile-Modal"
             };
-        Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
+            Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
+        }
+        //If null, open menu to add a course to it
     }
-    //If null, open menu to add a course to it
-}
 
     private void HandleDragStart()
     {
@@ -226,9 +222,11 @@
         Console.WriteLine("spam");
     }
 
-    
+
     protected override void OnParametersSet()
     {
+        UpdateTileType();
+
         if ((Data.Status & ErrorStatus.Error) > 0)
         {
             Plan.ErrorCount++;

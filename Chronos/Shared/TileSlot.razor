@@ -15,11 +15,12 @@
         Console.WriteLine(BlockType);
         foreach (TileData tile in Tiles)
         {
-            Console.WriteLine($"{tile.Course.Name} : {tile.Course.Runtime}, {BlockType}");
-            if ((tile.Course.Runtime & BlockType) >= 0)
+
+            if ((tile.Course.Runtime & BlockType) == 0)
             {
                 tile.Status |= ErrorStatus.Error;
             }
+            //Console.WriteLine($"{tile.Course.Name}, {tile.Status} : {tile.Course.Runtime}, {BlockType}, {tile.Course.Runtime & BlockType}");
         }
     }
 }
