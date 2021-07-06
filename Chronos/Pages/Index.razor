@@ -6,24 +6,30 @@
 <div>
     <section>
         <h4 class="heading-for-landing">Please insert your information below:</h4>
-        <hr />
+        <hr /> <!--Using Horizontal Lines to break up the page.-->
         <br />
         <div class="form-alignment-center">
+            <!--Creating a Div to enclose all of the related forms below. -->
             <form action="login" method="POST">
                 <div class="degree-div">
                     <h4>Choose your Degree</h4>
+                    <!--This is a razor component that will effectively search for different Degrees based on their Names.-->
                     <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for your degree...">
                         <SelectedTemplate Context="degree">
+                            <!--This is the search Template and what will be returned.-->
                             Bachelor Of @degree.Name
                         </SelectedTemplate>
                         <ResultTemplate Context="degree">
+                            <!--This is what is shown when it is selected.-->
                             Bachelor Of @degree.Name
                         </ResultTemplate>
                     </BlazoredTypeahead>
                 </div>
                 <div class="semester-div">
+                    <!--Another Div to break up spacing on the page, this is for the Semester type.-->
                     <h4>Choose your semester</h4>
                     <select name="semester" class="semester-selection">
+                        <!--Selection that allows for the Semester type a student is undertaking.-->
                         <option value=""> Select a Semester Type</option>
                         <option value="Semester">Semester 1/2</option>
                         <option value="Part Time">Part Time Semester</option>
@@ -32,9 +38,9 @@
                     </select>
                 </div>
                 <br />
-
                 <h4>What campuses are you able to attend?</h4>
                 <div class="checklistColumns">
+                    <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
                     <input type="checkbox" id="Callaghan" name="Callaghan" value="Callaghan" />
                     <label for="Callaghan">Callaghan Campus</label><br />
                     <input type="checkbox" id="Newcastle" name="Newcastle" value="Newcastle" />
@@ -50,37 +56,43 @@
                     <input type="checkbox" id="Online" name="Online" value="Online" />
                     <label for="Online">Online Campus</label><br />
                 </div>
-            </form>
+            </form> <!--Initial Form ends here.-->
             <br />
             <h4>Please insert the courses you have completed here. </h4>
+            <!--This BlazoredTypeahead tag instead searches based on Courses, it is a multi select so you can selected multiple completed courses.-->
+            <!--Bind values are the courses that were selected-->
             <BlazoredTypeahead SearchMethod="SearchCourses"
                                @bind-Values="SelectedCourse"
                                Disabled="IsItDisabled"
                                EnableDropDown="true"
                                placeholder="Please enter a course...">
                 <SelectedTemplate Context="course">
+                    <!--What the search will return when strings are inputted.-->
                     @course.CourseCode (@course.Name)
                 </SelectedTemplate>
                 <ResultTemplate Context="course">
+                    <!--What will be shown after selection of a course.-->
                     @course.CourseCode (@course.Name)
                 </ResultTemplate>
             </BlazoredTypeahead>
 
-            <!--<button @onclick="@(() => IsItDisabled = !IsItDisabled)">@(IsItDisabled ? "Enable" : "Disable")</button>-->
             <input type="submit" value="Submit">
         </div>
     </section>
 </div>
-<hr />
+<hr /> <!--Another Horizontal Line to break up the page-->
 <div class="center-button">
+    <!--A div with a login button for admins.-->
     <button class="button-for-admin" @onclick="ToggleAdminLogin">Admin Login</button>
 </div>
 <div>
+    <!--A Div and section that is dedicated to showing the admin login, this is so admins can access the backend of the system.-->
     <section style="display:@ShowAdminLogin">
         <h4 class="heading-for-landing">Please login below. (IN WORK)</h4>
         <hr />
         <div class="login-center">
             <form action="login" method="POST">
+                <!--username and password inputs as well as two buttons for submit and reset.-->
                 <label class="login-box-ui" for="username">Username: </label>
                 <input type="text" id="username" name="username" />
                 <label class="login-box-ui" for="password">Password: </label>
@@ -94,39 +106,40 @@
     </section>
 </div>
 <div class="additional-information">
+    <!--Additonal information at the bottom of the page.-->
     <h4>Information regarding this Project</h4>
     <p>You can do this!</p>
 </div>
 
 @code {
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync() //This will run when the page is ran.
     {
         Degrees = await degreeService.GetAllDegreesAsync(); //Grabs all the degrees from the database.
-        Courses = await courseService.GetAllCoursesAsync();
+        Courses = await courseService.GetAllCoursesAsync(); //Grabs all of the courses from the database.
     }
 
-    protected IEnumerable<Degree> Degrees { get; set; }
-    protected IEnumerable<Course> Courses { get; set; }
+
+    //This function will find courses based on what string is passed into the function.
     private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
-        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).ToList());
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).ToList());//Finds courses based on if they contain the string in their name or course code.
     }
-
+    //This function will find degrees based on the string that is passed in.
     private async Task<IEnumerable<Degree>> SearchDegrees(string search)
     {
-        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList());
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
     }
 
-    private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none";
+    protected IEnumerable<Degree> Degrees { get; set; } //IEnumerables of degrees and courses to hold the databases.
+    protected IEnumerable<Course> Courses { get; set; }
+    private IList<Course> SelectedCourse; //This is the list of selected Courses from the search results above.
+    private Degree SelectedDegree; //This is the selected degree from the search results above.
+    private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
-    private Degree SelectedDegree;
-    private IList<Course> SelectedCourse;
     private bool IsItDisabled;
-    private bool IsAdminLoginThere = false;
+    private bool IsAdminLoginThere = false; //This bool will be a checker to see if the Admin Login should appear or not.
 
-    //private String Password;
-
-
+    //This function is here so it can toggle the admin button when the admin login button is hit.
     private void ToggleAdminLogin()
     {
         IsAdminLoginThere = !IsAdminLoginThere;
