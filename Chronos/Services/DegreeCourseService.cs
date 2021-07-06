@@ -19,8 +19,6 @@ namespace Chronos.Services
 
         public async Task<bool> AddCourseToDegreeAsync(int degreeID, int courseID)
         {
-            //TODO: Make composite key and prevent duplicates?
-
             //Create Object
             CoreCourse c = new CoreCourse() 
             { 
@@ -37,9 +35,9 @@ namespace Chronos.Services
 
         public async Task<IEnumerable<Course>> GetCoreCoursesAsync(int degreeID)
         {
-            IEnumerable<int> courseIDs = db.CoreCourses.Where(i => i.DegreeID == degreeID).Select(i => i.CourseID);
+            IEnumerable<int> courseIDs = db.CoreCourses.Where(i => i.DegreeID == degreeID).Select(i => i.CourseID); //This will make an IEnumerable of CourseIDs that are based on Core Courses from the DB. 
             
-            return
+            return //This will return the Core Courses within that degree. 
                 from course in db.Courses
                 join id in courseIDs on course.CourseID equals id
                 select course;
