@@ -36,6 +36,14 @@
         background-color: #808080
     }
 
+    .Error {
+        background-color: #FF9696
+    }
+
+    .Warning {
+        background-color: #FFCC99
+    }
+
     .AddElective {
         background-color: #ffffff;
         border-color: #000000;
@@ -72,7 +80,7 @@
      @ondragenter="HandleDragEnter"
      @ondragleave="HandleDragLeave">
 
-    @if (Course is null)
+    @if (Data.Course is null)
     {
         @if (Type == TileType.Core)
         {
@@ -88,8 +96,8 @@
     else
     {
         //Course
-        <h3> @Course.CourseCode </h3>
-        <p> @Course.Name </p>
+        <h3> @Data.Course.CourseCode </h3>
+        <p> @Data.Course.Name </p>
     }
 
 </button>
@@ -107,7 +115,7 @@
     public TileType Type { get; set; }
 
     [Parameter]
-    public Course Course { get; set; }
+    public TileData Data { get; set; }
 
     [Parameter]
     public string Width { get; set; } = "200px";
@@ -120,31 +128,45 @@
 
     public void UpdateTileType()
     {
-        switch (Type)
+        if (Data.Status == 0)
         {
-            case TileType.Core:
-                tileClass = "Core";
-                break;
-            case TileType.Directed:
-                if (Course is null)
-                {
-                    tileClass = "AddDirected";
-                }
-                else
-                {
-                    tileClass = "Directed";
-                }
+            switch (Type)
+            {
+                case TileType.Core:
+                    tileClass = "Core";
+                    break;
+                case TileType.Directed:
+                    if (Data.Course is null)
+                    {
+                        tileClass = "AddDirected";
+                    }
+                    else
+                    {
+                        tileClass = "Directed";
+                    }
 
+                    break;
+                case TileType.Elective:
+                    if (Data.Course is null)
+                    {
+                        tileClass = "AddElective";
+                    }
+                    else
+                    {
+                        tileClass = "Elective";
+                    }
+                    break;
+            }
+        }
+
+        switch (Data.Status)
+        {
+            case ErrorStatus.Error & ErrorStatus.Warning:
+            case ErrorStatus.Error:
+                tileClass = "Error";
                 break;
-            case TileType.Elective:
-                if (Course is null)
-                {
-                    tileClass = "AddElective";
-                }
-                else
-                {
-                    tileClass = "Elective";
-                }
+            case ErrorStatus.Warning:
+                tileClass = "Warning";
                 break;
         }
     }
@@ -156,10 +178,10 @@
 
     void Clicked()
     {
-        if (Course is not null)
+        if (Data.Course is not null)
         {
             var parameters = new ModalParameters();
-            var url = "https://www.newcastle.edu.au/course/" + Course.CourseCode;
+            var url = "https://www.newcastle.edu.au/course/" + Data.Course.CourseCode;
             parameters.Add("url", url);
             var options = new ModalOptions()
             {
@@ -168,15 +190,15 @@
                 //ContentScrollable = true,
                 Class = "Tile-Modal"
             };
-        Modal.Show<IFrame>(Course.CourseCode, parameters, options);
+        Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
     }
     //If null, open menu to add a course to it
 }
 
     private void HandleDragStart()
     {
-        Plan.DragPayload = Course;
-        Plan.DragFrom = Slot.Courses;
+        Plan.DragPayload = Data;
+        Plan.DragFrom = Slot.Tiles;
     }
 
 
@@ -184,7 +206,7 @@
 
     private void HandleDragEnter()
     {
-        if (Course.CourseID != Plan.DragPayload.CourseID)
+        if (Data.Course.CourseID != Plan.DragPayload.Course.CourseID)
         {
             dropClass = "droppable";
         }
@@ -198,10 +220,24 @@
     private async Task HandleDrop()
     {
         dropClass = "";
-        if (Course.CourseID == Plan.DragPayload.CourseID) return;
-        await Plan.UpdateDegreePlanAsync(Slot.Courses, Course);
+        if (Data.Course.CourseID == Plan.DragPayload.Course.CourseID) return;
+        await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data);
 
         Console.WriteLine("spam");
+    }
+
+    
+    protected override void OnParametersSet()
+    {
+        if ((Data.Status & ErrorStatus.Error) > 0)
+        {
+            Plan.ErrorCount++;
+        }
+
+        if ((Data.Status & ErrorStatus.Warning) > 0)
+        {
+            Plan.WarningCount++;
+        }
     }
 
 }

@@ -1,10 +1,25 @@
 ﻿<CascadingValue Value="this">
-    @foreach (Course course in Courses)
-    {
-        <Tile Course=@course />
+    @foreach (TileData tile in Tiles)
+    { 
+        <Tile Data=@tile/>
     }
 </CascadingValue>
 
 @code {
-    [Parameter] public List<Course> Courses { get; set; }
+    [Parameter] public List<TileData> Tiles { get; set; }
+    [Parameter] public Models.Enums.CourseRuntime BlockType { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine(BlockType);
+        foreach (TileData tile in Tiles)
+        {
+            Console.WriteLine($"{tile.Course.Name} : {tile.Course.Runtime}, {BlockType}");
+            if ((tile.Course.Runtime & BlockType) >= 0)
+            {
+                tile.Status |= ErrorStatus.Error;
+            }
+        }
+    }
 }
