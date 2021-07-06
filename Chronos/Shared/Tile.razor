@@ -47,6 +47,22 @@
         border-color: #000000;
         color: #458EE7;
     }
+
+    .Tile-Modal {
+        display: flex;
+        z-index: 102;
+        flex-direction: column;
+        background-color: #fff;
+        /*background-color: rgba(0,0,0,0);*/
+        border-radius: 20px;
+        border: 1px solid #fff;
+        padding: 1.5rem;
+        box-shadow: 0 2px 2px rgba(0,0,0,0.25);
+        /*width: 80%;
+        height: 80%;*/
+
+        /*overflow: hidden;*/
+    }
 </style>
 
 
@@ -98,6 +114,8 @@
 
     private string Height = "100px";
 
+    [CascadingParameter] public IModalService Modal { get; set; }
+
     private string tileClass; //CSS class based on TileType
 
     public void UpdateTileType()
@@ -140,10 +158,20 @@
     {
         if (Course is not null)
         {
-            Console.WriteLine(Course.Name);
-        }
-
+            var parameters = new ModalParameters();
+            var url = "https://www.newcastle.edu.au/course/" + Course.CourseCode;
+            parameters.Add("url", url);
+            var options = new ModalOptions()
+            {
+                Position = ModalPosition.Center,
+                Animation = ModalAnimation.FadeInOut(0.5),
+                //ContentScrollable = true,
+                Class = "Tile-Modal"
+            };
+        Modal.Show<IFrame>(Course.CourseCode, parameters, options);
     }
+    //If null, open menu to add a course to it
+}
 
     private void HandleDragStart()
     {
