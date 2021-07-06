@@ -1,4 +1,7 @@
-﻿<div style="width: 100%; height: 100%" class="degreeplan">
+﻿@inject DegreeCourseService DegreeCourseService
+@inject DegreeService DegreeService
+
+<div style="width: 100%; height: 100%" class="degreeplan">
     <CascadingValue Value="this">
         @if (BlockedCourses == null)
         {
@@ -28,11 +31,12 @@
 
 
 @code {
-    [Parameter] public List<Course> Courses { get; set; }
     [Parameter] public int BlocksPerYear { get; set; } = 2;
     [Parameter] public int UnitsPerBlock { get; set; } = 40;
-    [Parameter] public Degree Degree { get; set; }
+    [Parameter] public int DegreeID { get; set; }
+    [Parameter] public Major Major { get; set; }
 
+    private Degree Degree;
     private List<List<Course>> BlockedCourses;
     private int blockSize = 2;
     public Course DragPayload { get; set; }
@@ -42,16 +46,18 @@
 
     public async Task UpdateDegreePlanAsync(List<Course> dragTo, Course draggedOn)
     {
-        Utilities.Swap(Courses, Courses.IndexOf(DragPayload), Courses.IndexOf(draggedOn));
         Utilities.SwapValues(BlockedCourses, DragPayload, draggedOn);
         StateHasChanged();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        Degree = await DegreeService.GetDegreeAsync(DegreeID);
+        var courses = await DegreeCourseService.GetCoreCoursesAsync(DegreeID);
+
         int countPerBlock = UnitsPerBlock / 10;
 
-        Queue<Course> cache = new Queue<Course>(Courses.OrderBy(c => c.CourseCode[4..]));
+        Queue<Course> cache = new Queue<Course>(courses.OrderBy(c => c.CourseCode[4..]));
 
         if (BlockedCourses == null)
         {
@@ -71,7 +77,4 @@
             }
         }
     }
-
-
-
 }
