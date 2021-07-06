@@ -1,4 +1,8 @@
-﻿<div style="width: 100%; height: 100%" class="degreeplan">
+@inject DegreeCourseService DegreeCourseService
+@inject DegreeService DegreeService
+@inject CourseService CourseService 
+
+<div style="width: 100%; height: 100%" class="degreeplan">
     <CascadingValue Value="this">
         @if (BlockedCourses == null)
         {
@@ -17,7 +21,18 @@
                         }
 
                         <div style="display: inline-block; width: @($"{100/BlocksPerYear}%"); height: 150px;" class="year-row">
-                            <TileSlot Courses="@BlockedCourses[i+(j*BlocksPerYear)]" />
+                            
+                            @* Assuming Semesters *@
+                            
+                            @if (i == 0)
+                            {
+                                <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                            }
+                            else
+                            {
+                                <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                            }
+
                         </div>
                     }
                 </div>
@@ -28,50 +43,82 @@
 
 
 @code {
-    [Parameter] public List<Course> Courses { get; set; }
     [Parameter] public int BlocksPerYear { get; set; } = 2;
     [Parameter] public int UnitsPerBlock { get; set; } = 40;
-    [Parameter] public Degree Degree { get; set; }
+    [Parameter] public int DegreeID { get; set; }
+    [Parameter] public Major Major { get; set; }
 
-    private List<List<Course>> BlockedCourses;
+    private Degree Degree;
+    private List<List<TileData>> BlockedCourses;
     private int blockSize = 2;
-    public Course DragPayload { get; set; }
-    public List<Course> DragFrom { get; set; }
 
-    private List<int> blockCount { get; set; }
+    public TileData DragPayload { get; set; }
+    public List<TileData> DragFrom { get; set; }
 
-    public async Task UpdateDegreePlanAsync(List<Course> dragTo, Course draggedOn)
+    public int ErrorCount { get; set; }
+    public int WarningCount { get; set; }
+
+    public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn)
     {
-        Utilities.Swap(Courses, Courses.IndexOf(DragPayload), Courses.IndexOf(draggedOn));
         Utilities.SwapValues(BlockedCourses, DragPayload, draggedOn);
+        draggedOn.Status = 0;
+        DragPayload.Status = 0;
         StateHasChanged();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        Degree = await DegreeService.GetDegreeAsync(DegreeID);
+        var courses = await DegreeCourseService.GetCoreCoursesAsync(DegreeID);
+
         int countPerBlock = UnitsPerBlock / 10;
 
-        Queue<Course> cache = new Queue<Course>(Courses.OrderBy(c => c.CourseCode[4..]));
+        Queue<Course> cache = new Queue<Course>(courses.OrderBy(c => c.CourseCode[4..]));
+
+        // ALGORITHM
 
         if (BlockedCourses == null)
         {
-            BlockedCourses = new List<List<Course>>();
+            BlockedCourses = new List<List<TileData>>();
             while (cache.Count > 0)
             {
-                List<Course> tempCourses = new List<Course>();
+                List<TileData> tempCourses = new List<TileData>();
                 int loopCount = Math.Min(cache.Count, countPerBlock);
                 for (int j = 0; j < loopCount; j++)
                 {
-                    Course tc = cache.Dequeue();
-                    tempCourses.Add(tc);
+                    Course c = cache.Dequeue();
 
-                    Console.WriteLine(tc.CourseCode);
+                    List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, c);
+
+                    TileData tile = new TileData();
+                    tile.Course = c;
+                    tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
+
+                    tempCourses.Add(tile);
+
+                    Console.WriteLine(c.CourseCode);
                 }
                 BlockedCourses.Add(tempCourses);
             }
         }
     }
 
+    private async Task<List<Course>> FindMissingPrerequisites(List<List<TileData>> courses, Course course)
+    {
+        List<Course> pCourses = (await CourseService.GetPrerequisiteCoursesAsync(course.CourseID)).ToList();
+
+        List<Course> missing = new List<Course>();
+
+        foreach(Course pCourse in pCourses)
+        {
+            if (!courses.Any(c => c.Any(i => i.Course.CourseID == pCourse.CourseID)))
+            {
+                missing.Add(pCourse);
+            }
+        }
+
+        return missing;
+    }
 
 
 }

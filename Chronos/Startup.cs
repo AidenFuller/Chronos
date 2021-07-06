@@ -64,35 +64,35 @@ namespace Chronos
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = "Computer Science", UnitLength = 240 });
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = "Software Engineering", UnitLength = 360 });
 
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP1010", Name = "Computing Fundamentals", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10});
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG1110", Name = "Object Oriented Programming", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "MATH1110", Name = "Mathematics for Engineering, Science & Technology 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "ENGG1003", Name = "Introduction to Procedural Programming", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP1010", Name = "Computing Fundamentals", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG1110", Name = "Object Oriented Programming", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "MATH1110", Name = "Mathematics for Engineering, Science & Technology 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "ENGG1003", Name = "Introduction to Procedural Programming", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
 
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP1140", Name = "Database and Information Management", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "MATH1510", Name = "Discrete Mathematics", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG1050", Name = "Web Technologies", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG1120", Name = "Data Structures", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP1140", Name = "Database and Information Management", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "MATH1510", Name = "Discrete Mathematics", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG1050", Name = "Web Technologies", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG1120", Name = "Data Structures", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
 
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG2130", Name = "System Analysis and Design", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "INFT2031", Name = "System and Network Adminstration", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP3260", Name = "Data Security", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG2050", Name = "Web Engineering", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2130", Name = "System Analysis and Design", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "INFT2031", Name = "System and Network Adminstration", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3260", Name = "Data Security", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2050", Name = "Web Engineering", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
 
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP2230", Name = "Algorithms", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP2240", Name = "Operating Systems", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG2250", Name = "System and Network Security", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "SENG2260", Name = "Human-Computer Interaction", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP2230", Name = "Algorithms", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP2240", Name = "Operating Systems", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2250", Name = "System and Network Security", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "SENG2260", Name = "Human-Computer Interaction", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
 
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP2270", Name = "Theory of Computation", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP3500", Name = "Security Attacks Analysis and Mitigation Strategies", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP3851A", Name = "Computer Science Work Integrated Learning Project Part A", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP3330", Name = "Machine Intelligence", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP2270", Name = "Theory of Computation", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3500", Name = "Security Attacks Analysis and Mitigation Strategies", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3851A", Name = "Computer Science Work Integrated Learning Project Part A", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3330", Name = "Machine Intelligence", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
             
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP3600", Name = "Security Standards and Practices in Industry", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "COMP3851B", Name = "Computer Science Work Integrated Learning Project Part B", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "ELEC3500", Name = "Telecommunication Networks", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
-            db.Courses.Add(new Models.Course() { CourseCode = "ELEC1710", Name = "Digital and Computer Electronics 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3600", Name = "Security Standards and Practices in Industry", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "COMP3851B", Name = "Computer Science Work Integrated Learning Project Part B", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "ELEC3500", Name = "Telecommunication Networks", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "ELEC1710", Name = "Digital and Computer Electronics 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
 
 
 
