@@ -18,7 +18,8 @@ namespace Chronos.Services
 
         public async Task<bool> AddMajorAsync(Major m)
         {
-            await db.Majors.AddAsync(m); //This will add it to the database. 
+            //This will add it to the database and save it.
+            await db.Majors.AddAsync(m); 
             await db.SaveChangesAsync();
 
             return true;
@@ -26,14 +27,14 @@ namespace Chronos.Services
 
         public async Task<Major> GetMajorAsync(int majorID)
         {
-            return await db.Majors.FindAsync(majorID);
+            return await db.Majors.FindAsync(majorID); //This will find the specific MajorID in the Database. 
         }
 
         public async Task<IEnumerable<Major>> GetMajorsFromDegreeAsync(int degreeID)
         {
-            IEnumerable<int> MajorIDs = db.Majors.Where(i => i.DegreeID == degreeID).Select(i => i.MajorID);
+            IEnumerable<int> MajorIDs = db.Majors.Where(i => i.DegreeID == degreeID).Select(i => i.MajorID); //Create an IEnumerable of all of the Majors in the Database of Degrees.
 
-            return
+            return //Returns all of the majors in the Database by joining the majors based on their ids. 
               from Major in db.Majors
               join id in MajorIDs on Major.MajorID equals id
               select Major;

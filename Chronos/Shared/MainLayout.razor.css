@@ -1,3 +1,5 @@
+
+/*Stuff that applies to whole page*/
 .page {
     position: relative;
     display: flex;
@@ -8,14 +10,12 @@
     flex: 1;
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-}
 
+/*Top row only*/
 .top-row {
-    background-color: #f7f7f7;
+    background-color: #FFFFFF;
     border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
+    justify-content: space-between;
     height: 3.5rem;
     display: flex;
     align-items: center;

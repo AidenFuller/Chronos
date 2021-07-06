@@ -51,7 +51,8 @@ namespace Chronos
 
             using var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value).Options);
 
-            
+            db.Database.Migrate();
+
             db.Database.ExecuteSqlRaw("TRUNCATE TABLE [CoreCourses]");
             db.Database.ExecuteSqlRaw("TRUNCATE TABLE [MajorCourses]");
             db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Majors]");
@@ -59,9 +60,6 @@ namespace Chronos
             db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Degrees]");
            
             db.SaveChanges();
-
-            db.Database.Migrate();
-
 
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = "Computer Science", UnitLength = 240 });
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = "Software Engineering", UnitLength = 360 });
