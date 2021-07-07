@@ -1,0 +1,54 @@
+﻿ .Tile {
+        border-style: solid;
+        border-radius: 20px;
+        display: inline-block;
+        text-align: center;
+
+        
+
+        float: left;
+        margin: 5px;
+        /*font-size: small;*/
+    }
+
+        .Tile:hover {
+            transition: .2s;
+            transform: scale(1.1)
+        }
+
+    .droppable {
+        background-color: greenyellow;
+    }
+
+    .Elective {
+        background-color: #F2DD60
+    }
+
+    .Directed {
+        background-color: #458EE7
+    }
+
+    .Core {
+        background-color: #808080
+    }
+
+    .Error {
+        background-color: #FF9696
+    }
+
+    .Warning {
+        background-color: #FFCC99
+    }
+
+    .AddElective {
+        background-color: #ffffff;
+        border-color: #000000;
+        color: #F2DD60;
+    }
+
+    .AddDirected {
+        background-color: #ffffff;
+        border-color: #000000;
+        color: #458EE7;
+    }
+
