@@ -1,6 +1,7 @@
 @inject DegreeCourseService DegreeCourseService
 @inject DegreeService DegreeService
 @inject CourseService CourseService 
+@inject MajorCourseService MajorCourseService  
 
 <div style="width: 100%; height: 100%" class="degreeplan">
     <CascadingValue Value="this">
@@ -68,8 +69,13 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        Degree = await DegreeService.GetDegreeAsync(DegreeID);
-        var courses = await DegreeCourseService.GetCoreCoursesAsync(DegreeID);
+        var coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).Select(i => i.CourseID);
+        var directedCourses = (await MajorCourseService.GetDirectedCoursesAsync(Major.MajorID)).Select(i => i.CourseID);
+        
+        var allCourses = await DegreeCourseService.GetCoreCoursesAsync(DegreeID);
+        allCourses = allCourses.Concat(await MajorCourseService.GetDirectedCoursesAsync(Major.MajorID))
+
+
 
         int countPerBlock = UnitsPerBlock / 10;
 
