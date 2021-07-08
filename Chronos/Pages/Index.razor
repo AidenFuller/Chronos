@@ -25,7 +25,7 @@
                         </ResultTemplate>
                     </BlazoredTypeahead>
 
-                    <BlazoredTypeahead SearchMethod="@(() => SearchMajors(SelectedDegree))" @bind-Value="SelectedDegree" placeholder="Please search for your degree...">
+                    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="SelectedDegree" placeholder="Please search for your degree...">
                         <SelectedTemplate Context="degree">
                             <!--This is the search Template and what will be returned.-->
                             Bachelor Of @degree.Name
@@ -148,7 +148,11 @@
 
     private async Task<IEnumerable<Major>> SearchMajors(string search)
     {
-        return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
+        if (SelectedDegree == null)
+        {
+            return new List<Major>();
+        }
+        return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower()) && x.DegreeID == SelectedDegree.DegreeID).ToList()); //It will return degrees that contain the string in its name.
     }
 
 
