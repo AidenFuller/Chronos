@@ -70,43 +70,63 @@
     protected override async Task OnParametersSetAsync()
     {
         var coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).Select(i => i.CourseID);
-        var directedCourses = (await MajorCourseService.GetDirectedCoursesAsync(Major.MajorID)).Select(i => i.CourseID);
-        
+        var directedCourses = (await MajorCourseService.GetAllDirectedCoursesAsync(Major.MajorID)).Select(i => i.CourseID);
+
         var allCourses = await DegreeCourseService.GetCoreCoursesAsync(DegreeID);
-        allCourses = allCourses.Concat(await MajorCourseService.GetDirectedCoursesAsync(Major.MajorID))
+        allCourses = allCourses.Concat(await MajorCourseService.GetCoreDirectedCoursesAsync(Major.MajorID));
 
+        List<TileData> allCourseData = new List<TileData>();
 
+        foreach (Course course in allCourses)
+        {
+            TileData td = new TileData();
+            if (coreCourses.Contains(course.CourseID))
+            {
+                td.Course = course;
+                td.TileType = TileType.Core;
+            }
+            else if (directedCourses.Contains(course.CourseID))
+            {
+                td.Course = course;
+                td.TileType = TileType.Directed;
+                td.IsDirectedCore = true;
+            }
+            allCourseData.Add(td);
+        }
+
+        while (allCourseData.Sum(t => t.Course.Units) < Degree.UnitLength)
+        {
+            TileData td = new TileData()
+            {
+                Course = null,
+                TileType = TileType.Elective
+            };
+        }
 
         int countPerBlock = UnitsPerBlock / 10;
 
-        Queue<Course> cache = new Queue<Course>(courses.OrderBy(c => c.CourseCode[4..]));
+        Queue<TileData> cache = new Queue<TileData>(allCourseData.OrderBy(c => c.Course.CourseCode[4..]));
 
         // ALGORITHM
 
-        if (BlockedCourses == null)
+        BlockedCourses = new List<List<TileData>>();
+
+        while (cache.Count > 0)
         {
-            BlockedCourses = new List<List<TileData>>();
-            while (cache.Count > 0)
+            List<TileData> tempCourses = new List<TileData>();
+            int loopCount = Math.Min(cache.Count, countPerBlock);
+            for (int j = 0; j < loopCount; j++)
             {
-                List<TileData> tempCourses = new List<TileData>();
-                int loopCount = Math.Min(cache.Count, countPerBlock);
-                for (int j = 0; j < loopCount; j++)
-                {
-                    Course c = cache.Dequeue();
+                TileData tile = cache.Dequeue();
+                List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, tile.Course);
+                tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
+                tempCourses.Add(tile);
 
-                    List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, c);
-
-                    TileData tile = new TileData();
-                    tile.Course = c;
-                    tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
-
-                    tempCourses.Add(tile);
-
-                    Console.WriteLine(c.CourseCode);
-                }
-                BlockedCourses.Add(tempCourses);
+                Console.WriteLine(tile.Course.CourseCode);
             }
+            BlockedCourses.Add(tempCourses);
         }
+
     }
 
     private async Task<List<Course>> FindMissingPrerequisites(List<List<TileData>> courses, Course course)
