@@ -24,6 +24,18 @@
                             Bachelor Of @degree.Name
                         </ResultTemplate>
                     </BlazoredTypeahead>
+
+                    <BlazoredTypeahead SearchMethod="@(() => SearchMajors(SelectedDegree))" @bind-Value="SelectedDegree" placeholder="Please search for your degree...">
+                        <SelectedTemplate Context="degree">
+                            <!--This is the search Template and what will be returned.-->
+                            Bachelor Of @degree.Name
+                        </SelectedTemplate>
+                        <ResultTemplate Context="degree">
+                            <!--This is what is shown when it is selected.-->
+                            Bachelor Of @degree.Name
+                        </ResultTemplate>
+                    </BlazoredTypeahead>
+
                 </div>
                 <div class="semester-div">
                     <!--Another Div to break up spacing on the page, this is for the Semester type.-->
@@ -134,8 +146,15 @@
         return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
     }
 
+    private async Task<IEnumerable<Major>> SearchMajors(string search)
+    {
+        return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+
     protected IEnumerable<Degree> Degrees { get; set; } //IEnumerables of degrees and courses to hold the databases.
     protected IEnumerable<Course> Courses { get; set; }
+    protected IEnumerable<Major> Majors { get; set; }
     private IList<Course> SelectedCourse; //This is the list of selected Courses from the search results above.
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
