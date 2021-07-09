@@ -31,5 +31,11 @@ namespace Chronos.Services
         {
             return await db.Degrees.FindAsync(degreeID); //This will return a specific degree. 
         }
+
+        public async Task<int> GetElectiveCountAsync(int degreeID)
+        {
+            Degree degree = await db.Degrees.FindAsync(degreeID);
+            return degree.ElectiveCount;
+        }
     }
 }
