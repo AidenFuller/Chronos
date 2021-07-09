@@ -89,7 +89,7 @@
                 </ResultTemplate>
             </BlazoredTypeahead>
 
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" @onclick="SubmitParameters">
         </div>
     </section>
 </div>
@@ -124,8 +124,10 @@
     <p>You can do this!</p>
 </div>
 
-
-<DegreePlan DegreeID=1 />
+@if (SelectedDegree != null)
+{
+    <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses />
+}
 
 
 @code {
@@ -177,11 +179,25 @@
     private bool IsItDisabled;
     private bool IsAdminLoginThere = false; //This bool will be a checker to see if the Admin Login should appear or not.
 
+    // this is the instance that is passed to the DegreePlan component
+    private Degree RenderedDegree;
+    private Major RenderedMajor;
+    private List<Course> RenderedCompletedCourses;
+
     //This function is here so it can toggle the admin button when the admin login button is hit.
     private void ToggleAdminLogin()
     {
         IsAdminLoginThere = !IsAdminLoginThere;
     }
+
+    private void SubmitParameters()
+    {
+        RenderedDegree = SelectedDegree;
+
+        StateHasChanged();
+    }
+
+
 
 }
 
