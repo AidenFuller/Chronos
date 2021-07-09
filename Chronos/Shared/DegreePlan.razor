@@ -2,7 +2,7 @@
 @inject DegreeService DegreeService
 @inject CourseService CourseService 
 
-<div style="width: 100%; height: 100%" class="degreeplan">
+<div class="degreePlan">
     <CascadingValue Value="this">
         @if (BlockedCourses == null)
         {
@@ -12,18 +12,20 @@
         {
             for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
             {
-                <div style="display: block;">
+
+                //Semester
+                <div class="year-row">
                     @for (int i = 0; i < BlocksPerYear; i++)
                     {
                         if (i + (j * BlocksPerYear) >= BlockedCourses.Count)
                         {
                             continue;
                         }
-
-                        <div style="display: inline-block; width: @($"{100/BlocksPerYear}%"); height: 150px;" class="year-row">
-                            
+                        //Course
+                        @*<div style="display: flex; flex-direction: row; align-items: center; width: @($"{100/BlocksPerYear}%"); height: 150px;" class="Semester">*@
+                        <div  class="semester">
                             @* Assuming Semesters *@
-                            
+
                             @if (i == 0)
                             {
                                 <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
@@ -44,7 +46,7 @@
 
 @code {
     [Parameter] public int BlocksPerYear { get; set; } = 2;
-    [Parameter] public int UnitsPerBlock { get; set; } = 40;
+    [Parameter] public int UnitsPerBlock { get; set; } = 50;
     [Parameter] public int DegreeID { get; set; }
     [Parameter] public Major Major { get; set; }
 

@@ -1,36 +1,36 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
-<style>
 
-</style>
-<button class="Tile @tileClass" style="width:@Width; height:@Height;" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
-     ondragover="event.preventDefault()"
-     @ondrop="HandleDrop"
-     @ondragenter="HandleDragEnter"
-     @ondragleave="HandleDragLeave">
+@*<div style="width:100%; height:80%;">*@
 
-    @if (Data.Course is null)
-    {
-        @if (Type == TileType.Core)
+    <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+            ondragover="event.preventDefault()"
+            @ondrop="HandleDrop"
+            @ondragenter="HandleDragEnter"
+            @ondragleave="HandleDragLeave">
+
+        @if (Data.Course is null)
         {
-            //Core Course -- Should never go down this path
-            <h3>Error</h3>
+            @if (Type == TileType.Core)
+            {
+                //Core Course -- Should never go down this path
+                <h3>Error</h3>
+            }
+            else
+            {
+                //Directed Course or Elective
+                <h1>+</h1>
+            }
         }
         else
         {
-            //Directed Course or Elective
-            <h1>+</h1>
+            //Course
+            <h3> @Data.Course.CourseCode </h3>
+            <p> @Data.Course.Name </p>
         }
-    }
-    else
-    {
-        //Course
-        <h3> @Data.Course.CourseCode </h3>
-        <p> @Data.Course.Name </p>
-    }
 
-</button>
-
+    </button>
+@*</div>*@
 
 @code {
 
@@ -46,10 +46,10 @@
     [Parameter]
     public TileData Data { get; set; }
 
-    [Parameter]
-    public string Width { get; set; } = "200px";
+    //[Parameter]
+    //public string Width { get; set; } = "200px";
 
-    private string Height = "100px";
+    //private string Height = "100px";
 
     [CascadingParameter] public IModalService Modal { get; set; }
 
