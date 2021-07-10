@@ -1,8 +1,15 @@
 ﻿<CascadingValue Value="this">
     @foreach (TileData tile in Tiles)
-    { 
-        <Tile Data=@tile/>
+    {
+        <Tile Data=@tile />
     }
+
+    @* Determine if this ghost should be shown *@
+    @* Ghosts are currently showing *@
+
+    <GhostTile show="@showGhost"/>
+
+
 </CascadingValue>
 
 @code {
@@ -10,9 +17,16 @@
     [Parameter] public Models.Enums.CourseRuntime BlockType { get; set; }
 
 
+    private bool showGhost = false;
+    [Parameter] public bool showGhosts { get; set; }
+    [CascadingParameter (Name = "DragPayLoad")] public TileData DragPayLoad { get; set; }
+
+
     protected override void OnParametersSet()
     {
+
         Console.WriteLine(BlockType);
+        //Error Management
         foreach (TileData tile in Tiles)
         {
 
@@ -22,5 +36,24 @@
             }
             //Console.WriteLine($"{tile.Course.Name}, {tile.Status} : {tile.Course.Runtime}, {BlockType}, {tile.Course.Runtime & BlockType}");
         }
+
+        //===== GhostTile Management =====
+        //Ghosts are showing AND this tile slot is not the origin AND the payload runs in this semester
+        if (showGhosts == true && !Tiles.Contains(DragPayLoad) && runsInSlot(DragPayLoad.Course))
+        {
+            showGhost = true;
+        }
+        else
+        {
+            showGhost = false;
+        }
     }
+
+    //Returns if a tile data runs in this slow
+    private Boolean runsInSlot(Course c)
+    {
+        return c.Runtime.Equals(BlockType);
+    }
+
+
 }
