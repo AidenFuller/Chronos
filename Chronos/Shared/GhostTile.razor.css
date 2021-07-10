@@ -24,7 +24,6 @@
 
 
 .Hiding {
-    /*display: none;*/
     transition: .5s;
     visibility: hidden;
     width: 0px;
@@ -36,6 +35,7 @@
 
 
 
-.Hidden{
+.Hidden {
     display: none;
+/*    transition: 0s;*/
 }

@@ -1,10 +1,18 @@
 ﻿
 
-<div class="@hide @expand Tile" style="@style" @ondrop="HandleDrop"
-            @ondragenter="HandleDragEnter"
-            @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
-    
-</div>
+
+
+@if (fastHide == false)
+{
+    <div class="@hide @expand Tile" @ondrop="HandleDrop"
+         @ondragenter="HandleDragEnter"
+         @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
+    </div>
+}
+
+
+
+
 
 
 
@@ -12,8 +20,8 @@
 @code {
     //[Parameter] public TileData payload { get; set; }
 
+    //Show or hide with animation
     [Parameter] public bool show { get; set; }
-    //[CascadingParameter(Name = "payload")] bool payload { get; set; }
     [CascadingParameter] TileSlot Slot { get; set; }
     [CascadingParameter] DegreePlan Plan { get; set; }
 
@@ -21,26 +29,27 @@
     //Hiding = Ready for animation
     private string hide = "Hiding";
     //Hidden = Element not rendered
-    private string style;
+
+    //Remove the element quickly without animation
+    private bool fastHide = false;
 
     protected override void OnParametersSet()
     {
+
+        //Show with animation
         if (show == true)
         {
             //Show the tile
-            style = "";
             hide = "";
-
-
-
         }
+
+
         else
         {
-            if (hide != "Hidden")
-            {
-                hide = "Hiding";
-            }
-
+            //In hiding state, reset everything
+            fastHide = false;
+            hide = "Hiding";
+            expand = "";
 
 
             //await Task.Delay(510);
@@ -50,17 +59,23 @@
 
 
     // Handling Dropping
-    private void HandleDrop(){
-        style = "display:none;";
-        //Unrender element
-        StateHasChanged();
+    private void HandleDrop()
+    {
+        //Hide element without animation
+
+        //FastHide works by toggling so the div gets unrendered. When OnParameter retriggered and it is set to false again. 
+        fastHide = true;
+        hide = "Hidden";
+        show = false;
         Plan.movePayloadTo(Slot);
-        hide = "Hiding";
-
-
+        StateHasChanged();
     }
-    private void HandleDragEnter(){
-        //Signal you are over it
+
+
+
+    private void HandleDragEnter()
+    {
+        //Add class "Expand" so it will expand
         expand = "Expand";
 
     }
@@ -69,6 +84,8 @@
     {
         expand = "";
     }
+
+
 
 
 }

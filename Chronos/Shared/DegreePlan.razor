@@ -6,6 +6,7 @@
     <CascadingValue Value="this">
         @*Pass boolean to determine if ghosts are showing to all children*@
         <CascadingValue Value="@showGhosts" Name="showGhosts">
+            @*In future, potential to remove this cascading parameter*@
             <CascadingValue Value="@DragPayload" Name="DragPayLoad">
                 @if (BlockedCourses == null)
                 {
@@ -31,12 +32,12 @@
                                     @if (i == 0)
                                     {
                                         //Semester 1
-                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 showGhosts=@showGhosts/>
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 showGhosts=@showGhosts />
                                     }
                                     else
                                     {
                                         //Semester 2
-                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 showGhosts=@showGhosts/>
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 showGhosts=@showGhosts />
                                     }
 
                                 </div>
@@ -44,8 +45,8 @@
                         </div>
                     }
                 }
-                </CascadingValue>
             </CascadingValue>
+        </CascadingValue>
         </CascadingValue>
 </div>
 

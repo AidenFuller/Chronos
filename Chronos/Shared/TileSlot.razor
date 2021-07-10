@@ -43,13 +43,14 @@
         {
             showGhost = true;
         }
+        //Don't show the ghost of this tile slot
         else
         {
             showGhost = false;
         }
     }
 
-    //Returns if a tile data runs in this slow
+    //Returns if a course runs in this slot
     private Boolean runsInSlot(Course c)
     {
         return c.Runtime.Equals(BlockType);
