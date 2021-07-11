@@ -124,7 +124,7 @@
     <p>You can do this!</p>
 </div>
 
-@if (SelectedDegree != null)
+@if (RenderedDegree != null)
 {
     <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses />
 }
@@ -182,7 +182,7 @@
     // this is the instance that is passed to the DegreePlan component
     private Degree RenderedDegree;
     private Major RenderedMajor;
-    private List<Course> RenderedCompletedCourses;
+    private List<Course> RenderedCompletedCourses = null;
 
     //This function is here so it can toggle the admin button when the admin login button is hit.
     private void ToggleAdminLogin()
@@ -193,7 +193,7 @@
     private void SubmitParameters()
     {
         RenderedDegree = SelectedDegree;
-
+        RenderedMajor = SelectedMajor;
         StateHasChanged();
     }
 
