@@ -1,5 +1,4 @@
 @inject DegreeCourseService DegreeCourseService
-@inject DegreeService DegreeService
 @inject CourseService CourseService 
 @inject MajorCourseService MajorCourseService  
 
@@ -46,10 +45,10 @@
 @code {
     [Parameter] public int BlocksPerYear { get; set; } = 2;
     [Parameter] public int UnitsPerBlock { get; set; } = 40;
-    [Parameter] public int DegreeID { get; set; }
+    [Parameter] public Degree Degree { get; set; }
     [Parameter] public Major Major { get; set; }
+    [Parameter] public List<Course> CompletedCourses { get; set; }
 
-    private Degree Degree;
     private List<List<TileData>> BlockedCourses;
     private int blockSize = 2;
 
