@@ -11,7 +11,7 @@
 
         @if (Data.Course is null)
         {
-            @if (Type == TileType.Core)
+            @if (Data.TileType == TileType.Core)
             {
                 //Core Course -- Should never go down this path
                 <h3>Error</h3>
@@ -41,9 +41,6 @@
     TileSlot Slot { get; set; }
 
     [Parameter]
-    public TileType Type { get; set; }
-
-    [Parameter]
     public TileData Data { get; set; }
 
     //[Parameter]
@@ -59,7 +56,7 @@
     {
         if (Data.Status == 0)
         {
-            switch (Type)
+            switch (Data.TileType)
             {
                 case TileType.Core:
                     tileClass = "Core";
@@ -131,7 +128,7 @@
 
     private void HandleDragEnter()
     {
-        if (Data.Course.CourseID != Plan.DragPayload.Course.CourseID)
+        if (Data != Plan.DragPayload)
         {
             dropClass = "droppable";
         }
@@ -145,7 +142,7 @@
     private async Task HandleDrop()
     {
         dropClass = "";
-        if (Data.Course.CourseID == Plan.DragPayload.Course.CourseID) return;
+        if (Data == Plan.DragPayload) return;
         await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data);
 
         Console.WriteLine("spam");

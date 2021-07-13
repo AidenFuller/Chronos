@@ -11,5 +11,7 @@ namespace Chronos.Shared.Wrappers
     {
         public Course Course { get; set; }
         public ErrorStatus Status { get; set; }
+        public TileType TileType { get; set; }
+        public bool IsDirectedCore { get; set; }
     }
 }

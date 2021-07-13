@@ -15,7 +15,7 @@
         Console.WriteLine(BlockType);
         foreach (TileData tile in Tiles)
         {
-
+            if (tile.Course == null) continue;
             if ((tile.Course.Runtime & BlockType) == 0)
             {
                 tile.Status |= ErrorStatus.Error;
