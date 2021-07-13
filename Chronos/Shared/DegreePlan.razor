@@ -72,24 +72,25 @@
     //Boolean to show the ghost tiles
     public bool ShowGhosts { get; set; } = false;
     //Show the ghost tiles in each plan
-    public void showGhostTiles()
+    public void ShowGhostTiles()
     {
         //Show a ghost tile in all places where the tile can be added
         ShowGhosts = true;
         StateHasChanged();
     }
-    public void hideGhostTiles() {
+    public void HideGhostTiles() {
         //remove the ghost tiles
         ShowGhosts = false;
         StateHasChanged();
     }
 
-    public void movePayloadTo(TileSlot slot)
+    public void MovePayloadTo(TileSlot slot)
     {
         //Made design decision to handle this hear, saves intensive cascading parameters.
         //Leaving this note here as I may decide to change later.
         slot.Tiles.Add(DragPayload);
         DragFrom.Remove(DragPayload);
+        DragPayload.Status = 0;
     }
 
 
