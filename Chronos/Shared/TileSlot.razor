@@ -58,6 +58,11 @@
     //Returns if a course runs in this slot
     private bool runsInSlot(Course c)
     {
+        if (c == null)
+        {
+            //Empty tile, runs anywhere
+            return true;
+        }
         return c.Runtime.Equals(BlockType);
     }
 
