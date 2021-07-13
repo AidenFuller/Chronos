@@ -1,4 +1,7 @@
-﻿<CascadingValue Value="this">
+﻿@using Chronos.Shared.Tiles;
+@using Chronos.Shared.Modals;
+
+<CascadingValue Value="this">
     @foreach (TileData tile in Tiles)
     {
         <Tile Data=@tile />

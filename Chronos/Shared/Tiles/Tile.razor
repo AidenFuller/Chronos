@@ -1,6 +1,6 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
-
+@using Chronos.Shared.Modals;
     <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
             ondragover="event.preventDefault()"
             @ondrop="HandleDrop"
