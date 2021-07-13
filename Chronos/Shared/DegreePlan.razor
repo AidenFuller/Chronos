@@ -4,43 +4,44 @@
 
 <div class="degreePlan">
     <CascadingValue Value="this">
-        @if (BlockedCourses == null)
-        {
-            <p>Loading...</p>
-        }
-        else
-        {
-            for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
-            {
-
-                //Semester
-                <div class="year-row">
-                    @for (int i = 0; i < BlocksPerYear; i++)
+        @*Pass boolean to determine if ghosts are showing to all children*@
+                @if (BlockedCourses == null)
+                {
+                    <p>Loading...</p>
+                }
+                else
+                {
+                    for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
                     {
-                        if (i + (j * BlocksPerYear) >= BlockedCourses.Count)
-                        {
-                            continue;
-                        }
-                        //Course
-                        @*<div style="display: flex; flex-direction: row; align-items: center; width: @($"{100/BlocksPerYear}%"); height: 150px;" class="Semester">*@
-                        <div  class="semester">
-                            @* Assuming Semesters *@
 
-                            @if (i == 0)
+                        
+                        <div class="year-row">
+                            @for (int i = 0; i < BlocksPerYear; i++)
                             {
-                                <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                            }
-                            else
-                            {
-                                <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                            }
+                                if (i + (j * BlocksPerYear) >= BlockedCourses.Count)
+                                {
+                                    continue;
+                                }
+                                <div class="semester">
+                                    @* Assuming Semesters *@
 
+                                    @if (i == 0)
+                                    {
+                                        //Semester 1
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
+                                    }
+                                    else
+                                    {
+                                        //Semester 2
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
+                                    }
+
+                                </div>
+                            }
                         </div>
                     }
-                </div>
-            }
-        }
-    </CascadingValue>
+                }
+        </CascadingValue>
 </div>
 
 
@@ -67,6 +68,31 @@
         DragPayload.Status = 0;
         StateHasChanged();
     }
+
+    //Boolean to show the ghost tiles
+    public bool ShowGhosts { get; set; } = false;
+    //Show the ghost tiles in each plan
+    public void showGhostTiles()
+    {
+        //Show a ghost tile in all places where the tile can be added
+        ShowGhosts = true;
+        StateHasChanged();
+    }
+    public void hideGhostTiles() {
+        //remove the ghost tiles
+        ShowGhosts = false;
+        StateHasChanged();
+    }
+
+    public void movePayloadTo(TileSlot slot)
+    {
+        //Made design decision to handle this hear, saves intensive cascading parameters.
+        //Leaving this note here as I may decide to change later.
+        slot.Tiles.Add(DragPayload);
+        DragFrom.Remove(DragPayload);
+    }
+
+
 
     protected override async Task OnParametersSetAsync()
     {

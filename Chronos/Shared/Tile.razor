@@ -1,13 +1,13 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
 
-@*<div style="width:100%; height:80%;">*@
-
     <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
             ondragover="event.preventDefault()"
             @ondrop="HandleDrop"
             @ondragenter="HandleDragEnter"
-            @ondragleave="HandleDragLeave">
+            @ondragleave="HandleDragLeave"
+            @ondragend="HandleDragEnd"
+            >
 
         @if (Data.Course is null)
         {
@@ -119,8 +119,19 @@
 
     private void HandleDragStart()
     {
+        //Pass values back to plan
         Plan.DragPayload = Data;
         Plan.DragFrom = Slot.Tiles;
+
+        //Show ghost tiles
+        Plan.showGhostTiles();
+
+    }
+
+    private void HandleDragEnd()
+    {
+        //Hide ghost tiles
+        Plan.hideGhostTiles();
     }
 
 
@@ -144,8 +155,6 @@
         dropClass = "";
         if (Data == Plan.DragPayload) return;
         await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data);
-
-        Console.WriteLine("spam");
     }
 
 

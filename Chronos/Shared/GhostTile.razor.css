@@ -1,0 +1,41 @@
+﻿
+/*Eventually, maybe find a way to link this to tiles?
+*/
+.Tile {
+    border-style: solid;
+    border-radius: 20px;
+    opacity: 20%;
+    background-color: lightblue;
+    display: inline-block;
+    text-align: center;
+    height: 80%;
+    transition: .5s;
+
+    /*Makes it so items will each be given the same space*/
+    width: 0;
+    max-width: 10%;
+
+    
+    flex: 1 1 0;
+}
+.Expand {
+    max-width: 20%;
+}
+
+
+.Hiding {
+    transition: .5s;
+    visibility: hidden;
+    width: 0px;
+    height: 0px;
+    opacity: 0%;
+    flex: 0 0 0;
+
+}
+
+
+
+.Hidden {
+    display: none;
+/*    transition: 0s;*/
+}
