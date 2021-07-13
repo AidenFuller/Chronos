@@ -13,13 +13,18 @@
 </CascadingValue>
 
 @code {
-    [Parameter] public List<TileData> Tiles { get; set; }
-    [Parameter] public Models.Enums.CourseRuntime BlockType { get; set; }
+    [Parameter]
+    public List<TileData> Tiles { get; set; }
 
+    [Parameter]
+    public Models.Enums.CourseRuntime BlockType { get; set; }
+
+    [CascadingParameter]
+    public DegreePlan Plan { get; set; }
 
     private bool showGhost = false;
-    [Parameter] public bool showGhosts { get; set; }
-    [CascadingParameter (Name = "DragPayLoad")] public TileData DragPayLoad { get; set; }
+
+
 
 
     protected override void OnParametersSet()
@@ -39,7 +44,7 @@
 
         //===== GhostTile Management =====
         //Ghosts are showing AND this tile slot is not the origin AND the payload runs in this semester
-        if (showGhosts == true && !Tiles.Contains(DragPayLoad) && runsInSlot(DragPayLoad.Course))
+        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && runsInSlot(Plan.DragPayload.Course))
         {
             showGhost = true;
         }

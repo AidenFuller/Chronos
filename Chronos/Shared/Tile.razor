@@ -1,8 +1,6 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
 
-@*<div style="width:100%; height:80%;">*@
-
     <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
             ondragover="event.preventDefault()"
             @ondrop="HandleDrop"
@@ -160,8 +158,6 @@
         dropClass = "";
         if (Data.Course.CourseID == Plan.DragPayload.Course.CourseID) return;
         await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data);
-
-        Console.WriteLine("spam");
     }
 
 

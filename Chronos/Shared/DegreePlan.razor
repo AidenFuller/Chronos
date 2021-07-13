@@ -5,9 +5,6 @@
 <div class="degreePlan">
     <CascadingValue Value="this">
         @*Pass boolean to determine if ghosts are showing to all children*@
-        <CascadingValue Value="@showGhosts" Name="showGhosts">
-            @*In future, potential to remove this cascading parameter*@
-            <CascadingValue Value="@DragPayload" Name="DragPayLoad">
                 @if (BlockedCourses == null)
                 {
                     <p>Loading...</p>
@@ -17,7 +14,7 @@
                     for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
                     {
 
-                        //Semester
+                        
                         <div class="year-row">
                             @for (int i = 0; i < BlocksPerYear; i++)
                             {
@@ -25,19 +22,18 @@
                                 {
                                     continue;
                                 }
-                                //Course
                                 <div class="semester">
                                     @* Assuming Semesters *@
 
                                     @if (i == 0)
                                     {
                                         //Semester 1
-                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 showGhosts=@showGhosts />
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
                                     }
                                     else
                                     {
                                         //Semester 2
-                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 showGhosts=@showGhosts />
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
                                     }
 
                                 </div>
@@ -45,8 +41,6 @@
                         </div>
                     }
                 }
-            </CascadingValue>
-        </CascadingValue>
         </CascadingValue>
 </div>
 
@@ -76,20 +70,17 @@
     }
 
     //Boolean to show the ghost tiles
-    private bool showGhosts = false;
+    public bool ShowGhosts { get; set; } = false;
     //Show the ghost tiles in each plan
     public void showGhostTiles()
     {
         //Show a ghost tile in all places where the tile can be added
-
-        Course c = DragPayload.Course;
-        showGhosts = true;
-        //For each tile slot
+        ShowGhosts = true;
         StateHasChanged();
     }
     public void hideGhostTiles() {
         //remove the ghost tiles
-        showGhosts = false;
+        ShowGhosts = false;
         StateHasChanged();
     }
 
@@ -99,8 +90,6 @@
         //Leaving this note here as I may decide to change later.
         slot.Tiles.Add(DragPayload);
         DragFrom.Remove(DragPayload);
-        
-        
     }
 
 
