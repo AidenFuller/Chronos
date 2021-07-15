@@ -1,36 +1,64 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
 
-    <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
-            ondragover="event.preventDefault()"
-            @ondrop="HandleDrop"
-            @ondragenter="HandleDragEnter"
-            @ondragleave="HandleDragLeave"
-            @ondragend="HandleDragEnd"
-            >
+<button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+        ondragover="event.preventDefault()"
+        @ondrop="HandleDrop"
+        @ondragenter="HandleDragEnter"
+        @ondragleave="HandleDragLeave"
+        @ondragend="HandleDragEnd">
 
-        @if (Data.Course is null)
+    @if (Data.Course is null)
+    {
+        @if (Data.TileType == TileType.Core)
         {
-            @if (Data.TileType == TileType.Core)
-            {
-                //Core Course -- Should never go down this path
-                <h3>Error</h3>
-            }
-            else
-            {
-                //Directed Course or Elective
-                <h1>+</h1>
-            }
+            //Core Course -- Should never go down this path
+            <h3>Error</h3>
         }
         else
         {
-            //Course
-            <h3> @Data.Course.CourseCode </h3>
-            <p> @Data.Course.Name </p>
+            //Directed Course or Elective
+            <h1>+</h1>
         }
+    }
+    else
+    {
+        //Course
 
-    </button>
-@*</div>*@
+        //---------------------------------------
+        //This piece of code will get the data from database and show to user
+        //Some Inline CSS to make it work
+        //--------------------------------------------
+
+        <div class="container">
+            <div class="courseType">
+                <h7><b>@Data.TileType</b></h7>
+                <hr style="margin-bottom:0px; margin-top:0px;" />
+            </div>
+
+            <div class="courseCode">
+                <h7> @Data.Course.CourseCode </h7>
+                <hr style="margin-bottom:0px; margin-top:0px;" />
+            </div>
+
+            <div class="courseName">
+                <p style=" font-size: 12px;"> @Data.Course.Name </p>
+            </div>
+
+            <div class="courseDes">
+                <hr style="margin-bottom:0px; margin-top:0px;" />
+                <div>
+                    <p style="font-size:12px;"><b> Units: @Data.Course.Units</b> </p>    
+                    <hr style="margin-bottom:0px; margin-top:0px;" />
+                    <p style="font-size:12px;"><b> Semester: @Data.Course.Runtime</b> </p>
+                    <hr style="margin-bottom:0px; margin-top:0px;" />
+                    <p style="font-size:12px;"><b> Location: @Data.Course.Campus</b> </p>
+                </div>
+            </div>
+        </div>
+    }
+
+</button>
 
 @code {
 
