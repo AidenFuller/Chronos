@@ -17,14 +17,14 @@ namespace Chronos.Services
             db = dbContext;
         }
 
-        public async Task<bool> AddCourseToMajorAsync(int courseID, int majorID, bool isCore)
+        public async Task<bool> AddCourseToMajorAsync(int courseID, int majorID, bool isCompulsory)
         {
             //Create Object
             MajorCourse c = new MajorCourse()
             {
                 CourseID = courseID,
                 MajorID = majorID,
-                IsCore = isCore
+                IsCompulsory = isCompulsory
             };
 
             //Add to DB
@@ -49,7 +49,7 @@ namespace Chronos.Services
         public async Task<IEnumerable<Course>> GetCoreDirectedCoursesAsync(int MajorID)
         {
             //Select all courses where the MajorID is the given ID and return their course IDs
-            IEnumerable<int> courseIDs = db.MajorCourses.Where(i => i.MajorID == MajorID && i.IsCore).Select(i => i.CourseID);
+            IEnumerable<int> courseIDs = db.MajorCourses.Where(i => i.MajorID == MajorID && i.IsCompulsory).Select(i => i.CourseID);
 
             //Grabs all courses from the course table  where the ID is in CourseIDs
             return
