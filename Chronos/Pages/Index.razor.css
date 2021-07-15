@@ -108,6 +108,7 @@ button.button-for-admin {
     border-width: 0;
     text-align: center;
     transition: all .7s;
+    color: white;
 }
 
 .the-submit-button-gradient {
@@ -136,7 +137,7 @@ button.button-for-admin {
     content: "";
     text-transform: uppercase;
     position: absolute;
-    width:100%;
+    width: 100%;
     height: 100%;
     top: 0;
     left: 0;
@@ -147,6 +148,7 @@ button.button-for-admin {
     text-align: center;
     z-index: -1;
     transition: all .7s;
+    color: white;
 }
 
 .the-submit-button-gradient::after {
