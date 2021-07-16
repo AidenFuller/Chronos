@@ -1,0 +1,82 @@
+﻿
+
+
+
+@if (fastHide == false)
+{
+    <div class="@hide @expand Tile" @ondrop="HandleDrop"
+         @ondragenter="HandleDragEnter"
+         @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
+    </div>
+}
+
+@code {
+    //Core control to show or hide the tile
+    [Parameter]
+    public bool Show { get; set; }
+
+    [CascadingParameter]
+    TileSlot Slot { get; set; }
+
+    [CascadingParameter]
+    DegreePlan Plan { get; set; }
+
+    //Expand = make fatter
+    //Blank = Skinny
+    private string expand = "";
+
+    //Blank = Showing
+    //Hiding = Ready for animation
+    //Hidden = Element not rendered
+    private string hide = "Hiding";
+
+    //Remove the element quickly without animation
+    private bool fastHide = false;
+
+    protected override void OnParametersSet()
+    {
+        //Show with animation
+        if (Show == true)
+        {
+            //Show the tile
+            hide = "";
+        }
+        else
+        {
+            //In hiding state, reset everything
+            fastHide = false;
+            hide = "Hiding";
+            expand = "";
+
+        }
+    }
+
+
+    // Handling Dropping
+    private void HandleDrop()
+    {
+        //FastHide works by toggling so the div gets unrendered. When OnParameter retriggered and it is set to false again. 
+        fastHide = true;
+        hide = "Hidden";
+        Show = false;
+        Plan.MovePayloadTo(Slot);
+        StateHasChanged();
+    }
+
+
+
+    private void HandleDragEnter()
+    {
+        //Add class "Expand" so it will expand
+        expand = "Expand";
+
+    }
+    private void HandleDragLeave()
+    {
+        expand = "";
+    }
+
+
+
+
+}

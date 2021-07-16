@@ -1,54 +1,57 @@
 @inject DegreeCourseService DegreeCourseService
-@inject DegreeService DegreeService
 @inject CourseService CourseService 
+@inject MajorCourseService MajorCourseService  
 
-<div style="width: 100%; height: 100%" class="degreeplan">
+<div class="degreePlan">
     <CascadingValue Value="this">
-        @if (BlockedCourses == null)
-        {
-            <p>Loading...</p>
-        }
-        else
-        {
-            for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
-            {
-                <div style="display: block;">
-                    @for (int i = 0; i < BlocksPerYear; i++)
+        @*Pass boolean to determine if ghosts are showing to all children*@
+                @if (BlockedCourses == null)
+                {
+                    <p>Loading...</p>
+                }
+                else
+                {
+                    for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
                     {
-                        if (i + (j * BlocksPerYear) >= BlockedCourses.Count)
-                        {
-                            continue;
-                        }
 
-                        <div style="display: inline-block; width: @($"{100/BlocksPerYear}%"); height: 150px;" class="year-row">
-                            
-                            @* Assuming Semesters *@
-                            
-                            @if (i == 0)
+                        
+                        <div class="year-row">
+                            @for (int i = 0; i < BlocksPerYear; i++)
                             {
-                                <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                            }
-                            else
-                            {
-                                <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                            }
+                                if (i + (j * BlocksPerYear) >= BlockedCourses.Count)
+                                {
+                                    continue;
+                                }
+                                <div class="semester">
+                                    @* Assuming Semesters *@
 
+                                    @if (i == 0)
+                                    {
+                                        //Semester 1
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
+                                    }
+                                    else
+                                    {
+                                        //Semester 2
+                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
+                                    }
+
+                                </div>
+                            }
                         </div>
                     }
-                </div>
-            }
-        }
-    </CascadingValue>
+                }
+        </CascadingValue>
 </div>
 
 
 @code {
     [Parameter] public int BlocksPerYear { get; set; } = 2;
     [Parameter] public int UnitsPerBlock { get; set; } = 40;
-    [Parameter] public int DegreeID { get; set; }
+    [Parameter] public Degree Degree { get; set; }
     [Parameter] public Major Major { get; set; }
+    [Parameter] public List<Course> CompletedCourses { get; set; }
 
-    private Degree Degree;
     private List<List<TileData>> BlockedCourses;
     private int blockSize = 2;
 
@@ -66,41 +69,130 @@
         StateHasChanged();
     }
 
+    //Boolean to show the ghost tiles
+    public bool ShowGhosts { get; set; } = false;
+    //Show the ghost tiles in each plan
+    public void ShowGhostTiles()
+    {
+        //Show a ghost tile in all places where the tile can be added
+        ShowGhosts = true;
+        StateHasChanged();
+    }
+    public void HideGhostTiles() {
+        //remove the ghost tiles
+        ShowGhosts = false;
+        StateHasChanged();
+    }
+
+    public void MovePayloadTo(TileSlot slot)
+    {
+        //Made design decision to handle this hear, saves intensive cascading parameters.
+        //Leaving this note here as I may decide to change later.
+        slot.Tiles.Add(DragPayload);
+        DragFrom.Remove(DragPayload);
+        DragPayload.Status = 0;
+    }
+
+
+
     protected override async Task OnParametersSetAsync()
     {
-        Degree = await DegreeService.GetDegreeAsync(DegreeID);
-        var courses = await DegreeCourseService.GetCoreCoursesAsync(DegreeID);
+        List<TileData> allCourseData = new List<TileData>();
+        List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).ToList();
 
-        int countPerBlock = UnitsPerBlock / 10;
+        foreach (Course course in coreCourses)
+        {
+            TileData td = new TileData()
+            {
+                Course = course,
+                TileType = TileType.Core
+            };
 
-        Queue<Course> cache = new Queue<Course>(courses.OrderBy(c => c.CourseCode[4..]));
+            allCourseData.Add(td);
+        }
+
+        var coreDirectedCourses = await MajorCourseService.GetCoreDirectedCoursesAsync(Major.MajorID);
+        foreach(Course course in coreDirectedCourses)
+        {
+            TileData td = new TileData()
+            {
+                Course = course,
+                TileType = TileType.Directed,
+                IsDirectedCore = true
+            };
+
+            allCourseData.Add(td);
+        }
+
+        /*
+        foreach (Course course in allCourses)
+        {
+            TileData td = new TileData();
+            if (coreCourses.Contains(course.CourseID))
+            {
+                td.Course = course;
+                td.TileType = TileType.Core;
+            }
+            else if (directedCourses.Contains(course.CourseID))
+            {
+                td.Course = course;
+                td.TileType = TileType.Directed;
+                td.IsDirectedCore = true;
+            }
+            allCourseData.Add(td);
+        }
+
+        */
+        Console.WriteLine(allCourseData.Any(t => t.Course == null));
+
+        List<TileData> tempCache = new List<TileData>();
+        for (int i = 0; i < Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (Degree.ElectiveCount*10); i += 10)
+        {
+            TileData td = new TileData()
+            {
+                Course = null,
+                TileType = TileType.Directed
+            };
+            tempCache.Add(td);
+        }
+
+        for (int i = 0; i < Degree.ElectiveCount; i++)
+        {
+            TileData td = new TileData()
+            {
+                Course = null,
+                TileType = TileType.Elective
+            };
+            tempCache.Add(td);
+        }
+
+        allCourseData.AddRange(tempCache);
+
+        Queue<TileData> cache = new Queue<TileData>(allCourseData);
 
         // ALGORITHM
 
-        if (BlockedCourses == null)
+        BlockedCourses = new List<List<TileData>>();
+
+        List<TileData> tempCourses = new List<TileData>();
+
+        while (cache.Count > 0)
         {
-            BlockedCourses = new List<List<TileData>>();
-            while (cache.Count > 0)
+            if (tempCourses.Sum(t => (t.Course?.Units ?? 10)) >= UnitsPerBlock)
             {
-                List<TileData> tempCourses = new List<TileData>();
-                int loopCount = Math.Min(cache.Count, countPerBlock);
-                for (int j = 0; j < loopCount; j++)
-                {
-                    Course c = cache.Dequeue();
-
-                    List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, c);
-
-                    TileData tile = new TileData();
-                    tile.Course = c;
-                    tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
-
-                    tempCourses.Add(tile);
-
-                    Console.WriteLine(c.CourseCode);
-                }
                 BlockedCourses.Add(tempCourses);
+                tempCourses = new List<TileData>();
             }
+
+            TileData tile = cache.Dequeue();
+            //List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, tile.Course);
+            //tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
+
+            tempCourses.Add(tile);
+            //Console.WriteLine(tile.Course.CourseCode);
         }
+        BlockedCourses.Add(tempCourses);
+
     }
 
     private async Task<List<Course>> FindMissingPrerequisites(List<List<TileData>> courses, Course course)

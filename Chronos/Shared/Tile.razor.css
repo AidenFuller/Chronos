@@ -1,15 +1,16 @@
-﻿ .Tile {
-        border-style: solid;
-        border-radius: 20px;
-        display: inline-block;
-        text-align: center;
+﻿.Tile {
+    border-style: solid;
+    border-radius: 20px;
+    display: inline-block;
+    text-align: center;
 
-        
-
-        float: left;
-        margin: 5px;
-        /*font-size: small;*/
-    }
+    height: 80%;
+    transition: .2s;
+    /*Makes it so items will each be given the same space*/
+    width: 0;
+    max-width: 20%;
+    flex: 1 1 0;
+}
 
         .Tile:hover {
             transition: .2s;

@@ -1,36 +1,36 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
-<style>
 
-</style>
-<button class="Tile @tileClass" style="width:@Width; height:@Height;" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
-     ondragover="event.preventDefault()"
-     @ondrop="HandleDrop"
-     @ondragenter="HandleDragEnter"
-     @ondragleave="HandleDragLeave">
+    <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+            ondragover="event.preventDefault()"
+            @ondrop="HandleDrop"
+            @ondragenter="HandleDragEnter"
+            @ondragleave="HandleDragLeave"
+            @ondragend="HandleDragEnd"
+            >
 
-    @if (Data.Course is null)
-    {
-        @if (Type == TileType.Core)
+        @if (Data.Course is null)
         {
-            //Core Course -- Should never go down this path
-            <h3>Error</h3>
+            @if (Data.TileType == TileType.Core)
+            {
+                //Core Course -- Should never go down this path
+                <h3>Error</h3>
+            }
+            else
+            {
+                //Directed Course or Elective
+                <h1>+</h1>
+            }
         }
         else
         {
-            //Directed Course or Elective
-            <h1>+</h1>
+            //Course
+            <h3> @Data.Course.CourseCode </h3>
+            <p> @Data.Course.Name </p>
         }
-    }
-    else
-    {
-        //Course
-        <h3> @Data.Course.CourseCode </h3>
-        <p> @Data.Course.Name </p>
-    }
 
-</button>
-
+    </button>
+@*</div>*@
 
 @code {
 
@@ -41,15 +41,12 @@
     TileSlot Slot { get; set; }
 
     [Parameter]
-    public TileType Type { get; set; }
-
-    [Parameter]
     public TileData Data { get; set; }
 
-    [Parameter]
-    public string Width { get; set; } = "200px";
+    //[Parameter]
+    //public string Width { get; set; } = "200px";
 
-    private string Height = "100px";
+    //private string Height = "100px";
 
     [CascadingParameter] public IModalService Modal { get; set; }
 
@@ -59,7 +56,7 @@
     {
         if (Data.Status == 0)
         {
-            switch (Type)
+            switch (Data.TileType)
             {
                 case TileType.Core:
                     tileClass = "Core";
@@ -122,8 +119,19 @@
 
     private void HandleDragStart()
     {
+        //Pass values back to plan
         Plan.DragPayload = Data;
         Plan.DragFrom = Slot.Tiles;
+
+        //Show ghost tiles
+        Plan.ShowGhostTiles();
+
+    }
+
+    private void HandleDragEnd()
+    {
+        //Hide ghost tiles
+        Plan.HideGhostTiles();
     }
 
 
@@ -131,7 +139,7 @@
 
     private void HandleDragEnter()
     {
-        if (Data.Course.CourseID != Plan.DragPayload.Course.CourseID)
+        if (Data != Plan.DragPayload)
         {
             dropClass = "droppable";
         }
@@ -145,10 +153,8 @@
     private async Task HandleDrop()
     {
         dropClass = "";
-        if (Data.Course.CourseID == Plan.DragPayload.Course.CourseID) return;
+        if (Data == Plan.DragPayload) return;
         await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data);
-
-        Console.WriteLine("spam");
     }
 
 

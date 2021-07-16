@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject DegreeService degreeService
 @inject CourseService courseService
+@inject MajorService majorService  
 
 <h1 class="heading-for-landing">Welcome to Chronos!</h1>
 <div>
@@ -14,7 +15,7 @@
                 <div class="degree-div">
                     <h4>Choose your Degree</h4>
                     <!--This is a razor component that will effectively search for different Degrees based on their Names.-->
-                    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for your degree...">
+                    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for your degree..." EnableDropDown="true" ShowDropDownOnFocus="true">
                         <SelectedTemplate Context="degree">
                             <!--This is the search Template and what will be returned.-->
                             Bachelor Of @degree.Name
@@ -24,17 +25,28 @@
                             Bachelor Of @degree.Name
                         </ResultTemplate>
                     </BlazoredTypeahead>
+
+                    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="SelectedMajor" placeholder="Please search for your major..."  EnableDropDown="true" ShowDropDownOnFocus="true">
+                        <SelectedTemplate Context="major">
+                            <!--This is the search Template and what will be returned.-->
+                            @major.Name
+                        </SelectedTemplate>
+                        <ResultTemplate Context="major">
+                            <!--This is what is shown when it is selected.-->
+                            @major.Name
+                        </ResultTemplate>
+                    </BlazoredTypeahead>
+
                 </div>
                 <div class="semester-div">
                     <!--Another Div to break up spacing on the page, this is for the Semester type.-->
                     <h4>Choose your semester</h4>
                     <select name="semester" class="semester-selection">
                         <!--Selection that allows for the Semester type a student is undertaking.-->
-                        <option value=""> Select a Semester Type</option>
-                        <option value="Semester">Semester 1/2</option>
-                        <option value="Part Time">Part Time Semester</option>
-                        <option value="Trimester">Trimester</option>
-                        <option value="SemesterWithAdditional">Semester 1/2 but willing to do Winter/Summer courses.</option>
+                        <!--Potentially change this to radio buttons, that are next to each other?-->
+                        <option value="">Select your starting semester</option>
+                        <option value="SemesterOne">Semester 1</option>
+                        <option value="SemesterTwo">Semester 2</option>
                     </select>
                 </div>
                 <br />
@@ -76,7 +88,7 @@
                 </ResultTemplate>
             </BlazoredTypeahead>
 
-            <button class="submit-button submit-button-colour submit-button-animation" href="#">Submit</button>
+            <button class="submit-button submit-button-colour submit-button-animation" href="#" @onclick="SubmitParameters">Submit</button>
         </div>
     </section>
 </div>
@@ -111,8 +123,10 @@
     <p>You can do this!</p>
 </div>
 
-
-<DegreePlan DegreeID=1 />
+@if (RenderedDegree != null)
+{
+    <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses />
+}
 
 
 @code {
@@ -126,28 +140,63 @@
     //This function will find courses based on what string is passed into the function.
     private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
-        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).ToList());//Finds courses based on if they contain the string in their name or course code.
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
     }
     //This function will find degrees based on the string that is passed in.
     private async Task<IEnumerable<Degree>> SearchDegrees(string search)
     {
-        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
     }
+
+    private async Task<IEnumerable<Major>> SearchMajors(string search)
+    {
+        Console.WriteLine("REACHED 1");
+        if (SelectedDegree == null)
+        {
+            return new List<Major>();
+        }
+        Console.WriteLine("REACHED 2");
+        if ((Majors?.FirstOrDefault()?.DegreeID ?? -1) != SelectedDegree.DegreeID)
+        {
+            Majors = await majorService.GetMajorsFromDegreeAsync(SelectedDegree.DegreeID);
+        }
+        Console.WriteLine("REACHED 3");
+        Console.WriteLine(Majors.Count());
+        return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower()) && x.DegreeID == SelectedDegree.DegreeID).ToList()); //It will return degrees that contain the string in its name.
+    }
+
 
     protected IEnumerable<Degree> Degrees { get; set; } //IEnumerables of degrees and courses to hold the databases.
     protected IEnumerable<Course> Courses { get; set; }
+    protected IEnumerable<Major> Majors { get; set; }
     private IList<Course> SelectedCourse; //This is the list of selected Courses from the search results above.
     private Degree SelectedDegree; //This is the selected degree from the search results above.
+    private Major SelectedMajor;
+
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
     private bool IsItDisabled;
     private bool IsAdminLoginThere = false; //This bool will be a checker to see if the Admin Login should appear or not.
+
+    // this is the instance that is passed to the DegreePlan component
+    private Degree RenderedDegree;
+    private Major RenderedMajor;
+    private List<Course> RenderedCompletedCourses = null;
 
     //This function is here so it can toggle the admin button when the admin login button is hit.
     private void ToggleAdminLogin()
     {
         IsAdminLoginThere = !IsAdminLoginThere;
     }
+
+    private void SubmitParameters()
+    {
+        RenderedDegree = SelectedDegree;
+        RenderedMajor = SelectedMajor;
+        StateHasChanged();
+    }
+
+
 
 }
 
