@@ -57,12 +57,19 @@
 
     public TileData DragPayload { get; set; }
     public List<TileData> DragFrom { get; set; }
+    public Models.Enums.CourseRuntime BlockTypeFrom { get; set; }
+
 
     public int ErrorCount { get; set; }
     public int WarningCount { get; set; }
 
-    public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn)
+
+    public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, Models.Enums.CourseRuntime blockTypeTo)
     {
+        CourseRuntime allRuntimes = (CourseRuntime)(1 << 8) - 1;
+        if ((blockTypeTo & DragPayload.Course?.Runtime ?? allRuntimes) == 0 || (BlockTypeFrom & draggedOn.Course?.Runtime ?? allRuntimes) == 0)
+            return;
+
         Utilities.SwapValues(BlockedCourses, DragPayload, draggedOn);
         draggedOn.Status = 0;
         DragPayload.Status = 0;
