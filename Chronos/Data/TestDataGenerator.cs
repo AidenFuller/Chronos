@@ -104,7 +104,7 @@ namespace Chronos.Data
 
             foreach(string course in compulsoryCourses)
             {
-                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == course).CourseID, MajorID = db.Majors.First(i => i.Name == major).MajorID, IsCore = true });
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == course).CourseID, MajorID = db.Majors.First(i => i.Name == major).MajorID, IsCompulsory = true });
             }
 
             Console.WriteLine("checker");
