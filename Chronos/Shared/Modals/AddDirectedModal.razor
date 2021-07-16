@@ -8,13 +8,13 @@
 
             @if (course.Runtime == SemType)
             {
-                <span>@course.CourseCode</span> <span> (@course.Name)</span> <span>@course.Runtime</span>
+                <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
 
 
             }
             else
             {
-                <span>@course.CourseCode</span> <span> (@course.Name)</span> <span>@course.Runtime</span>
+                <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
             }
 
 
@@ -41,7 +41,11 @@
 
 
     </BlazoredTypeahead>
-    <button class="btn btn-primary" @onclick="SubmitForm" style="margin-top: 20px;">Submit</button>
+    <div style="width:100%; text-align: center">
+
+            <button class="btn btn-primary" type="submit" style="margin-top: 20px;" @onclick="SubmitForm">Submit</button>
+        
+    </div>
 
 </div>
 
