@@ -99,7 +99,7 @@ button.button-for-admin {
     padding-bottom: 2em;
 }
 
-.the-submit-button {
+.submit-button {
     text-transform: uppercase;
     padding: 20px 60px;
     border-radius: 150px;
@@ -111,29 +111,29 @@ button.button-for-admin {
     color: white;
 }
 
-.the-submit-button-gradient {
+.submit-button-colour {
     background-color: #59007F;
 }
 
-.the-submit-button:hover 
+.submit-button:hover 
 {
     box-shadow: 1px 4px 8px rgba(0,0,0,0.2);
     transform: translateY(-2px);
 }
 
-.the-submit-button:active 
+.submit-button:active 
 {
     box-shadow: 1px 4px 8px rgba(0,0,0,0.2);
     transform: translateY(-1px);
 }
 
-.the-submit-button-animation 
+.submit-button-animation 
 {
     animation: TheButtonMoves 1s ease-out .6s;
 }
 
 
-.the-submit-button::after {
+.submit-button::after {
     content: "";
     text-transform: uppercase;
     position: absolute;
@@ -151,11 +151,11 @@ button.button-for-admin {
     color: white;
 }
 
-.the-submit-button-gradient::after {
+.submit-button-gradient::after {
     background-color: #59007F;
 }
 
-.the-submit-button-animation:hover::after 
+.submit-button-animation:hover::after 
 {
     transform: scaleX(2.0) scaleY(2.4);
     opacity: 0;
