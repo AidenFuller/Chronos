@@ -13,6 +13,6 @@ namespace Chronos.Models
         public double Cost { get; set; }
         public int Units { get; set; }
         public CourseRuntime Runtime { get; set; }
-        public int? RequiredCompletedUnits { get; set; }
+        public int RequiredCompletedUnits { get; set; }
     }
 }

@@ -74,7 +74,7 @@ namespace Chronos.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RequiredCompletedUnits")
+                    b.Property<int>("RequiredCompletedUnits")
                         .HasColumnType("int");
 
                     b.Property<int>("Runtime")

@@ -17,7 +17,8 @@ namespace Chronos.Migrations
                 name: "RequiredCompletedUnits",
                 table: "Courses",
                 type: "int",
-                nullable: true);
+                nullable: false,
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chronos.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210717054823_CompletedUnits")]
+    [Migration("20210717055016_CompletedUnits")]
     partial class CompletedUnits
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,7 +76,7 @@ namespace Chronos.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RequiredCompletedUnits")
+                    b.Property<int>("RequiredCompletedUnits")
                         .HasColumnType("int");
 
                     b.Property<int>("Runtime")
