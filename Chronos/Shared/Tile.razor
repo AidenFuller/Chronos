@@ -122,6 +122,7 @@
         //Pass values back to plan
         Plan.DragPayload = Data;
         Plan.DragFrom = Slot.Tiles;
+        Plan.BlockTypeFrom = Slot.BlockType;
 
         //Show ghost tiles
         Plan.ShowGhostTiles();
@@ -154,7 +155,7 @@
     {
         dropClass = "";
         if (Data == Plan.DragPayload) return;
-        await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data);
+        await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data, Slot.BlockType);
     }
 
 
