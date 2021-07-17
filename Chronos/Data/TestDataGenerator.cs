@@ -60,6 +60,10 @@ namespace Chronos.Data
             db.Courses.Add(new Models.Course() { CourseCode = "INFT3100", Name = "Project Management", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
             db.Courses.Add(new Models.Course() { CourseCode = "SENG3320", Name = "Software Verification and Validation", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
 
+            db.Courses.Add(new Models.Course() { CourseCode = "JAPN1110", Name = "Elementary Japanese 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "JAPN1120", Name = "Elementary Japanese 2", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "JAPN2501", Name = "Japanese In Context 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "JAPN2502", Name = "Japanese In Context 2", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
             db.SaveChanges();
 
             foreach(Models.Course c in db.Courses)
