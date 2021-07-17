@@ -2,6 +2,7 @@
 @inject CourseService CourseService 
 @inject MajorCourseService MajorCourseService  
 
+@using Chronos.Shared.Tiles;
 <div class="degreePlan">
     <CascadingValue Value="this">
         @*Pass boolean to determine if ghosts are showing to all children*@
@@ -57,13 +58,21 @@
 
     public TileData DragPayload { get; set; }
     public List<TileData> DragFrom { get; set; }
+    public CourseRuntime BlockTypeFrom { get; set; }
+
 
     public int ErrorCount { get; set; }
     public int WarningCount { get; set; }
 
-    public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn)
+
+    public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
     {
+        CourseRuntime allRuntimes = (CourseRuntime)(1 << 8) - 1;
+        if ((blockTypeTo & DragPayload.Course?.Runtime ?? allRuntimes) == 0 || (BlockTypeFrom & draggedOn.Course?.Runtime ?? allRuntimes) == 0)
+            return;
+
         Utilities.SwapValues(courseData, DragPayload, draggedOn);
+
         draggedOn.Status = 0;
         DragPayload.Status = 0;
         StateHasChanged();
