@@ -13,8 +13,18 @@
     /*overflow: hidden;*/
 }
 
-.blazored-modal-iFrame {
+.iFrame-modal {
     width: 80vw;
     height: 80vh;
     border-style: none;
+}
+
+.directed-modal {
+    width: 60vw;
+    /*height: 80vh;*/
+    border-style: none;
+}
+
+.blazored-typeahead__result {
+    padding: 0px;
 }

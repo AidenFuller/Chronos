@@ -1,6 +1,6 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
-
+@using Chronos.Shared.Modals;
     <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
             ondragover="event.preventDefault()"
             @ondrop="HandleDrop"
@@ -98,7 +98,7 @@
     }
 
 
-    void Clicked()
+    async void Clicked()
     {
         if (Data.Course is not null)
         {
@@ -113,6 +113,34 @@
                 Class = "Tile-Modal"
             };
             Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
+        }
+        else{
+            if (Data.TileType == TileType.Elective)
+            {
+
+            }else if (Data.TileType == TileType.Directed)
+            {
+                //Directed course
+                var parameters = new ModalParameters();
+                parameters.Add("Plan", Plan);
+                parameters.Add("SemType", Slot.BlockType);
+                var options = new ModalOptions()
+                {
+                    Position = ModalPosition.Center,
+                    Animation = ModalAnimation.FadeInOut(0.5),
+                    //ContentScrollable = true,
+                    Class = "Tile-Modal"
+                };
+                var form = Modal.Show<AddDirectedModal>("Add a directed course", parameters, options);
+                var result = await form.Result;
+
+                if (!result.Cancelled)
+                {
+                    Data.Course = (Course) result.Data;
+                    UpdateTileType();
+                    StateHasChanged();
+                }
+            }
         }
         //If null, open menu to add a course to it
     }
