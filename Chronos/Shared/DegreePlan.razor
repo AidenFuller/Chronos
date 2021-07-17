@@ -119,7 +119,7 @@
             allCourseData.Add(td);
         }
 
-        var coreDirectedCourses = await MajorCourseService.GetCoreDirectedCoursesAsync(Major.MajorID);
+        var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(Major.MajorID);
         foreach(Course course in coreDirectedCourses)
         {
             TileData td = new TileData()
