@@ -14,6 +14,7 @@
             }
             else
             {
+                //Course does not run in this semester, show it as disabled
                 <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
             }
 
@@ -22,17 +23,15 @@
         </SelectedTemplate>
         <ResultTemplate Context="course">
             <!--This is what is shown when it is selected.-->
-            @if (course.Runtime != SemType)
+            @if (course.Runtime == SemType)
             {
-                @*<div style="z-index:11; background-color:red; padding:0px;">
-                        @course.Name -@course.Runtime
-                    </div>*@
                 <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
 
 
             }
             else
             {
+                //Course does not run in this semester, show it as disabled
                 <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
             }
 
@@ -75,7 +74,7 @@
             return new List<Course>();
         }
         IEnumerable<Course> courses = await MajorCourseService.GetCoreDirectedCoursesAsync(Plan.Major.MajorID);
-        return await Task.FromResult(courses.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
+        return await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList()); //It will return degrees that contain the string in its name.
     }
 
     void SubmitForm()
@@ -83,8 +82,6 @@
         @if (SelectedCourse.Runtime == SemType)
         {
             ModalInstance.CloseAsync(ModalResult.Ok(SelectedCourse));
-
-
         }
         else
         {
