@@ -6,20 +6,20 @@
 <div class="degreePlan">
     <CascadingValue Value="this">
         @*Pass boolean to determine if ghosts are showing to all children*@
-                @if (BlockedCourses == null)
+                @if (courseData == null)
                 {
                     <p>Loading...</p>
                 }
                 else
                 {
-                    for (int j = 0; j < (BlockedCourses.Count + 1) / BlocksPerYear; j++)
+                    for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
                     {
 
-                        
+
                         <div class="year-row">
                             @for (int i = 0; i < BlocksPerYear; i++)
                             {
-                                if (i + (j * BlocksPerYear) >= BlockedCourses.Count)
+                                if (i + (j * BlocksPerYear) >= courseData.Count)
                                 {
                                     continue;
                                 }
@@ -29,12 +29,12 @@
                                     @if (i == 0)
                                     {
                                         //Semester 1
-                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
+                                        <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
                                     }
                                     else
                                     {
                                         //Semester 2
-                                        <TileSlot Tiles="@BlockedCourses[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
+                                        <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
                                     }
 
                                 </div>
@@ -53,7 +53,7 @@
     [Parameter] public Major Major { get; set; }
     [Parameter] public List<Course> CompletedCourses { get; set; }
 
-    private List<List<TileData>> BlockedCourses;
+    private List<List<TileData>> courseData;
     private int blockSize = 2;
 
     public TileData DragPayload { get; set; }
@@ -71,7 +71,8 @@
         if ((blockTypeTo & DragPayload.Course?.Runtime ?? allRuntimes) == 0 || (BlockTypeFrom & draggedOn.Course?.Runtime ?? allRuntimes) == 0)
             return;
 
-        Utilities.SwapValues(BlockedCourses, DragPayload, draggedOn);
+        Utilities.SwapValues(courseData, DragPayload, draggedOn);
+
         draggedOn.Status = 0;
         DragPayload.Status = 0;
         StateHasChanged();
@@ -180,7 +181,7 @@
 
         // ALGORITHM
 
-        BlockedCourses = new List<List<TileData>>();
+        courseData = new List<List<TileData>>();
 
         List<TileData> tempCourses = new List<TileData>();
 
@@ -188,7 +189,7 @@
         {
             if (tempCourses.Sum(t => (t.Course?.Units ?? 10)) >= UnitsPerBlock)
             {
-                BlockedCourses.Add(tempCourses);
+                courseData.Add(tempCourses);
                 tempCourses = new List<TileData>();
             }
 
@@ -199,7 +200,7 @@
             tempCourses.Add(tile);
             //Console.WriteLine(tile.Course.CourseCode);
         }
-        BlockedCourses.Add(tempCourses);
+        courseData.Add(tempCourses);
 
     }
 
