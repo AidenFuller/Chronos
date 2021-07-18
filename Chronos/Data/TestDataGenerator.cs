@@ -163,6 +163,7 @@ namespace Chronos.Data
 
             db.Courses.Add(new Models.Course() { CourseCode = "PSYC6831", Name = "Advanced Research Methods II: Psychological Measurement", Campus = AvailableCampus.Callaghan, Units = 10, Runtime = CourseRuntime.Semester1 });
             db.Courses.Add(new Models.Course() { CourseCode = "STAT2300", Name = "Statistical Inference", Campus = AvailableCampus.Callaghan, Units = 10, Runtime = CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "STAT1070", Name = "Statistics For The Sciences", Campus = AvailableCampus.Callaghan, Units = 10, Runtime = CourseRuntime.Semester1});
 
             //ELEC
 
@@ -172,9 +173,11 @@ namespace Chronos.Data
             //OTHER MISC
             db.Courses.Add(new Models.Course() { CourseCode = "ELEC3500", Name = "Telecommunication Networks", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
             db.Courses.Add(new Models.Course() { CourseCode = "ELEC1710", Name = "Digital and Computer Electronics 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "ELEC2720", Name = "Introduction to Embedded Computing", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
             db.Courses.Add(new Models.Course() { CourseCode = "MATH1510", Name = "Discrete Mathematics", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
 
             db.Courses.Add(new Models.Course() { CourseCode = "MATH1110", Name = "Mathematics for Engineering, Science & Technology 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
+            db.Courses.Add(new Models.Course() { CourseCode = "MATh1120", Name = "Mathematics for Engineering, Science & Technology 2", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
             
 
             db.Courses.Add(new Models.Course() { CourseCode = "JAPN1110", Name = "Elementary Japanese 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
@@ -191,15 +194,53 @@ namespace Chronos.Data
 
             db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Software Development" });
             db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Cyber Security" });
+            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Computer Systems and Robotics" });
+            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Data Science" });
 
             db.SaveChanges();
 
 
             // COMPUTER SCIENCE
             var degree = "Computer Science";
+            var softwareMajor = "Software Development";
+            var securityMajor = "Cyber Security";
+            var roboticsMajor = "Computer Systems and Robotics";
+            var dataMajor = "Data Science";
             var coreCourses = new string[]
             {
                 "COMP1010", "MATH1110", "SENG1110", "COMP1140", "MATH1510", "SENG1050", "SENG1120", "SENG2130", "COMP2230", "COMP2240", "SENG2250", "SENG2260", "COMP2270", "COMP3851A", "COMP3851B", "ELEC3500"
+            };
+            var directedCoursesSoftwareMajor = new string[]
+            {
+                "INFT2150", "SENG2050", "COMP3260", "COMP3320", "COMP3350", "INFT3950", "INFT3960"
+            };
+            var directedCoursesRoboticsMajor = new string[]
+            {
+                "SENG2200", "COMP3320", "COMP3350"
+            };
+            var directedCoursesSecurityMajor = new string[]
+            {
+                "INFT2051", "COMP3330", "COMP3340", "COMP3350", "INFT3050", "INFT3100", "SENG3320", "SENG4430"
+            };
+            var directedCoursesDataMajor = new string[]
+            {
+                "COMP3260", "ENGG1003", "MATH2340", "SENG2050"
+            };
+            var directedCoursesDataCompulsory = new string[]
+            {
+                "STAT1070", "MATH1120", "COMP3330", "COMP3350", "COMP3340" 
+            };
+            var directedCoursesSoftwareCompulsory = new string[]
+            {
+                "SENG2200", "INFT3100", "SENG3320"
+            };
+            var directedCoursesSecurityCompulsory = new string[]
+            {
+                "COMP3260","INFT2031","COMP3500","COMP3600"
+            };
+            var directedCoursesRoboticsCompulsory = new string[]
+            {
+                "MATH1120", "ELEC1710", "COMP3330", "ELEC2720", "COMP3290"
             };
 
             foreach(string course in coreCourses)
@@ -207,7 +248,45 @@ namespace Chronos.Data
                 db.CoreCourses.Add(new Models.CoreCourse() { CourseID = db.Courses.First(i => i.CourseCode == course).CourseID, DegreeID = db.Degrees.First(i => i.Name == degree).DegreeID });
             }
 
-            
+            foreach(string softwareCourseMajor in directedCoursesSoftwareMajor)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == softwareCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == softwareMajor).MajorID, IsCompulsory = false });
+            }
+
+            foreach (string softwareCourseMajor in directedCoursesSoftwareCompulsory)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == softwareCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == softwareMajor).MajorID, IsCompulsory = true });
+            }
+
+            foreach (string roboticsCourseMajor in directedCoursesRoboticsMajor)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == roboticsCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == roboticsMajor).MajorID, IsCompulsory = false });
+            }
+
+            foreach (string roboticsCourseMajor in directedCoursesRoboticsCompulsory)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == roboticsCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == roboticsMajor).MajorID, IsCompulsory = true });
+            }
+
+            foreach (string securityCourseMajor in directedCoursesSecurityMajor)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == securityCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == securityMajor).MajorID, IsCompulsory = false });
+            }
+
+            foreach (string securityCourseMajor in directedCoursesSecurityCompulsory)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == securityCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == securityMajor).MajorID, IsCompulsory = true });
+            }
+
+            foreach (string dataCourseMajor in directedCoursesDataMajor)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == dataCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == dataMajor).MajorID, IsCompulsory = false });
+            }
+
+            foreach (string dataCourseMajor in directedCoursesDataCompulsory)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == dataCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == dataMajor).MajorID, IsCompulsory = true });
+            }
 
             // SOFTWARE DEVELOPMENT MAJOR
             var major = "Software Development";
