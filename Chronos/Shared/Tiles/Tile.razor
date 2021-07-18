@@ -115,32 +115,39 @@
             Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
         }
         else{
+            var parameters = new ModalParameters();
+            parameters.Add("Plan", Plan);
+            parameters.Add("SemType", Slot.BlockType);
+            var options = new ModalOptions()
+            {
+                Position = ModalPosition.Center,
+                Animation = ModalAnimation.FadeInOut(0.5),
+                //ContentScrollable = true,
+                Class = "Tile-Modal"
+            };
+
+            IModalReference form = null;
             if (Data.TileType == TileType.Elective)
             {
+                form = Modal.Show<AddElectiveModal>("Add an Elective Course", parameters, options);
 
-            }else if (Data.TileType == TileType.Directed)
+            }
+            else if (Data.TileType == TileType.Directed)
             {
                 //Directed course
-                var parameters = new ModalParameters();
-                parameters.Add("Plan", Plan);
-                parameters.Add("SemType", Slot.BlockType);
-                var options = new ModalOptions()
-                {
-                    Position = ModalPosition.Center,
-                    Animation = ModalAnimation.FadeInOut(0.5),
-                    //ContentScrollable = true,
-                    Class = "Tile-Modal"
-                };
-                var form = Modal.Show<AddDirectedModal>("Add a directed course", parameters, options);
-                var result = await form.Result;
+                form = Modal.Show<AddDirectedModal>("Add a Directed course", parameters, options);
 
-                if (!result.Cancelled)
-                {
-                    Data.Course = (Course) result.Data;
-                    UpdateTileType();
-                    StateHasChanged();
-                }
             }
+
+            var result = await form.Result;
+
+            if (!result.Cancelled)
+            {
+                Data.Course = (Course) result.Data;
+                UpdateTileType();
+                StateHasChanged();
+            }
+
         }
         //If null, open menu to add a course to it
     }
