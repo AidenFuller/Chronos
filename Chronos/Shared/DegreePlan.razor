@@ -222,4 +222,10 @@
     }
 
 
+    public bool ContainsCourse(Course course)
+    {
+        return BlockedCourses.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
+    }
+
+
 }
