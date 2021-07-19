@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazored.Modal;
+using Blazored.Toast;
+
 namespace Chronos
 {
     public class Startup
@@ -47,6 +49,7 @@ namespace Chronos
             services.AddScoped<MajorService>();
 
             services.AddBlazoredModal();
+            services.AddBlazoredToast();
 
 
             TestDataGenerator.Setup(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value);
