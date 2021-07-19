@@ -82,6 +82,7 @@
         {
             return new List<Course>();
         }
+
         IEnumerable<Course> courses = await MajorCourseService.GetCoreDirectedCoursesAsync(Plan.Major.MajorID);
 
 
@@ -97,6 +98,13 @@
         //Order and convert to list
         ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
         return ret;
+
+
+        //ALTERNATE OPTION
+        //IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
+        //courses = courses.Where(c => !Plan.ContainsCourse(c));
+        //return await Task.FromResult(courses.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
+
     }
 
 

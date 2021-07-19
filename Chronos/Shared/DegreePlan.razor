@@ -120,7 +120,7 @@
             allCourseData.Add(td);
         }
 
-        var coreDirectedCourses = await MajorCourseService.GetCoreDirectedCoursesAsync(Major.MajorID);
+        var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(Major.MajorID);
         foreach(Course course in coreDirectedCourses)
         {
             TileData td = new TileData()
@@ -234,6 +234,12 @@
         }
 
         return allC;
+    }
+
+
+    public bool ContainsCourse(Course course)
+    {
+        return BlockedCourses.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
     }
 
 

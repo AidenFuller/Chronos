@@ -46,10 +46,22 @@ namespace Chronos.Services
                 select course;
         }
 
-        public async Task<IEnumerable<Course>> GetCoreDirectedCoursesAsync(int MajorID)
+        public async Task<IEnumerable<Course>> GetCompulsoryCoursesAsync(int MajorID)
         {
             //Select all courses where the MajorID is the given ID and return their course IDs
             IEnumerable<int> courseIDs = db.MajorCourses.Where(i => i.MajorID == MajorID && i.IsCompulsory).Select(i => i.CourseID);
+
+            //Grabs all courses from the course table  where the ID is in CourseIDs
+            return
+                from course in db.Courses
+                join id in courseIDs on course.CourseID equals id
+                select course;
+        }
+
+        public async Task<IEnumerable<Course>> GetNonCompulsoryCoursesAsync(int MajorID)
+        {
+            //Select all courses where the MajorID is the given ID and return their course IDs
+            IEnumerable<int> courseIDs = db.MajorCourses.Where(i => i.MajorID == MajorID && !i.IsCompulsory).Select(i => i.CourseID);
 
             //Grabs all courses from the course table  where the ID is in CourseIDs
             return
