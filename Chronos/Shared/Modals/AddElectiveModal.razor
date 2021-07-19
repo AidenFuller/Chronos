@@ -74,8 +74,18 @@
             return new List<Course>();
         }
         IEnumerable<Course> courses = await CourseService.GetAllCoursesAsync();
-        Console.Write(courses.Count());
-        return await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x=>x.CourseCode).ToList()); //It will return degrees that contain the string in its name.
+
+        //Get all courses that relate to search
+        IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
+
+        //Remove courses already in the plan
+        //Commented out as they will be disabled later
+        //IEnumerable<Course> currentCourses = Plan.getAllCourses();
+        //ret = ret.Except(currentCourses);
+
+        //Order and convert to list
+        ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
+        return ret;
     }
 
     void SubmitForm()

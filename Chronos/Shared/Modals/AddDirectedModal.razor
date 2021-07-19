@@ -15,7 +15,11 @@
             else
             {
                 //Course does not run in this semester, show it as disabled
-                <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
+                
+
+                    <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
+                
+                
             }
 
 
@@ -32,8 +36,13 @@
             else
             {
                 //Course does not run in this semester, show it as disabled
+                @*<div style="min-height: 2rem; max-height: 30rem; z-index: 200; opacity: 0.5; background-color: red; margin: -.5rem;" onfocus="event.preventDefault()">
+
+                </div>*@
                 <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
+
             }
+
 
 
         </ResultTemplate>
@@ -74,8 +83,22 @@
             return new List<Course>();
         }
         IEnumerable<Course> courses = await MajorCourseService.GetCoreDirectedCoursesAsync(Plan.Major.MajorID);
-        return await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList()); //It will return degrees that contain the string in its name.
+
+
+
+        //Get all courses that relate to search
+        IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
+
+        //Remove courses already in the plan
+        ////Commented out as they will be disabled later
+        //IEnumerable<Course> currentCourses = Plan.getAllCourses();
+        //ret = ret.Except(currentCourses);
+
+        //Order and convert to list
+        ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
+        return ret;
     }
+
 
     void SubmitForm()
     {

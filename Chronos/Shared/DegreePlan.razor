@@ -221,5 +221,20 @@
         return missing;
     }
 
+    public IEnumerable<Course> getAllCourses()
+    {
+        IEnumerable <Course> allC = new List<Course>();
+
+        foreach(List<TileData> sem in courseData)
+        {
+            foreach(TileData td in sem)
+            {
+                allC.Append(td.Course);
+            }
+        }
+
+        return allC;
+    }
+
 
 }
