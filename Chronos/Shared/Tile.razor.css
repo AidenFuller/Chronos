@@ -4,7 +4,7 @@
     border-radius: 20px;
     display: inline-block;
     text-align: center;
-    height: 90%;
+    height: 100%;
     transition: .2s;
     /*Makes it so items will each be given the same space*/
     width: 0;
@@ -13,13 +13,13 @@
 }
 
     .Tile:hover {
-        height: auto;
+        /*height can be put here when needed*/
         transition: .2s;
         transform: scale(1.1);
     }
 
 .courseDes {
-    visibility:hidden;
+    visibility: hidden;
 }
 
 .Tile:hover .courseDes {
@@ -27,12 +27,12 @@
 }
 
 .Tile:hover .courseName {
-    font-weight:600;
-    font-size:25px;
+    font-weight: 600;    
 }
+
 .Tile:hover .courseType {
     font-weight: lighter;
-    font-size:15px;
+    font-size: 15px;
 }
 
 
