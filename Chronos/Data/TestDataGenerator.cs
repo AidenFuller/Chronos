@@ -175,6 +175,7 @@ namespace Chronos.Data
             db.Courses.Add(new Models.Course() { CourseCode = "ELEC1710", Name = "Digital and Computer Electronics 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
             db.Courses.Add(new Models.Course() { CourseCode = "ELEC2720", Name = "Introduction to Embedded Computing", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
             db.Courses.Add(new Models.Course() { CourseCode = "MATH1510", Name = "Discrete Mathematics", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester2 });
+            db.Courses.Add(new Models.Course() { CourseCode = "MATH2340", Name = "Linearity and Continuity 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
 
             db.Courses.Add(new Models.Course() { CourseCode = "MATH1110", Name = "Mathematics for Engineering, Science & Technology 1", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
             db.Courses.Add(new Models.Course() { CourseCode = "MATH1120", Name = "Mathematics for Engineering, Science & Technology 2", Campus = Models.Enums.AvailableCampus.Callaghan, Units = 10, Runtime = Models.Enums.CourseRuntime.Semester1 });
