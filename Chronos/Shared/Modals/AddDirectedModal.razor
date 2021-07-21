@@ -83,7 +83,7 @@
             return new List<Course>();
         }
 
-        IEnumerable<Course> courses = await MajorCourseService.GetCoreDirectedCoursesAsync(Plan.Major.MajorID);
+        IEnumerable<Course> courses = await MajorCourseService.GetCompulsoryCoursesAsync(Plan.Major.MajorID);
 
 
 
