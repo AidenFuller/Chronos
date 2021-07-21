@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chronos.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210716051215_MajorCourseService")]
-    partial class MajorCourseService
+    [Migration("20210721094901_Fix")]
+    partial class Fix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,6 +76,9 @@ namespace Chronos.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RequiredCompletedUnits")
+                        .HasColumnType("int");
+
                     b.Property<int>("Runtime")
                         .HasColumnType("int");
 
@@ -139,7 +142,7 @@ namespace Chronos.Migrations
                     b.Property<int>("CourseID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsCore")
+                    b.Property<bool>("IsCompulsory")
                         .HasColumnType("bit");
 
                     b.Property<int>("MajorID")
