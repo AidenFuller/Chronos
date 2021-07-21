@@ -1,8 +1,8 @@
-﻿@inject MajorCourseService MajorCourseService
+﻿@inject CourseService CourseService
 @using Models.Enums;
 <div class="directed-modal">
 
-    <BlazoredTypeahead SearchMethod="SearchMajorCourses" @bind-Value="SelectedCourse" placeholder="Please search for your directected course..." EnableDropDown="true">
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for your directected course..." EnableDropDown="true">
         <SelectedTemplate Context="course">
             <!--This is the search Template and what will be returned.-->
 
@@ -15,11 +15,7 @@
             else
             {
                 //Course does not run in this semester, show it as disabled
-                
-
-                    <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
-                
-                
+                <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
             }
 
 
@@ -36,13 +32,8 @@
             else
             {
                 //Course does not run in this semester, show it as disabled
-                @*<div style="min-height: 2rem; max-height: 30rem; z-index: 200; opacity: 0.5; background-color: red; margin: -.5rem;" onfocus="event.preventDefault()">
-
-                </div>*@
                 <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@course.Runtime</span>
-
             }
-
 
 
         </ResultTemplate>
@@ -76,37 +67,26 @@
     }
 
 
-    private async Task<IEnumerable<Course>> SearchMajorCourses(string search)
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
         if (Plan.Degree == null)
         {
             return new List<Course>();
         }
-
-        IEnumerable<Course> courses = await MajorCourseService.GetCoreDirectedCoursesAsync(Plan.Major.MajorID);
-
-
+        IEnumerable<Course> courses = await CourseService.GetAllCoursesAsync();
 
         //Get all courses that relate to search
         IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
 
         //Remove courses already in the plan
-        ////Commented out as they will be disabled later
+        //Commented out as they will be disabled later
         //IEnumerable<Course> currentCourses = Plan.getAllCourses();
         //ret = ret.Except(currentCourses);
 
         //Order and convert to list
         ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
         return ret;
-
-
-        //ALTERNATE OPTION
-        //IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
-        //courses = courses.Where(c => !Plan.ContainsCourse(c));
-        //return await Task.FromResult(courses.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
-
     }
-
 
     void SubmitForm()
     {
