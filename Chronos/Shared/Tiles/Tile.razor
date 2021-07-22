@@ -87,12 +87,21 @@
 
         switch (Data.Status)
         {
-            case ErrorStatus.Error | ErrorStatus.Warning:
-            case ErrorStatus.Error:
-                tileClass = "Error";
+            case ErrorStatus.MissingAssumedKnowledge | ErrorStatus.MissingPrerequisite | ErrorStatus.MissingSiblingCourse | ErrorStatus.WrongSemester | ErrorStatus.WrongCampus:
+            case ErrorStatus.MissingAssumedKnowledge:
+                tileClass = "Missing assumed knowledge.";
                 break;
-            case ErrorStatus.Warning:
-                tileClass = "Warning";
+            case ErrorStatus.MissingPrerequisite:
+                tileClass = "Missing Prerequisite";
+                break;
+            case ErrorStatus.MissingSiblingCourse:
+                tileClass = "Missing SiblingCourse";
+                break;
+            case ErrorStatus.WrongCampus:
+                tileClass = "Wrong Campus";
+                break;
+            case ErrorStatus.WrongSemester:
+                tileClass = "Wrong Semester";
                 break;
         }
     }
@@ -197,16 +206,6 @@
     protected override void OnParametersSet()
     {
         UpdateTileType();
-
-        if ((Data.Status & ErrorStatus.Error) > 0)
-        {
-            Plan.ErrorCount++;
-        }
-
-        if ((Data.Status & ErrorStatus.Warning) > 0)
-        {
-            Plan.WarningCount++;
-        }
     }
 
 }
