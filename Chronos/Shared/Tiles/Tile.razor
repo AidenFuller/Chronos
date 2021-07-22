@@ -85,24 +85,13 @@
             }
         }
 
-        switch (Data.Status)
+        if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse )) > 0)
         {
-            case ErrorStatus.MissingAssumedKnowledge | ErrorStatus.MissingPrerequisite | ErrorStatus.MissingSiblingCourse | ErrorStatus.WrongSemester | ErrorStatus.WrongCampus:
-            case ErrorStatus.MissingAssumedKnowledge:
-                tileClass = "Missing assumed knowledge.";
-                break;
-            case ErrorStatus.MissingPrerequisite:
-                tileClass = "Missing Prerequisite";
-                break;
-            case ErrorStatus.MissingSiblingCourse:
-                tileClass = "Missing SiblingCourse";
-                break;
-            case ErrorStatus.WrongCampus:
-                tileClass = "Wrong Campus";
-                break;
-            case ErrorStatus.WrongSemester:
-                tileClass = "Wrong Semester";
-                break;
+            tileClass = "Error";
+        }
+        else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
+        {
+            tileClass = "Warning";
         }
     }
 
