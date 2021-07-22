@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Chronos.Models.Enums;
 
 namespace Chronos.Services
 {
@@ -38,6 +39,11 @@ namespace Chronos.Services
             IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.CourseID == CourseID).Select(i => i.PrerequisiteCourseID); //This will return an IEnumerable of Ints that relates to the specific Preqreuisite Courses in the Database. 
 
             return db.Courses.Where(i => courseIDs.Contains(i.CourseID)); //This will return the specific Prerequisite courses for that course ID. 
+        }
+
+        public async Task<CourseRuntime> GetCourseRuntimeAsync(int CourseID, AvailableCampus Campus)
+        {
+            return await Task.FromResult(db.CourseAvailabilities.First(i => i.CourseID == CourseID && i.Campus == Campus).Runtime);
         }
     }
 }
