@@ -52,6 +52,7 @@
     [Parameter] public Degree Degree { get; set; }
     [Parameter] public Major Major { get; set; }
     [Parameter] public List<Course> CompletedCourses { get; set; }
+    [Parameter] public AvailableCampus Campus { get; set; }
 
     private List<List<TileData>> courseData;
     private int blockSize = 2;
@@ -67,15 +68,14 @@
 
     public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
     {
-        CourseRuntime allRuntimes = (CourseRuntime)(1 << 8) - 1;
-        if ((blockTypeTo & DragPayload.Course?.Runtime ?? allRuntimes) == 0 || (BlockTypeFrom & draggedOn.Course?.Runtime ?? allRuntimes) == 0)
-            return;
+        if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
+        {
+            Utilities.SwapValues(courseData, DragPayload, draggedOn);
 
-        Utilities.SwapValues(courseData, DragPayload, draggedOn);
-
-        draggedOn.Status = 0;
-        DragPayload.Status = 0;
-        StateHasChanged();
+            draggedOn.Status = 0;
+            DragPayload.Status = 0;
+            StateHasChanged();
+        }
     }
 
     //Boolean to show the ghost tiles
@@ -114,7 +114,8 @@
             TileData td = new TileData()
             {
                 Course = course,
-                TileType = TileType.Core
+                TileType = TileType.Core,
+                Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
             };
 
             allCourseData.Add(td);
@@ -123,11 +124,13 @@
         var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(Major.MajorID);
         foreach(Course course in coreDirectedCourses)
         {
+
             TileData td = new TileData()
             {
                 Course = course,
                 TileType = TileType.Directed,
-                IsDirectedCore = true
+                IsDirectedCore = true,
+                Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
             };
 
             allCourseData.Add(td);
