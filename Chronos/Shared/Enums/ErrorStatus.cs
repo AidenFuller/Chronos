@@ -7,7 +7,10 @@ namespace Chronos.Shared.Enums
 {
     public enum ErrorStatus
     {
-        Warning = 1,
-        Error   = 2
+        MissingAssumedKnowledge = 1 << 0,
+        MissingPreRequisite     = 1 << 1,
+        WrongCampus             = 1 << 2,
+        WrongSemester           = 1 << 3,
+        MissingSiblingCourse    = 1 << 4
     }
 }
