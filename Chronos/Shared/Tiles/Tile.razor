@@ -85,15 +85,13 @@
             }
         }
 
-        switch (Data.Status)
+        if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse )) > 0)
         {
-            case ErrorStatus.Error | ErrorStatus.Warning:
-            case ErrorStatus.Error:
-                tileClass = "Error";
-                break;
-            case ErrorStatus.Warning:
-                tileClass = "Warning";
-                break;
+            tileClass = "Error";
+        }
+        else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
+        {
+            tileClass = "Warning";
         }
     }
 
@@ -197,16 +195,6 @@
     protected override void OnParametersSet()
     {
         UpdateTileType();
-
-        if ((Data.Status & ErrorStatus.Error) > 0)
-        {
-            Plan.ErrorCount++;
-        }
-
-        if ((Data.Status & ErrorStatus.Warning) > 0)
-        {
-            Plan.WarningCount++;
-        }
     }
 
 }

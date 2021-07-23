@@ -40,7 +40,7 @@
             if (tile.Course == null) continue;
             if ((tile.Runtime & BlockType) == 0)
             {
-                tile.Status |= ErrorStatus.Error;
+                tile.Status |= ErrorStatus.WrongSemester;
             }
             //Console.WriteLine($"{tile.Course.Name}, {tile.Status} : {tile.Course.Runtime}, {BlockType}, {tile.Course.Runtime & BlockType}");
         }
