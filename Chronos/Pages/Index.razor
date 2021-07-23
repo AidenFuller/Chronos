@@ -3,6 +3,11 @@
 @inject CourseService courseService
 @inject MajorService majorService
 @inject IToastService ToastService
+@inject IWebHostEnvironment env
+
+@using System
+@using System.Text
+@using Microsoft.AspNetCore.Hosting
 
 <h1 class="heading-for-landing">Welcome to Chronos!</h1>
 <div>
@@ -11,6 +16,7 @@
         <hr /> <!--Using Horizontal Lines to break up the page.-->
         <br />
         <div class="form-alignment-center">
+            <InputFile OnChange="@LoadFiles" />
             <!--Creating a Div to enclose all of the related forms below. -->
             <form action="login" method="POST">
                 <div class="degree-div">
@@ -128,6 +134,10 @@
 {
     <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses Campus="AvailableCampus.Callaghan" />
 }
+else if (JSON != null)
+{
+    <DegreePlan JSON="@JSON" />
+}
 
 
 @code {
@@ -183,6 +193,7 @@
     private Degree RenderedDegree;
     private Major RenderedMajor;
     private List<Course> RenderedCompletedCourses = null;
+    private string JSON = null;
 
     //This function is here so it can toggle the admin button when the admin login button is hit.
     private void ToggleAdminLogin()
@@ -211,8 +222,23 @@
         }
     }
 
+    private bool isLoading = false;
+    private long maxFileSize = 1024 * 15;
 
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
 
+        var stream = e.File.OpenReadStream();
+        var path = $"{env.WebRootPath}\\{e.File.Name}";
+
+        byte[] buffer = new byte[stream.Length];
+
+        await stream.ReadAsync(buffer);
+        JSON = Encoding.UTF8.GetString(buffer);
+
+        isLoading = false;
+    }
 }
 
 
