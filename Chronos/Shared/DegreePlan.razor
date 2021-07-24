@@ -1,6 +1,8 @@
 @inject DegreeCourseService DegreeCourseService
 @inject CourseService CourseService 
-@inject MajorCourseService MajorCourseService  
+@inject MajorCourseService MajorCourseService
+@inject IBlazorDownloadFileService DownloadService 
+@using Newtonsoft.Json;  
 
 @using Chronos.Shared.Tiles;
 <div class="degreePlan">
@@ -45,6 +47,10 @@
         </CascadingValue>
 </div>
 
+<div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", Serialize(), "application/octet-stream"))>
+    Save
+</div>
+
 
 @code {
     [Parameter] public int BlocksPerYear { get; set; } = 2;
@@ -53,6 +59,7 @@
     [Parameter] public Major Major { get; set; }
     [Parameter] public List<Course> CompletedCourses { get; set; }
     [Parameter] public AvailableCampus Campus { get; set; }
+    [Parameter] public string JSON { get; set; } = null;
 
     private List<List<TileData>> courseData;
     private int blockSize = 2;
@@ -106,105 +113,118 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        List<TileData> allCourseData = new List<TileData>();
-        List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).ToList();
-
-        foreach (Course course in coreCourses)
+        if (JSON != null)
         {
-            TileData td = new TileData()
-            {
-                Course = course,
-                TileType = TileType.Core,
-                Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
-            };
-
-            allCourseData.Add(td);
+            SaveState state = JsonConvert.DeserializeObject<SaveState>(JSON);
+            courseData = state.CourseData;
+            BlocksPerYear = state.BlocksPerYear;
+            UnitsPerBlock = state.UnitsPerBlock;
+            Degree = state.Degree;
+            Major = state.Major;
+            CompletedCourses = state.CompletedCourses;
+            Campus = state.Campus;
         }
-
-        var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(Major.MajorID);
-        foreach(Course course in coreDirectedCourses)
+        else
         {
+            List<TileData> allCourseData = new List<TileData>();
+            List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).ToList();
 
-            TileData td = new TileData()
+            foreach (Course course in coreCourses)
             {
-                Course = course,
-                TileType = TileType.Directed,
-                IsDirectedCore = true,
-                Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
-            };
+                TileData td = new TileData()
+                {
+                    Course = course,
+                    TileType = TileType.Core,
+                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
+                };
 
-            allCourseData.Add(td);
-        }
-
-        /*
-        foreach (Course course in allCourses)
-        {
-            TileData td = new TileData();
-            if (coreCourses.Contains(course.CourseID))
-            {
-                td.Course = course;
-                td.TileType = TileType.Core;
-            }
-            else if (directedCourses.Contains(course.CourseID))
-            {
-                td.Course = course;
-                td.TileType = TileType.Directed;
-                td.IsDirectedCore = true;
-            }
-            allCourseData.Add(td);
-        }
-
-        */
-        Console.WriteLine(allCourseData.Any(t => t.Course == null));
-
-        List<TileData> tempCache = new List<TileData>();
-        for (int i = 0; i < Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (Degree.ElectiveCount*10); i += 10)
-        {
-            TileData td = new TileData()
-            {
-                Course = null,
-                TileType = TileType.Directed
-            };
-            tempCache.Add(td);
-        }
-
-        for (int i = 0; i < Degree.ElectiveCount; i++)
-        {
-            TileData td = new TileData()
-            {
-                Course = null,
-                TileType = TileType.Elective
-            };
-            tempCache.Add(td);
-        }
-
-        allCourseData.AddRange(tempCache);
-
-        Queue<TileData> cache = new Queue<TileData>(allCourseData);
-
-        // ALGORITHM
-
-        courseData = new List<List<TileData>>();
-
-        List<TileData> tempCourses = new List<TileData>();
-
-        while (cache.Count > 0)
-        {
-            if (tempCourses.Sum(t => (t.Course?.Units ?? 10)) >= UnitsPerBlock)
-            {
-                courseData.Add(tempCourses);
-                tempCourses = new List<TileData>();
+                allCourseData.Add(td);
             }
 
-            TileData tile = cache.Dequeue();
-            //List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, tile.Course);
-            //tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
+            var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(Major.MajorID);
+            foreach (Course course in coreDirectedCourses)
+            {
 
-            tempCourses.Add(tile);
-            //Console.WriteLine(tile.Course.CourseCode);
+                TileData td = new TileData()
+                {
+                    Course = course,
+                    TileType = TileType.Directed,
+                    IsDirectedCore = true,
+                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
+                };
+
+                allCourseData.Add(td);
+            }
+
+            /*
+            foreach (Course course in allCourses)
+            {
+                TileData td = new TileData();
+                if (coreCourses.Contains(course.CourseID))
+                {
+                    td.Course = course;
+                    td.TileType = TileType.Core;
+                }
+                else if (directedCourses.Contains(course.CourseID))
+                {
+                    td.Course = course;
+                    td.TileType = TileType.Directed;
+                    td.IsDirectedCore = true;
+                }
+                allCourseData.Add(td);
+            }
+
+            */
+            Console.WriteLine(allCourseData.Any(t => t.Course == null));
+
+            List<TileData> tempCache = new List<TileData>();
+            for (int i = 0; i < Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (Degree.ElectiveCount * 10); i += 10)
+            {
+                TileData td = new TileData()
+                {
+                    Course = null,
+                    TileType = TileType.Directed
+                };
+                tempCache.Add(td);
+            }
+
+            for (int i = 0; i < Degree.ElectiveCount; i++)
+            {
+                TileData td = new TileData()
+                {
+                    Course = null,
+                    TileType = TileType.Elective
+                };
+                tempCache.Add(td);
+            }
+
+            allCourseData.AddRange(tempCache);
+
+            Queue<TileData> cache = new Queue<TileData>(allCourseData);
+
+            // ALGORITHM
+
+            courseData = new List<List<TileData>>();
+
+            List<TileData> tempCourses = new List<TileData>();
+
+            while (cache.Count > 0)
+            {
+                if (tempCourses.Sum(t => (t.Course?.Units ?? 10)) >= UnitsPerBlock)
+                {
+                    courseData.Add(tempCourses);
+                    tempCourses = new List<TileData>();
+                }
+
+                TileData tile = cache.Dequeue();
+                //List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, tile.Course);
+                //tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
+
+                tempCourses.Add(tile);
+                //Console.WriteLine(tile.Course.CourseCode);
+            }
+            courseData.Add(tempCourses);
         }
-        courseData.Add(tempCourses);
-
     }
 
     private async Task<List<Course>> FindMissingPrerequisites(List<List<TileData>> courses, Course course)
@@ -243,6 +263,22 @@
     public bool ContainsCourse(Course course)
     {
         return courseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
+    }
+
+    private string Serialize()
+    {
+        SaveState state = new SaveState()
+        {
+            Campus = this.Campus,
+            CompletedCourses = this.CompletedCourses,
+            Degree = this.Degree,
+            BlocksPerYear = this.BlocksPerYear,
+            CourseData = this.courseData,
+            Major = this.Major,
+            UnitsPerBlock = this.UnitsPerBlock
+        };
+
+        return JsonConvert.SerializeObject(state);
     }
 
 
