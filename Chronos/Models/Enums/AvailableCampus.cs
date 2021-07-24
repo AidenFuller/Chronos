@@ -11,8 +11,9 @@ namespace Chronos.Models.Enums
         Ourimbah        = 1 << 1,
         PortMacquarie   = 1 << 2,
         Sydney          = 1 << 3,
-        Singapore       = 1 << 4,
-        NewcastleCity   = 1 << 5,
-        Online          = 1 << 6
+        SingaporePSB    = 1 << 4,
+        SingaporeBCA    = 1 << 5,
+        NewcastleCity   = 1 << 6,
+        Online          = 1 << 7
     }
 }
