@@ -85,7 +85,7 @@ button.button-for-admin {
     margin: auto;
     height: 20%;
     width: 30%;
-}
+} 
 
 .column-left {
     float: left;
@@ -97,4 +97,82 @@ button.button-for-admin {
     float: right;
     width: 50%;
     padding-bottom: 2em;
+}
+
+.submit-button {
+    text-transform: uppercase;
+    padding: 20px 60px;
+    border-radius: 150px;
+    display: inline-block;
+    position: relative;
+    border-width: 0;
+    text-align: center;
+    transition: all .7s;
+    color: white;
+}
+
+.submit-button-colour {
+    background-color: #59007F;
+}
+
+.submit-button:hover 
+{
+    box-shadow: 1px 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+.submit-button:active 
+{
+    box-shadow: 1px 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+
+.submit-button-animation 
+{
+    animation: TheButtonMoves 1s ease-out .6s;
+}
+
+
+.submit-button::after {
+    content: "";
+    text-transform: uppercase;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    padding: 20px 60px;
+    border-radius: 150px;
+    display: inline-block;
+    background-color: #59007F;
+    text-align: center;
+    z-index: -1;
+    transition: all .7s;
+    color: white;
+}
+
+.submit-button-gradient::after {
+    background-color: #59007F;
+}
+
+.submit-button-animation:hover::after 
+{
+    transform: scaleX(2.0) scaleY(2.4);
+    opacity: 0;
+}
+
+
+
+@keyframes TheButtonMoves
+{
+    0%
+    {
+        opacity: 0;
+        transform: translateY(70px);
+    }
+    100%
+    {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

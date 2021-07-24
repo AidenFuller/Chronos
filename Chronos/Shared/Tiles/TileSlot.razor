@@ -1,4 +1,7 @@
-﻿<CascadingValue Value="this">
+﻿@using Chronos.Shared.Tiles;
+@using Chronos.Shared.Modals;
+
+<CascadingValue Value="this">
     @foreach (TileData tile in Tiles)
     {
         <Tile Data=@tile />
@@ -35,16 +38,16 @@
         foreach (TileData tile in Tiles)
         {
             if (tile.Course == null) continue;
-            if ((tile.Course.Runtime & BlockType) == 0)
+            if ((tile.Runtime & BlockType) == 0)
             {
-                tile.Status |= ErrorStatus.Error;
+                tile.Status |= ErrorStatus.WrongSemester;
             }
             //Console.WriteLine($"{tile.Course.Name}, {tile.Status} : {tile.Course.Runtime}, {BlockType}, {tile.Course.Runtime & BlockType}");
         }
 
         //===== GhostTile Management =====
         //Ghosts are showing AND this tile slot is not the origin AND the payload runs in this semester
-        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && runsInSlot(Plan.DragPayload.Course))
+        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && runsInSlot(Plan.DragPayload))
         {
             showGhost = true;
         }
@@ -56,14 +59,14 @@
     }
 
     //Returns if a course runs in this slot
-    private bool runsInSlot(Course c)
+    private bool runsInSlot(TileData td)
     {
-        if (c == null)
+        if (td.Course == null)
         {
             //Empty tile, runs anywhere
             return true;
         }
-        return c.Runtime.Equals(BlockType);
+        return td.Runtime.Equals(BlockType);
     }
 
 

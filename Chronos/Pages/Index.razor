@@ -1,7 +1,8 @@
 ﻿@page "/"
 @inject DegreeService degreeService
 @inject CourseService courseService
-@inject MajorService majorService  
+@inject MajorService majorService
+@inject IToastService ToastService
 
 <h1 class="heading-for-landing">Welcome to Chronos!</h1>
 <div>
@@ -26,7 +27,7 @@
                         </ResultTemplate>
                     </BlazoredTypeahead>
 
-                    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="SelectedMajor" placeholder="Please search for your major..."  EnableDropDown="true" ShowDropDownOnFocus="true">
+                    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="SelectedMajor" placeholder="Please search for your major..." EnableDropDown="true" ShowDropDownOnFocus="true">
                         <SelectedTemplate Context="major">
                             <!--This is the search Template and what will be returned.-->
                             @major.Name
@@ -88,7 +89,7 @@
                 </ResultTemplate>
             </BlazoredTypeahead>
 
-            <input type="submit" value="Submit" @onclick="SubmitParameters">
+            <button class="submit-button submit-button-colour submit-button-animation" @onclick="SubmitParameters">Submit</button>
         </div>
     </section>
 </div>
@@ -125,7 +126,7 @@
 
 @if (RenderedDegree != null)
 {
-    <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses />
+    <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses Campus="AvailableCampus.Callaghan" />
 }
 
 
@@ -191,9 +192,23 @@
 
     private void SubmitParameters()
     {
-        RenderedDegree = SelectedDegree;
-        RenderedMajor = SelectedMajor;
-        StateHasChanged();
+        if (SelectedDegree == null)
+        {
+            RenderFragment message = @<text>Degree has not been selected</text>;
+            ToastService.ShowToast(ToastLevel.Error, message);
+        }
+        if (SelectedMajor == null)
+        {
+            RenderFragment message = @<text>Major has not been selected</text>;
+            ToastService.ShowToast(ToastLevel.Error, message);
+        }
+
+        if (SelectedDegree != null && SelectedMajor != null)
+        {
+            RenderedDegree = SelectedDegree;
+            RenderedMajor = SelectedMajor;
+            StateHasChanged();
+        }
     }
 
 

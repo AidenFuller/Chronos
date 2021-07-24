@@ -19,24 +19,6 @@ namespace Chronos.Migrations
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Chronos.Models.Administrator", b =>
-                {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("PassHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("Administrators");
-                });
-
             modelBuilder.Entity("Chronos.Models.CoreCourse", b =>
                 {
                     b.Property<int>("CoreCourseID")
@@ -62,9 +44,6 @@ namespace Chronos.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Campus")
-                        .HasColumnType("int");
-
                     b.Property<double>("Cost")
                         .HasColumnType("float");
 
@@ -74,7 +53,7 @@ namespace Chronos.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Runtime")
+                    b.Property<int>("RequiredCompletedUnits")
                         .HasColumnType("int");
 
                     b.Property<int>("Units")
@@ -83,6 +62,27 @@ namespace Chronos.Migrations
                     b.HasKey("CourseID");
 
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("Chronos.Models.CourseAvailability", b =>
+                {
+                    b.Property<int>("CourseAvailabilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Campus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Runtime")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseAvailabilityID");
+
+                    b.ToTable("CourseAvailabilities");
                 });
 
             modelBuilder.Entity("Chronos.Models.Degree", b =>
@@ -137,7 +137,7 @@ namespace Chronos.Migrations
                     b.Property<int>("CourseID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsCore")
+                    b.Property<bool>("IsCompulsory")
                         .HasColumnType("bit");
 
                     b.Property<int>("MajorID")
@@ -156,6 +156,9 @@ namespace Chronos.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseRequisite")
                         .HasColumnType("int");
 
                     b.Property<int>("PrerequisiteCourseID")

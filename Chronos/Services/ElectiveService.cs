@@ -22,7 +22,7 @@ namespace Chronos.Services
             //Select all courseID that IS NOT equal not the given courseID
             IEnumerable<int> notCoreCourseIDs = db.CoreCourses.Where(i => i.DegreeID != DegreeID).Select(i => i.CourseID);
             //Select all courseID where the course IS NOT a core course for the given Major ID
-            IEnumerable<int> notMajorCourseIDs = db.MajorCourses.Where(i => i.IsCore == false && i.MajorID == MajorID).Select(i => i.CourseID);
+            IEnumerable<int> notMajorCourseIDs = db.MajorCourses.Where(i => i.IsCompulsory == false && i.MajorID == MajorID).Select(i => i.CourseID);
 
             //These 2 lists now contain
             // - All courses are that are not core for the given ID

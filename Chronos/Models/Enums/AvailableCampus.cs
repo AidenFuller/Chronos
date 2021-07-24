@@ -12,6 +12,7 @@ namespace Chronos.Models.Enums
         PortMacquarie   = 1 << 2,
         Sydney          = 1 << 3,
         Singapore       = 1 << 4,
-        NewcastleCity   = 1 << 5
+        NewcastleCity   = 1 << 5,
+        Online          = 1 << 6
     }
 }

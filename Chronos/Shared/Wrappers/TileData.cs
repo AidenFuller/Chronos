@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Chronos.Shared.Enums;
 using Chronos.Models;
+using Chronos.Models.Enums;
 
 namespace Chronos.Shared.Wrappers
 {
@@ -13,5 +14,6 @@ namespace Chronos.Shared.Wrappers
         public ErrorStatus Status { get; set; }
         public TileType TileType { get; set; }
         public bool IsDirectedCore { get; set; }
+        public CourseRuntime Runtime { get; set; }
     }
 }

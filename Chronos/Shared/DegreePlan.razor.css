@@ -20,7 +20,7 @@
 
     background-color:lightgrey;
     /*padding: 20px;*/
-    height: 150px;
+    height: 160px;
 
 
     display: flex;
@@ -28,4 +28,16 @@
     align-items: center;
     flex-direction: row;
     justify-content: space-evenly;
+}
+
+.semester-label {
+    writing-mode: vertical-lr;
+    text-align: center;
+    transform: rotate(180deg);
+}
+
+.year-label {
+    display: inline-block;
+    width: 50%;
+    text-align: center;
 }

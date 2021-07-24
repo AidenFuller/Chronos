@@ -1,6 +1,6 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
-
+@using Chronos.Shared.Modals;
 <button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
         @ondrop="HandleDrop"
@@ -70,24 +70,17 @@
         //hr margins are used for removing the white space
         //---------------------------------------------------
 
+        <hr style="margin-bottom:0px; margin-top:-15px;" />
         <div class="courseDes">
             <div>
-                <hr style="margin-bottom:0px; margin-top:-15px;" />
-                <div>
-                    <div>
-                        <p style="font-size:12px; display:inline-flex; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
-                    </div>
-                    <div>
-                        @*//----------------------------------------
-                        //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
-                        //Delete this comment before final submission
-                        //-----------------------------------------*@
-                        <p style="font-size: 12px; display: inline-flex; float: inline-end;"><b>@Data.Course.Runtime</b> </p>
-                    </div>
-                </div>
-                <div style="margin-bottom:0px; margin-top:-15px;">
-                    <p style="font-size:12px;"><b>@Data.Course.Campus</b> </p>
-                </div>
+                <p style="font-size:12px; display:inline-flex; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
+            </div>
+            <div>
+                @*//----------------------------------------
+                    //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
+                    //Delete this comment before final submission
+                    //-----------------------------------------*@
+                <p style="font-size: 12px; display: inline-flex; float: inline-end;"><b>@Data.Runtime</b> </p>
             </div>
         </div>
     }
@@ -147,20 +140,18 @@
             }
         }
 
-        switch (Data.Status)
+        if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse )) > 0)
         {
-            case ErrorStatus.Error | ErrorStatus.Warning:
-            case ErrorStatus.Error:
-                tileClass = "Error";
-                break;
-            case ErrorStatus.Warning:
-                tileClass = "Warning";
-                break;
+            tileClass = "Error";
+        }
+        else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
+        {
+            tileClass = "Warning";
         }
     }
 
 
-    void Clicked()
+    async void Clicked()
     {
         if (Data.Course is not null)
         {
@@ -176,6 +167,41 @@
             };
             Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
         }
+        else{
+            var parameters = new ModalParameters();
+            parameters.Add("Plan", Plan);
+            parameters.Add("SemType", Slot.BlockType);
+            var options = new ModalOptions()
+            {
+                Position = ModalPosition.Center,
+                Animation = ModalAnimation.FadeInOut(0.5),
+                //ContentScrollable = true,
+                Class = "Tile-Modal"
+            };
+
+            IModalReference form = null;
+            if (Data.TileType == TileType.Elective)
+            {
+                form = Modal.Show<AddElectiveModal>("Add an Elective Course", parameters, options);
+
+            }
+            else if (Data.TileType == TileType.Directed)
+            {
+                //Directed course
+                form = Modal.Show<AddDirectedModal>("Add a Directed course", parameters, options);
+
+            }
+
+            var result = await form.Result;
+
+            if (!result.Cancelled)
+            {
+                Data.Course = (Course) result.Data;
+                UpdateTileType();
+                StateHasChanged();
+            }
+
+        }
         //If null, open menu to add a course to it
     }
 
@@ -184,16 +210,17 @@
         //Pass values back to plan
         Plan.DragPayload = Data;
         Plan.DragFrom = Slot.Tiles;
+        Plan.BlockTypeFrom = Slot.BlockType;
 
         //Show ghost tiles
-        Plan.showGhostTiles();
+        Plan.ShowGhostTiles();
 
     }
 
     private void HandleDragEnd()
     {
         //Hide ghost tiles
-        Plan.hideGhostTiles();
+        Plan.HideGhostTiles();
     }
 
 
@@ -216,23 +243,13 @@
     {
         dropClass = "";
         if (Data == Plan.DragPayload) return;
-        await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data);
+        await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data, Slot.BlockType);
     }
 
 
     protected override void OnParametersSet()
     {
         UpdateTileType();
-
-        if ((Data.Status & ErrorStatus.Error) > 0)
-        {
-            Plan.ErrorCount++;
-        }
-
-        if ((Data.Status & ErrorStatus.Warning) > 0)
-        {
-            Plan.WarningCount++;
-        }
     }
 
 }

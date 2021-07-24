@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chronos.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210430032015_Initial")]
-    partial class Initial
+    [Migration("20210722003511_CourseAvailability")]
+    partial class CourseAvailability
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,24 +20,6 @@ namespace Chronos.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Chronos.Models.Administrator", b =>
-                {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("PassHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("Administrators");
-                });
 
             modelBuilder.Entity("Chronos.Models.CoreCourse", b =>
                 {
@@ -64,9 +46,6 @@ namespace Chronos.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Campus")
-                        .HasColumnType("int");
-
                     b.Property<double>("Cost")
                         .HasColumnType("float");
 
@@ -76,6 +55,9 @@ namespace Chronos.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RequiredCompletedUnits")
+                        .HasColumnType("int");
+
                     b.Property<int>("Units")
                         .HasColumnType("int");
 
@@ -84,12 +66,36 @@ namespace Chronos.Migrations
                     b.ToTable("Courses");
                 });
 
+            modelBuilder.Entity("Chronos.Models.CourseAvailability", b =>
+                {
+                    b.Property<int>("CourseAvailabilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Campus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Runtime")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseAvailabilityID");
+
+                    b.ToTable("CourseAvailabilities");
+                });
+
             modelBuilder.Entity("Chronos.Models.Degree", b =>
                 {
                     b.Property<int>("DegreeID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ElectiveCount")
+                        .HasColumnType("int");
 
                     b.Property<bool>("InternationalsAllowed")
                         .HasColumnType("bit");
@@ -133,7 +139,7 @@ namespace Chronos.Migrations
                     b.Property<int>("CourseID")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsCore")
+                    b.Property<bool>("IsCompulsory")
                         .HasColumnType("bit");
 
                     b.Property<int>("MajorID")
@@ -142,6 +148,27 @@ namespace Chronos.Migrations
                     b.HasKey("MajorCourseID");
 
                     b.ToTable("MajorCourses");
+                });
+
+            modelBuilder.Entity("Chronos.Models.PrerequisiteCourse", b =>
+                {
+                    b.Property<int>("PrerequisiteID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseRequisite")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrerequisiteCourseID")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrerequisiteID");
+
+                    b.ToTable("PrerequisiteCourses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -287,12 +314,10 @@ namespace Chronos.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -329,12 +354,10 @@ namespace Chronos.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
