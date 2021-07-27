@@ -10,7 +10,7 @@
         {
             @if (item.DataPoint.Equals(InputSem))
             {
-                item.IsSelected = true;
+                
                 <input type="checkbox" @bind-value="item.IsSelected" checked />
             }
             else
@@ -79,7 +79,14 @@
     protected override void OnInitialized()
     {
         foreach (var DPvalue in Enum.GetValues(typeof(CourseRuntime)))
-            CheckableEnums.Add(new CheckableEnum() { DataPoint = (CourseRuntime)DPvalue });
+        {
+            CheckableEnum e = new CheckableEnum() { DataPoint = (CourseRuntime)DPvalue };
+            if (DPvalue.Equals(InputSem))
+            {
+                e.IsSelected = true;
+            }
+            CheckableEnums.Add(e);
+        }
     }
 
     private CourseRuntime getSemesterSelections()
@@ -103,6 +110,7 @@
     //========== SEARCH MANAGEMENT ==========
     private async Task<IEnumerable<Course>> SearchMajorCourses(string search)
     {
+
         if (Plan.Degree == null)
         {
             return new List<Course>();
