@@ -115,8 +115,8 @@
         {
             return new List<Course>();
         }
-
         IEnumerable<Course> courses = await MajorCourseService.GetCompulsoryCoursesAsync(Plan.Major.MajorID);
+
         //Get all courses that relate to search
         IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
 
