@@ -53,6 +53,7 @@
 
 
 @code {
+    //Parameters
     [Parameter] public int BlocksPerYear { get; set; } = 2;
     [Parameter] public int UnitsPerBlock { get; set; } = 40;
     [Parameter] public Degree Degree { get; set; }
@@ -64,6 +65,7 @@
     private List<List<TileData>> courseData;
     private int blockSize = 2;
 
+    //Dragging Variables
     public TileData DragPayload { get; set; }
     public List<TileData> DragFrom { get; set; }
     public CourseRuntime BlockTypeFrom { get; set; }
@@ -72,13 +74,12 @@
     public int ErrorCount { get; set; }
     public int WarningCount { get; set; }
 
-
+    //Updates teh degree plan after a drag
     public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
     {
         if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
         {
             Utilities.SwapValues(courseData, DragPayload, draggedOn);
-
             draggedOn.Status = 0;
             DragPayload.Status = 0;
             StateHasChanged();
@@ -87,19 +88,22 @@
 
     //Boolean to show the ghost tiles
     public bool ShowGhosts { get; set; } = false;
-    //Show the ghost tiles in each plan
+    //Show all ghost tiles in the plan
     public void ShowGhostTiles()
     {
         //Show a ghost tile in all places where the tile can be added
         ShowGhosts = true;
         StateHasChanged();
     }
+
+    //Hide all ghost tiles in the plan
     public void HideGhostTiles() {
         //remove the ghost tiles
         ShowGhosts = false;
         StateHasChanged();
     }
 
+    //Move payload from one slot to a new slot
     public void MovePayloadTo(TileSlot slot)
     {
         //Made design decision to handle this hear, saves intensive cascading parameters.
@@ -113,8 +117,10 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        //JSON Management
         if (JSON != null)
         {
+            //JSON Input
             SaveState state = JsonConvert.DeserializeObject<SaveState>(JSON);
             courseData = state.CourseData;
             BlocksPerYear = state.BlocksPerYear;
@@ -126,11 +132,16 @@
         }
         else
         {
+            //Manaul input
+
+            //Query database
             List<TileData> allCourseData = new List<TileData>();
             List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).ToList();
 
+            //Loop through pulled courses
             foreach (Course course in coreCourses)
             {
+                //Create a tile data and add to list
                 TileData td = new TileData()
                 {
                     Course = course,
@@ -142,9 +153,10 @@
             }
 
             var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(Major.MajorID);
+            //Pull directed courses
             foreach (Course course in coreDirectedCourses)
             {
-
+                //Add to list
                 TileData td = new TileData()
                 {
                     Course = course,
@@ -175,9 +187,11 @@
             }
 
             */
-            Console.WriteLine(allCourseData.Any(t => t.Course == null));
+            //Console.WriteLine(allCourseData.Any(t => t.Course == null));
 
             List<TileData> tempCache = new List<TileData>();
+
+            //Create all empty directed
             for (int i = 0; i < Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (Degree.ElectiveCount * 10); i += 10)
             {
                 TileData td = new TileData()
@@ -188,6 +202,7 @@
                 tempCache.Add(td);
             }
 
+            //Create all empty elective courses
             for (int i = 0; i < Degree.ElectiveCount; i++)
             {
                 TileData td = new TileData()
@@ -198,11 +213,12 @@
                 tempCache.Add(td);
             }
 
+            //Add them to plan
             allCourseData.AddRange(tempCache);
 
             Queue<TileData> cache = new Queue<TileData>(allCourseData);
 
-            // ALGORITHM
+            // ALGORITHM -- TBD
 
             courseData = new List<List<TileData>>();
 
@@ -227,6 +243,7 @@
         }
     }
 
+    //Returns a list of missing prerequisite courses
     private async Task<List<Course>> FindMissingPrerequisites(List<List<TileData>> courses, Course course)
     {
         List<Course> pCourses = (await CourseService.GetPrerequisiteCoursesAsync(course.CourseID)).ToList();
@@ -244,6 +261,7 @@
         return missing;
     }
 
+    //Returns all courses in the plan
     public IEnumerable<Course> getAllCourses()
     {
         IEnumerable <Course> allC = new List<Course>();
@@ -259,12 +277,14 @@
         return allC;
     }
 
-
+    //Returns true if the plan contains the course
     public bool ContainsCourse(Course course)
     {
         return courseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
     }
 
+
+    //Returns string Serialized for JSON
     private string Serialize()
     {
         SaveState state = new SaveState()
@@ -280,6 +300,4 @@
 
         return JsonConvert.SerializeObject(state);
     }
-
-
 }
