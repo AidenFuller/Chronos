@@ -43,7 +43,16 @@ namespace Chronos.Services
 
         public async Task<CourseRuntime> GetCourseRuntimeAsync(int CourseID, AvailableCampus Campus)
         {
-            return await Task.FromResult(db.CourseAvailabilities.First(i => i.CourseID == CourseID && i.Campus == Campus).Runtime);
+            CourseAvailability availability = await Task.FromResult(db.CourseAvailabilities.FirstOrDefault(i => i.CourseID == CourseID && i.Campus == Campus));
+            //Convert to use ?? stuffs
+            if (availability == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return availability.Runtime;
+            }
         }
     }
 }

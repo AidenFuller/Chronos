@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Chronos.Models.Enums
 {
+    [Flags]
     public enum CourseRuntime
     {
         
