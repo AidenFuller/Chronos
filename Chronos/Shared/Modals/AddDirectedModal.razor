@@ -96,7 +96,7 @@
         {
             if (x.IsSelected)
             {
-                ret = ret | x.DataPoint;
+                ret |= x.DataPoint;
             }
         }
         return ret;
@@ -115,13 +115,13 @@
         {
             return new List<Course>();
         }
-        IEnumerable<Course> courses = await MajorCourseService.GetCompulsoryCoursesAsync(Plan.Major.MajorID);
+        IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
 
         //Get all courses that relate to search
         IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
 
         //Remove courses not in the selectd semester
-        CourseRuntime sem = getSemesterSelections();
+        CourseRuntime sem = GetSemesterSelections();
         ret = ret.Where(x => (GetRuntime(x) & sem) > 0);
 
         //Remove courses already in the plan

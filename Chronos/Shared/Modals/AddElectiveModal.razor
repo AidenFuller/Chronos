@@ -98,7 +98,7 @@
         {
             if (x.IsSelected)
             {
-                ret = ret | x.DataPoint;
+                ret |= x.DataPoint;
             }
         }
 
@@ -138,7 +138,7 @@
         }
 
         //Remove courses not in the selected semesters
-        CourseRuntime sem = getSemesterSelections();
+        CourseRuntime sem = GetSemesterSelections();
         if (sem != 0)
         {
             ret = ret.Where(x => (GetRuntime(x) & sem) > 0);
