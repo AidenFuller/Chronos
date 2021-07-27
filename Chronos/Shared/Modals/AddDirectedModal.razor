@@ -84,7 +84,7 @@
             return new List<Course>();
         }
 
-        IEnumerable<Course> courses = await MajorCourseService.GetCompulsoryCoursesAsync(Plan.Major.MajorID);
+        IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
 
 
 
