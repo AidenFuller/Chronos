@@ -70,17 +70,29 @@
         //hr margins are used for removing the white space
         //---------------------------------------------------
 
-        <hr style="margin-bottom:0px; margin-top:-15px;" />
         <div class="courseDes">
             <div>
-                <p style="font-size:12px; display:inline-flex; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
-            </div>
-            <div>
-                @*//----------------------------------------
-                    //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
-                    //Delete this comment before final submission
-                    //-----------------------------------------*@
-                <p style="font-size: 12px; display: inline-flex; float: inline-end;"><b>@Data.Runtime</b> </p>
+                <hr style="margin-bottom:0px; margin-top:-15px;" />
+                <div>
+                    <div>
+                        <p style="font-size:12px; display:inline-flex; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
+                    </div>
+                    <div>
+                        @*//----------------------------------------
+                            //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
+                            //Delete this comment before final submission
+                            //-----------------------------------------*@
+                        <p style="font-size: 12px; display: inline-flex; float: inline-end;"><b>@Data.Runtime</b> </p>
+                    </div>
+                </div>
+               @*-------------------------------------------------------
+                //Not in use for now as aiden said no campus needed
+                //Probably modify that later on
+                ----------------------------------------------------
+                <div style="margin-bottom:0px; margin-top:-15px;">
+                    <p><b>@Data.Campus </b></p>
+                </div>
+                ----------------------------------------------------*@
             </div>
         </div>
     }
@@ -140,7 +152,7 @@
             }
         }
 
-        if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse )) > 0)
+        if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0)
         {
             tileClass = "Error";
         }
@@ -167,7 +179,8 @@
             };
             Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
         }
-        else{
+        else
+        {
             var parameters = new ModalParameters();
             parameters.Add("Plan", Plan);
             parameters.Add("SemType", Slot.BlockType);
@@ -196,7 +209,7 @@
 
             if (!result.Cancelled)
             {
-                Data.Course = (Course) result.Data;
+                Data.Course = (Course)result.Data;
                 UpdateTileType();
                 StateHasChanged();
             }
