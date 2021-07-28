@@ -1,55 +1,73 @@
-﻿.Tile {
+﻿
+.Tile {
     border-style: solid;
-    border-radius: 20px;
+    border-radius: 10px;
     display: inline-block;
     text-align: center;
-
-    height: 80%;
+    height: 100%;
     transition: .2s;
     /*Makes it so items will each be given the same space*/
     width: 0;
-    max-width: 20%;
+    max-width: 40%;
     flex: 1 1 0;
+    margin: 5px 5px 5px 5px;
 }
 
-        .Tile:hover {
-            transition: .2s;
-            transform: scale(1.1)
-        }
-
-    .droppable {
-        background-color: greenyellow;
+    .Tile:hover {
+        /*height can be put here when needed*/
+        transition: .2s;
+        transform: scale(1.05);
     }
 
-    .Elective {
-        background-color: #F2DD60
-    }
+.courseDes {
+    visibility: hidden;
+}
 
-    .Directed {
-        background-color: #458EE7
-    }
+.Tile:hover .courseDes {
+    visibility: visible;
+}
 
-    .Core {
-        background-color: #808080
-    }
+.Tile:hover .courseName {
+    font-weight: 600;    
+}
 
-    .Error {
-        background-color: #FF9696
-    }
+.Tile:hover .courseType {
+    font-weight: lighter;
+    font-size: 15px;
+}
 
-    .Warning {
-        background-color: #FFCC99
-    }
 
-    .AddElective {
-        background-color: #ffffff;
-        border-color: #000000;
-        color: #F2DD60;
-    }
+.droppable {
+    background-color: greenyellow;
+}
 
-    .AddDirected {
-        background-color: #ffffff;
-        border-color: #000000;
-        color: #458EE7;
-    }
+.Elective {
+    background-color: #BCE954;
+}
 
+.Directed {
+    background-color: #659EC7;
+}
+
+.Core {
+    background-color: #808080;
+}
+
+.Error {
+    background-color: #C38EC7;
+}
+.Warning {
+    background-color: #FFCC99
+}
+
+.AddElective {
+    background-color: #ffffff;
+    border-color: #000000;
+    color: #F2DD60;
+}
+
+.AddDirected {
+    background-color: #ffffff;
+    border-color: #000000;
+    color: #458EE7;
+}
