@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blazored.Modal;
 using Blazored.Toast;
+using BlazorDownloadFile;
 
 namespace Chronos
 {
@@ -50,6 +51,7 @@ namespace Chronos
 
             services.AddBlazoredModal();
             services.AddBlazoredToast();
+            services.AddBlazorDownloadFile();
 
 
             TestDataGenerator.Setup(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value);

@@ -1,95 +1,128 @@
 ﻿@inject MajorCourseService MajorCourseService
 @inject CourseService CourseService
+
 @using Models.Enums;
+
+
 <div class="directed-modal">
+    <div>
+        @foreach (var item in CheckableEnums)
+        {
+            @if (item.DataPoint.Equals(InputSem))
+            {
+                
+                <input type="checkbox" @bind-value="item.IsSelected" checked />
+            }
+            else
+            {
+                <input type="checkbox" @bind-value="item.IsSelected" />
+            }
+
+            <span> @item.DataPoint.ToString() &nbsp;</span>
+        }
+    </div>
+
 
     <BlazoredTypeahead SearchMethod="SearchMajorCourses" @bind-Value="SelectedCourse" placeholder="Please search for your directected course..." EnableDropDown="true">
         <SelectedTemplate Context="course">
             <!--This is the search Template and what will be returned.-->
 
-            @if ((GetRuntime(course) & SemType) > 0)
+            @if ((GetRuntime(course) & InputSem) > 0)
             {
-                <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@GetRuntime(course)</span>
-
-
+                @course.CourseCode @course.Name @GetRuntime(course)
             }
             else
             {
                 //Course does not run in this semester, show it as disabled
-                
-
-                    <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@GetRuntime(course)</span>
-                
-                
+                @course.CourseCode @course.Name @GetRuntime(course)
             }
-
-
 
         </SelectedTemplate>
         <ResultTemplate Context="course">
             <!--This is what is shown when it is selected.-->
-            @if ((GetRuntime(course) & SemType) > 0)
+            @if ((GetRuntime(course) & InputSem) > 0)
             {
                 <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@GetRuntime(course)</span>
-
 
             }
             else
             {
                 //Course does not run in this semester, show it as disabled
-                @*<div style="min-height: 2rem; max-height: 30rem; z-index: 200; opacity: 0.5; background-color: red; margin: -.5rem;" onfocus="event.preventDefault()">
-
-                </div>*@
                 <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@GetRuntime(course)</span>
-
             }
-
-
-
         </ResultTemplate>
-
-
     </BlazoredTypeahead>
     <div style="width:100%; text-align: center">
-
-            <button class="btn btn-primary" type="submit" style="margin-top: 20px;" @onclick="SubmitForm">Submit</button>
-        
+        <button class="btn btn-primary" type="submit" style="margin-top: 20px;" @onclick="SubmitForm">Submit</button>
     </div>
-
 </div>
 
 
 @code {
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
-    //[CascadingParameter] public IModalService Modal { get; set; }
     [Parameter] public DegreePlan Plan { get; set; }
-    [Parameter] public CourseRuntime SemType { get; set; }
-
+    [Parameter] public CourseRuntime InputSem { get; set; }
     private Course SelectedCourse;
-    private CourseRuntime runtime;
-    private String emptyStr = "";
-    //private IEnumerable<Course> courses;
 
-    protected override async Task OnParametersSetAsync()
+    //========== CHECKBOX MANAGEMENT ==========
+    //http://5.9.10.113/66851989/bind-each-value-of-an-enum-to-a-checkbox-blazor
+    private class CheckableEnum
     {
-        //Potential to have this stored in the plan as to not query the db every time.
-        //courses = await MajorCourseService.GetCoreDirectedCoursesAsync(Plan.Major.MajorID);
+        public CourseRuntime DataPoint { get; set; }
+        public bool IsSelected;
+    }
+    public CourseRuntime SumValue { get; set; }
+
+
+
+    List<CheckableEnum> CheckableEnums { get; set; } = new List<CheckableEnum>();
+    protected override void OnInitialized()
+    {
+        foreach (var DPvalue in Enum.GetValues(typeof(CourseRuntime)))
+        {
+            CheckableEnum e = new CheckableEnum() { DataPoint = (CourseRuntime)DPvalue };
+            if (DPvalue.Equals(InputSem))
+            {
+                e.IsSelected = true;
+            }
+            CheckableEnums.Add(e);
+        }
     }
 
+    private CourseRuntime GetSemesterSelections()
+    {
+        CourseRuntime ret = 0;
+        foreach(CheckableEnum x in CheckableEnums)
+        {
+            if (x.IsSelected)
+            {
+                ret |= x.DataPoint;
+            }
+        }
+        return ret;
+    }
 
+    private CourseRuntime GetRuntime(Course c)
+    {
+        return CourseService.GetCourseRuntimeAsync(c.CourseID, Plan.Campus).GetAwaiter().GetResult();
+    }
+
+    //========== SEARCH MANAGEMENT ==========
     private async Task<IEnumerable<Course>> SearchMajorCourses(string search)
     {
+
         if (Plan.Degree == null)
         {
             return new List<Course>();
         }
-
-        IEnumerable<Course> courses = await MajorCourseService.GetCompulsoryCoursesAsync(Plan.Major.MajorID);
-
-
+        IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
 
         //Get all courses that relate to search
         IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
+
+        //Remove courses not in the selectd semester
+        CourseRuntime sem = GetSemesterSelections();
+        ret = ret.Where(x => (GetRuntime(x) & sem) > 0);
 
         //Remove courses already in the plan
         ////Commented out as they will be disabled later
@@ -98,31 +131,23 @@
 
         //Order and convert to list
         ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
+
         return ret;
 
 
-        //ALTERNATE OPTION
-        //IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
-        //courses = courses.Where(c => !Plan.ContainsCourse(c));
-        //return await Task.FromResult(courses.Where(x => x.Name.ToLower().Contains(search.ToLower())).ToList()); //It will return degrees that contain the string in its name.
-
     }
-
-
+    //========== FORM MANAGEMENT ==========
     void SubmitForm()
     {
-        @if ((GetRuntime(SelectedCourse) & SemType) > 0)
+        @if ((GetRuntime(SelectedCourse) & InputSem) > 0)
         {
             ModalInstance.CloseAsync(ModalResult.Ok(SelectedCourse));
         }
         else
         {
+            //Show toast error
         }
-
     }
 
-    private CourseRuntime GetRuntime(Course c)
-    {
-        return CourseService.GetCourseRuntimeAsync(c.CourseID, Plan.Campus).GetAwaiter().GetResult();
-    }
+
 }
