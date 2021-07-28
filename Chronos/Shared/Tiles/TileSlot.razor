@@ -26,6 +26,7 @@
     public DegreePlan Plan { get; set; }
 
     private bool showGhost = false;
+    private readonly int TOTAL_UNITS_ALLOWED = 50;
 
 
 
@@ -47,7 +48,7 @@
 
         //===== GhostTile Management =====
         //Ghosts are showing AND this tile slot is not the origin AND the payload runs in this semester
-        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && runsInSlot(Plan.DragPayload))
+        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && runsInSlot(Plan.DragPayload) && howManyUnits() != TOTAL_UNITS_ALLOWED)
         {
             showGhost = true;
         }
@@ -69,5 +70,20 @@
         return td.Runtime.Equals(BlockType);
     }
 
-
+    private int howManyUnits()
+    {
+        int totalUnits = 0;
+        foreach (TileData tile in Tiles)
+        {
+            if (tile.Course == null)
+            {
+                totalUnits += 10;
+            }
+            else
+            {
+                totalUnits += tile.Course.Units;
+            }
+        }
+        return totalUnits;
+    }
 }
