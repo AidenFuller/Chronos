@@ -8,43 +8,46 @@
 <div class="degreePlan">
     <CascadingValue Value="this">
         @*Pass boolean to determine if ghosts are showing to all children*@
-                @if (courseData == null)
-                {
-                    <p>Loading...</p>
-                }
-                else
-                {
-                    for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
+        @if (courseData == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
+            {
+
+
+                <div class="year-row">
+                    @for (int i = 0; i < BlocksPerYear; i++)
                     {
+                        if (i + (j * BlocksPerYear) >= courseData.Count)
+                        {
+                            continue;
+                        }
+                        <div class="semester">
+                            @* Assuming Semesters *@
 
-
-                        <div class="year-row">
-                            @for (int i = 0; i < BlocksPerYear; i++)
+                            @if (i == 0)
                             {
-                                if (i + (j * BlocksPerYear) >= courseData.Count)
-                                {
-                                    continue;
-                                }
-                                <div class="semester">
-                                    @* Assuming Semesters *@
-
-                                    @if (i == 0)
-                                    {
-                                        //Semester 1
-                                        <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
-                                    }
-                                    else
-                                    {
-                                        //Semester 2
-                                        <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
-                                    }
-
-                                </div>
+                                //Semester 1
+                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
                             }
+                            else
+                            {
+                                //Semester 2
+                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
+                            }
+
                         </div>
                     }
-                }
-        </CascadingValue>
+                </div>
+            }
+
+            <button @onclick="AddYear">Add Year</button>
+
+        }
+    </CascadingValue>
 </div>
 
 <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", Serialize(), "application/octet-stream"))>
@@ -279,6 +282,13 @@
         };
 
         return JsonConvert.SerializeObject(state);
+    }
+
+    private void AddYear()
+    {
+        courseData.Add(new List<TileData>());
+        courseData.Add(new List<TileData>());
+        StateHasChanged();
     }
 
 
