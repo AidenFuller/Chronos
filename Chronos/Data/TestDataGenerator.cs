@@ -29,8 +29,8 @@ namespace Chronos.Data
 
 
             #region Degrees
-            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = "Computer Science", UnitLength = 240, ElectiveCount = 2 });
-            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = "Software Engineering", UnitLength = 360, ElectiveCount = 2 });
+            
+            
             #endregion
 
 
@@ -391,16 +391,21 @@ namespace Chronos.Data
                 Console.WriteLine($"{c.CourseCode}, {c.CourseID}");
             }
 
+
+            var degree = "Computer Science";
+            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = degree, UnitLength = 240, ElectiveCount = 2 });
+            db.SaveChanges();
+
             #region Computer Science Majors
-            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Software Development" });
-            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Cyber Security" });
-            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Computer Systems and Robotics" });
-            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == "Computer Science").DegreeID, Name = "Data Science" });
+            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == degree).DegreeID, Name = "Software Development" });
+            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == degree).DegreeID, Name = "Cyber Security" });
+            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == degree).DegreeID, Name = "Computer Systems and Robotics" });
+            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == degree).DegreeID, Name = "Data Science" });
             #endregion
 
             db.SaveChanges();
 
-            var degree = "Computer Science";
+            
             #region Computer Science Core Courses
             var coreCourses = new string[]
             {
@@ -501,9 +506,53 @@ namespace Chronos.Data
             }
             #endregion
 
+            
+
+            degree = "Software Engineering";
+            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = degree, UnitLength = 360, ElectiveCount = 2 });
+            
+            db.SaveChanges();
+            
+            db.Majors.Add(new Models.Major() { DegreeID = db.Degrees.First(i => i.Name == degree).DegreeID, Name = "Default" });
+
+            
+
+            #region Software Engineering Courses
+            coreCourses = new string[]
+            {
+                "COMP1010", "ENGG1500", "MATH1110", "SENG1110", 
+                "COMP1140", "MATH1510", "SENG1050", "SENG1120", 
+                "SENG2050", "SENG2130", "SENG2200", 
+                "COMP2230", "COMP2240", "SENG2250", "ENGG2500",
+                "ENGG3500", "SENG3320", "SENG3150",
+                "SENG3160", "ELEC3500", "SENG2260",
+                "SENG4400", "SENG4430", "SENG4211A",
+                "SENG4211B", "ENGG4500"
+            };
+
+            foreach (string course in coreCourses)
+            {
+                db.CoreCourses.Add(new Models.CoreCourse() { CourseID = db.Courses.First(i => i.CourseCode == course).CourseID, DegreeID = db.Degrees.First(i => i.Name == degree).DegreeID });
+            }
+            #endregion
             db.SaveChanges();
 
+            var major = "Default";
+            var directedCourses = new string[]
+            {
+                "COMP3260", "COMP3290", "COMP3320", "COMP3330", "COMP3340", "COMP3350", "COMP4110", "COMP4120", "SENG4150", "SENG4160"
+            };
+
+            foreach (string softwareCourseMajor in directedCourses)
+            {
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == softwareCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == softwareMajor).MajorID, IsCompulsory = false });
+            }
+
+
+            db.SaveChanges();
             db.Dispose();
+
+            
         }
 
         private static int CourseID(string courseCode) => db.Courses.FirstOrDefault(c => c.CourseCode == courseCode)?.CourseID ?? -1;
