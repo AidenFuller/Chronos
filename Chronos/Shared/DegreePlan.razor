@@ -224,12 +224,17 @@
             //Add them to plan
             allCourseData.AddRange(tempCache);
 
-            Queue<TileData> cache = new Queue<TileData>(allCourseData);
+            List<TileData> cache = allCourseData.OrderBy(c => c.Course?.CourseCode[4..] ?? "9999").ToList();
 
-            // ALGORITHM -- TBD
+            output = SetupStructure(false);
 
-            courseData = new List<List<TileData>>();
+            if (Autocomplete(cache, 0))
+            {
+                Console.WriteLine("HOT");
+            }
 
+            courseData = output;
+            /*
             List<TileData> tempCourses = new List<TileData>();
 
             while (cache.Count > 0)
@@ -240,7 +245,8 @@
                     tempCourses = new List<TileData>();
                 }
 
-                TileData tile = cache.Dequeue();
+                TileData tile = cache.First();
+                cache.RemoveAt(0);
                 //List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, tile.Course);
                 //tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
 
@@ -248,6 +254,7 @@
                 //Console.WriteLine(tile.Course.CourseCode);
             }
             courseData.Add(tempCourses);
+            */
         }
     }
 
@@ -307,5 +314,80 @@
         };
 
         return JsonConvert.SerializeObject(state);
+    }
+
+    private List<List<TileData>> SetupStructure(bool sem2Start)
+    {
+        int yearCount = Degree.UnitLength / (UnitsPerBlock * BlocksPerYear);
+        if (sem2Start)
+            yearCount++;
+
+
+        List<List<TileData>> toReturn = new List<List<TileData>>();
+
+        for (int i = 0; i < yearCount; i++)
+        {
+            toReturn.Add(new List<TileData>());
+            toReturn.Add(new List<TileData>());
+        }
+
+        return toReturn;
+    }
+
+    private List<List<TileData>> output;
+    private bool Autocomplete(List<TileData> cache, int n)
+    {
+        if (cache.Count == 0)
+            return true;
+
+        int index = 0;
+        bool flag = false;
+        do
+        {
+            TileData td = cache[index++];
+            if (output[n].Sum(c => c.Course?.Units ?? 10) >= UnitsPerBlock)
+            {
+                n++;
+            }
+            if (n >= output.Count)
+                return false;
+
+            while (!ValidateCourse(td, n))
+            {
+                if (index == cache.Count)
+                    return false;
+                td = cache[index++];
+            }
+
+            Console.WriteLine(n);
+            output[n].Add(td);
+            cache.RemoveAt(--index);
+            flag = Autocomplete(new List<TileData>(cache), n);
+            cache.Insert(index, td);
+            index++;
+        }
+        while (!flag);
+
+        return true;
+    }
+
+    private bool ValidateCourse(TileData td, int n)
+    {
+        bool flag = true;
+
+        if (td.Course == null) return true;
+        if (n % 2 == 0 && (td.Runtime & CourseRuntime.Semester1) == 0)
+        {
+            flag = false;
+        }
+        else if (n % 2 == 1 && (td.Runtime & CourseRuntime.Semester2) == 0)
+        {
+            flag = false;
+        }
+
+        if (n > 0 && td.Course.CourseCode == "COMP3851B" && !output[n-1].Any(c => (c.Course?.CourseCode ?? "lmfao") == "COMP3851A"))
+            flag = false;
+
+        return flag;
     }
 }
