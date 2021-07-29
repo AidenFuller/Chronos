@@ -30,6 +30,7 @@
                 <div class="year-row">
                     @for (int i = 0; i < BlocksPerYear; i++)
                     {
+                        <h6 class="semester-label">Semester @(i + 1)</h6>
                         if (i + (j * BlocksPerYear) >= courseData.Count)
                         {
                             continue;
