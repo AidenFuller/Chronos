@@ -25,18 +25,11 @@
         {
             for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
             {
-<<<<<<< HEAD
-                <div class="year-row">
-                    @for (int i = 0; i < BlocksPerYear; i++)
-                    {
-                        <h6 class="semester-label">Semester @(i + 1)</h6>
-=======
 
 
                 <div class="year-row">
                     @for (int i = 0; i < BlocksPerYear; i++)
                     {
->>>>>>> origin/CHR-176
                         if (i + (j * BlocksPerYear) >= courseData.Count)
                         {
                             continue;
@@ -45,7 +38,6 @@
                             @* Assuming Semesters *@
 
                             @if (i == 0)
-<<<<<<< HEAD
                             {
                                 //Semester 1
                                 <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
@@ -55,28 +47,14 @@
                                 //Semester 2
                                 <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
                             }
-=======
-                            {
-                                //Semester 1
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
-                            }
-                            else
-                            {
-                                //Semester 2
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
-                            }
->>>>>>> origin/CHR-176
 
                         </div>
                     }
                 </div>
             }
-<<<<<<< HEAD
-=======
 
             <button @onclick="AddYear">Add Year</button>
 
->>>>>>> origin/CHR-176
         }
     </CascadingValue>
 </div>
@@ -334,8 +312,6 @@
 
         return JsonConvert.SerializeObject(state);
     }
-<<<<<<< HEAD
-=======
 
     private void AddYear()
     {
@@ -345,5 +321,4 @@
     }
 
 
->>>>>>> origin/CHR-176
 }
