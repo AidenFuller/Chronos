@@ -6,16 +6,20 @@
 
 @using Chronos.Shared.Tiles;
 
-<div class="year-label">
+@*<div class="year-label">
     <h7><b>Year 1</b></h7>
 </div>
 
 <div class="year-label">
     <h7><b>Year 2</b></h7>
-</div>
+</div>*@
+<CascadingValue Value="this">
 
-<div class="degreePlan">
-    <CascadingValue Value="this">
+    <div class="year-row" style="height: 100px;">
+        <TileSlot Tiles="@completedData" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+    </div>
+    <div class="degreePlan">
+
         @*Pass boolean to determine if ghosts are showing to all children*@
         @if (courseData == null)
         {
@@ -39,12 +43,12 @@
                             @if (i == 0)
                             {
                                 //Semester 1
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
+                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
                             }
                             else
                             {
                                 //Semester 2
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
+                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
                             }
 
                         </div>
@@ -52,8 +56,9 @@
                 </div>
             }
         }
-    </CascadingValue>
-</div>
+
+    </div>
+</CascadingValue>
 
 <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", Serialize(), "application/octet-stream"))>
     Save
@@ -70,6 +75,8 @@
     [Parameter] public AvailableCampus Campus { get; set; }
     [Parameter] public string JSON { get; set; } = null;
 
+
+    private List<TileData> completedData;
     private List<List<TileData>> courseData;
     private int blockSize = 2;
 
@@ -248,6 +255,19 @@
                 //Console.WriteLine(tile.Course.CourseCode);
             }
             courseData.Add(tempCourses);
+        }
+
+        //Parameters set, modify as needed
+        completedData = new List<TileData>();
+        foreach (Course c in CompletedCourses)
+        {
+            TileData td = new TileData()
+            {
+                Course = c,
+                TileType = TileType.Completed
+            };
+            completedData.Add(td);
+
         }
     }
 

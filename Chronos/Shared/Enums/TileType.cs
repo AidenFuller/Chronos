@@ -9,6 +9,7 @@ namespace Chronos.Shared.Enums
     {
         Core,
         Directed,
-        Elective
+        Elective,
+        Completed
     }
 }
