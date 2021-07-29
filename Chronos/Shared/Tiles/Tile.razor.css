@@ -27,8 +27,8 @@
     visibility: visible;
 }
 
-.Tile:hover .courseName {
-    font-weight: 600;    
+.Tile:hover .courseName {    
+    font-weight: 900;    
 }
 
 

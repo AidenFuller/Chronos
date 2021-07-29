@@ -51,12 +51,12 @@
                 //Inline css and external ccs reference done here to change effect while hover on
                 ---------------------------------------------------*@
 
-            <p style=" font-size: 12px;"> @Data.Course.Name </p>
+            <p style="font-size:10.8px;"> @Data.Course.Name </p>
         </div>
 
 
 
-        <div class="courseDes" style="margin-top:0px">
+        <div class="courseDes" >
 
             @*//---------------------------------------------------
                 //This piece of code is to show Units, Semester and available campus
@@ -67,18 +67,16 @@
 
             <div>
                 <hr style="margin-bottom:0px; margin-top:-15px;" />
-                <div>
+                <div style="word-wrap:break-word; white-space:nowrap;">
                     <div>
                         <p style="font-size:12px; display:block; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
                     </div>
                     <div>
-
                         @*//----------------------------------------
                             //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
                             //Delete this comment before final submission
                             //-----------------------------------------*@
-
-                        <p style="font-size: 12px; display: block; float: inline-end;"><b>@Data.Runtime</b> </p>
+                        <p style="font-size:12px; display: block; float: inline-end;"><b>@Data.Runtime</b> </p>
                     </div>
 
                     @*//-------------------------------------------------
