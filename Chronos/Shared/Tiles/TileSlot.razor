@@ -48,7 +48,7 @@
 
         //===== GhostTile Management =====
         //Ghosts are showing AND this tile slot is not the origin AND the payload runs in this semester
-        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && runsInSlot(Plan.DragPayload) && howManyUnits() != TOTAL_UNITS_ALLOWED)
+        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && runsInSlot(Plan.DragPayload) && HowManyUnits() != TOTAL_UNITS_ALLOWED)
         {
             showGhost = true;
         }
