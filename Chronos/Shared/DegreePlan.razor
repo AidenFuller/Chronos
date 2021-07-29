@@ -69,6 +69,7 @@
     [Parameter] public List<Course> CompletedCourses { get; set; }
     [Parameter] public AvailableCampus Campus { get; set; }
     [Parameter] public string JSON { get; set; } = null;
+    [Parameter] public CourseRuntime RuntimeStart { get; set; } = CourseRuntime.Semester2;
 
     private List<List<TileData>> courseData;
     private int blockSize = 2;
@@ -226,9 +227,9 @@
 
             List<TileData> cache = allCourseData.OrderBy(c => c.Course?.CourseCode[4..] ?? "9999").ToList();
 
-            output = SetupStructure(false);
+            output = SetupStructure(true);
 
-            if (Autocomplete(cache, 0))
+            if (Autocomplete(cache, 1))
             {
                 Console.WriteLine("HOT");
             }
@@ -349,7 +350,7 @@
             {
                 n++;
             }
-            if (n >= output.Count)
+            if (n >= Degree.UnitLength / UnitsPerBlock + (RuntimeStart == CourseRuntime.Semester2 ? 1 : 0))
                 return false;
 
             while (!ValidateCourse(td, n))
@@ -359,16 +360,26 @@
                 td = cache[index++];
             }
 
-            Console.WriteLine(n);
+            DisplayOutput();
             output[n].Add(td);
-            cache.RemoveAt(--index);
-            flag = Autocomplete(new List<TileData>(cache), n);
-            cache.Insert(index, td);
-            index++;
+            if (StateHasAppeared())
+            {
+                output[n].Remove(td);
+            }
+            else
+            {
+                cache.RemoveAt(index - 1);
+                flag = Autocomplete(new List<TileData>(cache), n);
+                if (!flag)
+                {
+                    output[n].Remove(td);
+                }
+                cache.Insert(index - 1, td);
+            }
         }
-        while (!flag);
+        while (!flag && index < cache.Count);
 
-        return true;
+        return flag;
     }
 
     private bool ValidateCourse(TileData td, int n)
@@ -389,5 +400,57 @@
             flag = false;
 
         return flag;
+    }
+
+    private void DisplayOutput()
+    {
+        int n = 0;
+        foreach (List<TileData> block in output)
+        {
+            Console.Write("|");
+            foreach (TileData td in block)
+            {
+                Console.Write(" ");
+                Console.Write(td.Course?.CourseCode ?? "Blank");
+                Console.Write(" ");
+            }
+            Console.Write("|");
+            if (n++ % 2 == 1)
+                Console.WriteLine();
+        }
+    }
+
+    private List<int> states = new List<int>();
+    private bool StateHasAppeared()
+    {
+        int hash = EncodeOutput();
+        if (states.Contains(hash))
+            return true;
+        states.Add(hash);
+        return false;
+    }
+
+    private int EncodeOutput()
+    {
+        string hashStr = "";
+        foreach (List<TileData> block in output)
+        {
+            foreach (TileData td in block.OrderBy(c => c.Course?.CourseCode ?? "9999"))
+            {
+                if (td.Course != null)
+                {
+                    hashStr += td.Course.CourseCode;
+                }
+                else if (td.TileType == TileType.Directed)
+                {
+                    hashStr += "D";
+                }
+                else
+                {
+                    hashStr += "E";
+                }
+            }
+        }
+        return hashStr.GetHashCode();
     }
 }
