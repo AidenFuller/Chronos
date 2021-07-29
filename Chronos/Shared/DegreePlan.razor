@@ -229,7 +229,7 @@
 
             output = SetupStructure(true);
 
-            if (Autocomplete(cache, 1))
+            if (await Autocomplete(cache, 1))
             {
                 Console.WriteLine("HOT");
             }
@@ -336,7 +336,7 @@
     }
 
     private List<List<TileData>> output;
-    private bool Autocomplete(List<TileData> cache, int n)
+    private async Task<bool> Autocomplete(List<TileData> cache, int n)
     {
         if (cache.Count == 0)
             return true;
@@ -353,14 +353,14 @@
             if (n >= Degree.UnitLength / UnitsPerBlock + (RuntimeStart == CourseRuntime.Semester2 ? 1 : 0))
                 return false;
 
-            while (!ValidateCourse(td, n))
+            while (!await ValidateCourse(td, n))
             {
                 if (index == cache.Count)
                     return false;
                 td = cache[index++];
             }
 
-            DisplayOutput();
+            //DisplayOutput();
             output[n].Add(td);
             if (StateHasAppeared())
             {
@@ -369,7 +369,7 @@
             else
             {
                 cache.RemoveAt(index - 1);
-                flag = Autocomplete(new List<TileData>(cache), n);
+                flag = await Autocomplete(new List<TileData>(cache), n);
                 if (!flag)
                 {
                     output[n].Remove(td);
@@ -382,7 +382,7 @@
         return flag;
     }
 
-    private bool ValidateCourse(TileData td, int n)
+    private async Task<bool> ValidateCourse(TileData td, int n)
     {
         bool flag = true;
 
@@ -398,6 +398,11 @@
 
         if (n > 0 && td.Course.CourseCode == "COMP3851B" && !output[n-1].Any(c => (c.Course?.CourseCode ?? "lmfao") == "COMP3851A"))
             flag = false;
+
+        
+        if (!await CheckPrerequisites(td, n))
+            flag = false;
+        
 
         return flag;
     }
@@ -441,16 +446,28 @@
                 {
                     hashStr += td.Course.CourseCode;
                 }
-                else if (td.TileType == TileType.Directed)
-                {
-                    hashStr += "D";
-                }
                 else
                 {
-                    hashStr += "E";
+                    hashStr += "BLANK";
                 }
             }
         }
         return hashStr.GetHashCode();
+    }
+
+    private async Task<bool> CheckPrerequisites(TileData tile, int n)
+    {
+        if (tile.Course == null)
+            return true;
+
+        var courses = await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID);
+
+        int tally = 0;
+        for (int i = 0; i < n; i++)
+        {
+            tally += courses.Count(c => output[n].Any(t => t.Course?.CourseCode == c.CourseCode));
+        }
+        
+        return tally == courses.Count();
     }
 }
