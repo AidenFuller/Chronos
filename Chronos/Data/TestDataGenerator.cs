@@ -401,7 +401,7 @@ namespace Chronos.Data
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT3800"), PrerequisiteCourseID = CourseID("SENG2130"), CourseRequisite = RequisiteType.AssumedKnowledge }); //HAS OR WITH INFT2150
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("MATH1120"), PrerequisiteCourseID = CourseID("MATH1110"), CourseRequisite = RequisiteType.HardRequisite }); //OR with MATH1210
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC2720"), PrerequisiteCourseID = CourseID("ELEC1710"), CourseRequisite = RequisiteType.AssumedKnowledge });
-            //db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC2720"), PrerequisiteCourseID = CourseID("ENGG1003"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            //db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC2720"), PrerequisiteCourseID = CourseID("ENGG1003"), CourseRequisite = RequisiteType.AssumedKnowledge }); Not in the degree plan, but an assumed knowledge?
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3290"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3290"), PrerequisiteCourseID = CourseID("COMP2270"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR WITH ELEC2700
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2200"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge });
