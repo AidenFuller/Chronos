@@ -48,7 +48,7 @@
 
         //===== GhostTile Management =====
         //Ghosts are showing AND this tile slot is not the origin AND the payload runs in this semester
-        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && RunsInSlot(Plan.DragPayload) && HowManyUnits() != TOTAL_UNITS_ALLOWED)
+        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && RunsInSlot(Plan.DragPayload) && Tiles.Sum(c => c.Course?.Units ?? 10) != TOTAL_UNITS_ALLOWED)
         {
             showGhost = true;
         }
@@ -70,20 +70,4 @@
         return td.Runtime.Equals(BlockType);
     }
 
-    private int HowManyUnits()
-    {
-        int totalUnits = 0;
-        foreach (TileData tile in Tiles)
-        {
-            if (tile.Course == null)
-            {
-                totalUnits += 10;
-            }
-            else
-            {
-                totalUnits += tile.Course.Units;
-            }
-        }
-        return totalUnits;
-    }
 }
