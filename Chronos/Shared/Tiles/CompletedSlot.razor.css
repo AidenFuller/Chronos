@@ -1,0 +1,8 @@
+﻿.CompletedCourseDiv{
+    display: flex; 
+    width: 100%;
+}
+
+    .CompletedCourseDiv:hover{
+    background-color:grey;
+}

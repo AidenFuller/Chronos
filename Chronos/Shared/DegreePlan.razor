@@ -15,9 +15,10 @@
 </div>*@
 <CascadingValue Value="this">
 
-    <div class="year-row" style="height: 100px;">
-        <TileSlot Tiles="@completedData" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+    <div class="year-row" style="min-height: 20px; margin-bottom: 50px;">
+        <CompletedSlot Tiles="@completedData" />
     </div>
+
     <div class="degreePlan">
 
         @*Pass boolean to determine if ghosts are showing to all children*@
@@ -127,6 +128,17 @@
         DragFrom.Remove(DragPayload);
         DragPayload.Status = 0;
     }
+
+    public void MovePayloadTo(CompletedSlot slot)
+    {
+        //Made design decision to handle this hear, saves intensive cascading parameters.
+        //Leaving this note here as I may decide to change later.
+        slot.Tiles.Add(DragPayload);
+        DragFrom.Remove(DragPayload);
+        DragPayload.Status = 0;
+    }
+
+
 
 
 
