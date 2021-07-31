@@ -1,5 +1,6 @@
 ﻿@using Chronos.Shared.Tiles;
 @using Chronos.Shared.Modals;
+@inject IToastService ToastService
 
 <CascadingValue Value="this">
     @foreach (TileData tile in Tiles)
@@ -26,6 +27,7 @@
     public DegreePlan Plan { get; set; }
 
     private bool showGhost = false;
+    private bool FiftyUnitsTrigger = true;
 
 
 
@@ -56,7 +58,14 @@
         {
             showGhost = false;
         }
+        if (Tiles.Sum(c => c.Course?.Units ?? 10 ) == 50 && FiftyUnitsTrigger) //Change 50 to readonly total in later branch.
+        {
+            RenderFragment message = @<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: </text>;
+            ToastService.ShowToast(ToastLevel.Warning, message);
+            FiftyUnitsTrigger = false;
+        }
     }
+
 
     //Returns if a course runs in this slot
     private bool runsInSlot(TileData td)
