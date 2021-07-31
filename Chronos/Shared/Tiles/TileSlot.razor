@@ -2,15 +2,31 @@
 @using Chronos.Shared.Modals;
 
 <CascadingValue Value="this">
-    @foreach (TileData tile in Tiles)
+
+    @if (CompletedFlag == false)
     {
-        <Tile Data=@tile />
+        @foreach (TileData tile in Tiles)
+        {
+            <Tile Data=@tile />
+        }
+
+        <GhostTile show="@showGhost" />
     }
+    else
+    {
+        @foreach (TileData tile in Tiles)
+        {
+            <Tile Data=@tile CompletedFlag=@CompletedFlag/>
+        }
+
+        <GhostTile Show="@showGhost" CompletedFlag=@CompletedFlag/>
+    }
+
 
     @* Determine if this ghost should be shown *@
     @* Ghosts are currently showing *@
 
-    <GhostTile show="@showGhost"/>
+
 
 
 </CascadingValue>
@@ -21,6 +37,9 @@
 
     [Parameter]
     public Models.Enums.CourseRuntime BlockType { get; set; }
+
+    [Parameter]
+    public bool CompletedFlag { get; set; } = false;
 
     [CascadingParameter]
     public DegreePlan Plan { get; set; }
@@ -61,6 +80,10 @@
     //Returns if a course runs in this slot
     private bool runsInSlot(TileData td)
     {
+        if (CompletedFlag == true)
+        {
+            return true;
+        }
         if (td.Course == null)
         {
             //Empty tile, runs anywhere

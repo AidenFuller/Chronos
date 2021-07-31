@@ -6,7 +6,6 @@
 }
 .completedCourses {
     width: 100%;
-    background-color: green;
 }
 .year-row {
     border-style: solid;
@@ -15,7 +14,6 @@
     flex-direction: row;
     flex-wrap: nowrap;
     max-width: 100%;
-    
 }
 
 .semester {

@@ -22,6 +22,16 @@
         transform: scale(1.05);
     }
 
+.CompletedCourse{
+    display: flex;
+    width: 100%;
+}
+
+.CompletedCourse:hover {
+    background-color: grey;
+}
+
+
 .courseDes {
     visibility: hidden;
 }
