@@ -89,7 +89,7 @@
             //Empty tile, runs anywhere
             return true;
         }
-        return td.Runtime.Equals(BlockType);
+        return (td.Runtime & BlockType) > 0;
     }
 
 
