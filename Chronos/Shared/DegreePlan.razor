@@ -1,8 +1,9 @@
 @inject DegreeCourseService DegreeCourseService
-@inject CourseService CourseService 
+@inject CourseService CourseService
 @inject MajorCourseService MajorCourseService
-@inject IBlazorDownloadFileService DownloadService 
-@using Newtonsoft.Json;  
+@inject IBlazorDownloadFileService DownloadService
+@inject IToastService ToastService 
+@using Newtonsoft.Json;
 
 @using Chronos.Shared.Tiles;
 
@@ -39,12 +40,12 @@
                             @if (i == 0)
                             {
                                 //Semester 1
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
+                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
                             }
                             else
                             {
                                 //Semester 2
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
+                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
                             }
 
                         </div>
@@ -72,6 +73,7 @@
 
     private List<List<TileData>> courseData;
     private int blockSize = 2;
+    private bool fiftyUnitsWarningBool = false;
 
     //Dragging Variables
     public TileData DragPayload { get; set; }
@@ -105,7 +107,8 @@
     }
 
     //Hide all ghost tiles in the plan
-    public void HideGhostTiles() {
+    public void HideGhostTiles()
+    {
         //remove the ghost tiles
         ShowGhosts = false;
         StateHasChanged();
@@ -119,6 +122,7 @@
         slot.Tiles.Add(DragPayload);
         DragFrom.Remove(DragPayload);
         DragPayload.Status = 0;
+        FiftyUnitWarning(slot);
     }
 
 
@@ -272,11 +276,11 @@
     //Returns all courses in the plan
     public IEnumerable<Course> getAllCourses()
     {
-        IEnumerable <Course> allC = new List<Course>();
+        IEnumerable<Course> allC = new List<Course>();
 
-        foreach(List<TileData> sem in courseData)
+        foreach (List<TileData> sem in courseData)
         {
-            foreach(TileData td in sem)
+            foreach (TileData td in sem)
             {
                 allC.Append(td.Course);
             }
@@ -285,10 +289,19 @@
         return allC;
     }
 
+    public void FiftyUnitWarning(TileSlot slot)
+    {
+        if (slot.Tiles.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
+        {
+        RenderFragment message =@<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
+        ToastService.ShowToast(ToastLevel.Warning, message);
+        fiftyUnitsWarningBool = true;
+        }
+    }
     //Returns true if the plan contains the course
     public bool ContainsCourse(Course course)
     {
-        return courseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
+    return courseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
     }
 
 
@@ -296,16 +309,16 @@
     private string Serialize()
     {
         SaveState state = new SaveState()
-        {
-            Campus = this.Campus,
-            CompletedCourses = this.CompletedCourses,
-            Degree = this.Degree,
-            BlocksPerYear = this.BlocksPerYear,
-            CourseData = this.courseData,
-            Major = this.Major,
-            UnitsPerBlock = this.UnitsPerBlock
-        };
+    {
+        Campus = this.Campus,
+        CompletedCourses = this.CompletedCourses,
+        Degree = this.Degree,
+        BlocksPerYear = this.BlocksPerYear,
+        CourseData = this.courseData,
+        Major = this.Major,
+        UnitsPerBlock = this.UnitsPerBlock
+    };
 
-        return JsonConvert.SerializeObject(state);
+    return JsonConvert.SerializeObject(state);
     }
 }
