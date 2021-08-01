@@ -82,7 +82,7 @@
     public int ErrorCount { get; set; }
     public int WarningCount { get; set; }
 
-    //Updates teh degree plan after a drag
+    //Updates the degree plan after a drag
     public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
     {
         if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
