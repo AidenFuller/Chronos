@@ -25,6 +25,8 @@
         {
             for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
             {
+
+
                 <div class="year-row">
                     @for (int i = 0; i < BlocksPerYear; i++)
                     {
@@ -51,6 +53,9 @@
                     }
                 </div>
             }
+
+            <button @onclick="AddYear">Add Year</button>
+
         }
     </CascadingValue>
 </div>
@@ -470,4 +475,13 @@
 
         return tally == courseList.Count();
     }
+
+    private void AddYear()
+    {
+        courseData.Add(new List<TileData>());
+        courseData.Add(new List<TileData>());
+        StateHasChanged();
+    }
+
+
 }
