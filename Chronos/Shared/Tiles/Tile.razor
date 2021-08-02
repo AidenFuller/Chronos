@@ -31,68 +31,65 @@
         //Some Inline CSS to make it work
         //--------------------------------------------
 
-        <div>
-            @*-----------------------------------------------------------
-                //Removing this for now
-                //Probablhy add later if needed
-                //This is the code to see course type
-                //Delete or add entirely before final submission
 
-                <div class="courseType">
-                    <h7><b>@Data.TileType</b></h7>
-                    <hr style="margin-bottom:0px; margin-top:0px;" />
-                </div>
-                --------------------------------------------------------------*@
+        <div class="courseCode">
 
             @*---------------------------------------------
                 //This div is to show course code on top of the tile
                 //hr tag margin 0 to remove the white space in between the line
                 ---------------------------------------------*@
-            <div class="courseCode">
-                <h7> @Data.Course.CourseCode </h7>
-                <hr style="margin-bottom:0px; margin-top:0px;" />
-            </div>
+
+            <h7> @Data.Course.CourseCode </h7>
+            <hr style="margin-bottom:0px; margin-top:0px;" />
+        </div>
+
+
+        <div class="courseName">
 
             @*--------------------------------------------------
                 //This div is to show the course name
                 //Inline css and external ccs reference done here to change effect while hover on
                 ---------------------------------------------------*@
 
-            <div class="courseName">
-                <p style=" font-size: 12px;"> @Data.Course.Name </p>
-            </div>
+            <p style="font-size:10.8px;"> @Data.Course.Name </p>
         </div>
 
-        //---------------------------------------------------
-        //This piece of code is to show Units, Semester and available campus
-        //Div looping to make it organise
-        //Using Inline flex and with that float to use 2 divs in the same line and locate that left or right
-        //hr margins are used for removing the white space
-        //---------------------------------------------------
 
-        <div class="courseDes">
+
+        <div class="courseDes" >
+
+            @*//---------------------------------------------------
+                //This piece of code is to show Units, Semester and available campus
+                //Div looping to make it organise
+                //Using Inline flex and with that float to use 2 divs in the same line and locate that left or right
+                //hr margins are used for removing the white space
+                //---------------------------------------------------*@
+
             <div>
                 <hr style="margin-bottom:0px; margin-top:-15px;" />
-                <div>
+                <div style="word-wrap:break-word; white-space:nowrap;">
                     <div>
-                        <p style="font-size:12px; display:inline-flex; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
+                        <p style="font-size:12px; display:block; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
                     </div>
                     <div>
                         @*//----------------------------------------
                             //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
                             //Delete this comment before final submission
                             //-----------------------------------------*@
-                        <p style="font-size: 12px; display: inline-flex; float: inline-end;"><b>@Data.Runtime</b> </p>
+                        <p style="font-size:12px; display: block; float: inline-end;"><b>@Data.Runtime</b> </p>
                     </div>
+
+                    @*//-------------------------------------------------
+                        //This br tags are blocking the white spaces
+                        //-------------------------------------------------*@
+
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+
                 </div>
-               @*-------------------------------------------------------
-                //Not in use for now as aiden said no campus needed
-                //Probably modify that later on
-                ----------------------------------------------------
-                <div style="margin-bottom:0px; margin-top:-15px;">
-                    <p><b>@Data.Campus </b></p>
-                </div>
-                ----------------------------------------------------*@
             </div>
         </div>
     }

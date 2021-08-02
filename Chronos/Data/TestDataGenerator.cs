@@ -366,7 +366,7 @@ namespace Chronos.Data
             #region MATH CourseAvailability
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1510"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH2340"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1110"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
+            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1110"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 | CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1110"), Campus = AvailableCampus.SingaporeBCA, Runtime = CourseRuntime.Semester2 | CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1110"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1120"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 | CourseRuntime.SummerLS});
@@ -385,6 +385,50 @@ namespace Chronos.Data
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("JAPN2502"), Campus = AvailableCampus.Online, Runtime = CourseRuntime.Semester2 });
             #endregion
 
+            #region COMP Prerequisite Courses
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG1120"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //Need to include INFT2012 at some point as it says OR on UON website.
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP2230"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP2230"), PrerequisiteCourseID = CourseID("MATH1510"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP2240"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP2270"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP2270"), PrerequisiteCourseID = CourseID("MATH1510"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2130"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); 
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2260"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //Has ors with INFT (MOST SENG1110s DO)
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2260"), PrerequisiteCourseID = CourseID("SENG1050"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3851B"), PrerequisiteCourseID = CourseID("COMP3851A"), CourseRequisite = RequisiteType.HardRequisite });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC3500"), PrerequisiteCourseID = CourseID("COMP2240"), CourseRequisite = RequisiteType.AssumedKnowledge }); //Has ors with ELEC
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC3500"), PrerequisiteCourseID = CourseID("MATH1510"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT3800"), PrerequisiteCourseID = CourseID("SENG2130"), CourseRequisite = RequisiteType.AssumedKnowledge }); //HAS OR WITH INFT2150
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("MATH1120"), PrerequisiteCourseID = CourseID("MATH1110"), CourseRequisite = RequisiteType.HardRequisite }); //OR with MATH1210
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC2720"), PrerequisiteCourseID = CourseID("ELEC1710"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            //db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC2720"), PrerequisiteCourseID = CourseID("ENGG1003"), CourseRequisite = RequisiteType.AssumedKnowledge }); Not in the degree plan, but an assumed knowledge?
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3290"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3290"), PrerequisiteCourseID = CourseID("COMP2270"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR WITH ELEC2700
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2200"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2200"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3320"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3320"), PrerequisiteCourseID = CourseID("MATH1110"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3350"), PrerequisiteCourseID = CourseID("COMP1140"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3350"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //Or with INFT1004
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG3320"), PrerequisiteCourseID = CourseID("SENG2130"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT2150"), PrerequisiteCourseID = CourseID("COMP1010"), CourseRequisite = RequisiteType.AssumedKnowledge }); //On UON, it suggests these courses and having a basic understanding of a thing, it is not ASSUMED like the others but I still put them here. 
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT2150"), PrerequisiteCourseID = CourseID("COMP1140"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2050"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR WITH INFT1004
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2050"), PrerequisiteCourseID = CourseID("SENG1050"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3260"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3260"), PrerequisiteCourseID = CourseID("SENG1120"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3260"), PrerequisiteCourseID = CourseID("MATH1510"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT3960"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR WITH INFT1004
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT2031"), PrerequisiteCourseID = CourseID("SENG1050"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3500"), PrerequisiteCourseID = CourseID("COMP2240"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR WITH INFT2031 OR ELEC2720
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3600"), PrerequisiteCourseID = CourseID("COMP2250"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR WITH COMP3500
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT2051"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR INFT2012
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3340"), PrerequisiteCourseID = CourseID("MATH1510"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3340"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT3050"), PrerequisiteCourseID = CourseID("COMP1140"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT3050"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //OR INFT2012
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG4430"), PrerequisiteCourseID = CourseID("SENG2130"), CourseRequisite = RequisiteType.AssumedKnowledge });
+            #endregion
 
             foreach (Models.Course c in db.Courses)
             {
