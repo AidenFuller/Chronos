@@ -27,46 +27,42 @@
     visibility: visible;
 }
 
-.Tile:hover .courseName {
-    font-weight: 600;    
-}
-
-.Tile:hover .courseType {
-    font-weight: lighter;
-    font-size: 15px;
+.Tile:hover .courseName {    
+    font-weight: 900;    
 }
 
 
-.droppable {
+.droppable > .courseCode {
     background-color: greenyellow;
 }
 
-.Elective {
+.Elective > .courseCode {
     background-color: #BCE954;
 }
 
-.Directed {
+.Directed > .courseCode {
     background-color: #659EC7;
 }
 
-.Core {
+.Core > .courseCode {
     background-color: #808080;
 }
 
-.Error {
-    background-color: #C38EC7;
+
+.Error > .courseCode {
+    background-color: #FF9696
 }
-.Warning {
+.Warning > .courseCode {
     background-color: #FFCC99
 }
 
-.AddElective {
+.AddElective > .courseCode {
     background-color: #ffffff;
     border-color: #000000;
     color: #F2DD60;
 }
 
-.AddDirected {
+.AddDirected > .courseCode {
     background-color: #ffffff;
     border-color: #000000;
     color: #458EE7;

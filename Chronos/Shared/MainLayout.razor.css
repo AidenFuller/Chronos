@@ -4,6 +4,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    /*//We can change that after discussion*/
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;
+  /*  background-image: url('file:///C:\Chronos\Chronos\v413-sasi-44-crystalbackground_2.jpg');*/
 }
 
 .main {
@@ -21,7 +24,7 @@
     align-items: center;
 }
 
-    .top-row ::deep a, .top-row .btn-link {
+    .top-row deep a, .top-row .btn-link {
         white-space: nowrap;
         margin-left: 1.5rem;
     }
