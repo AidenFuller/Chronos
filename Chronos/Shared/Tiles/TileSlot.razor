@@ -1,5 +1,6 @@
 ﻿@using Chronos.Shared.Tiles;
 @using Chronos.Shared.Modals;
+@inject IToastService ToastService
 
 <CascadingValue Value="this">
     @foreach (TileData tile in Tiles)
@@ -29,8 +30,6 @@
     private readonly int TOTAL_UNITS_ALLOWED = 50;
 
 
-
-
     protected override void OnParametersSet()
     {
 
@@ -57,7 +56,9 @@
         {
             showGhost = false;
         }
+
     }
+
 
     //Returns if a course runs in this slot
     private bool RunsInSlot(TileData td)
