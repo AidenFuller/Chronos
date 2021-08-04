@@ -48,12 +48,12 @@
                 <div class="semester-div">
                     <!--Another Div to break up spacing on the page, this is for the Semester type.-->
                     <h4>Choose your semester</h4>
-                    <select name="semester" class="semester-selection">
+                    <select name="semester" class="semester-selection" @bind="StartingBlock">
                         <!--Selection that allows for the Semester type a student is undertaking.-->
                         <!--Potentially change this to radio buttons, that are next to each other?-->
-                        <option value="">Select your starting semester</option>
-                        <option value="SemesterOne">Semester 1</option>
-                        <option value="SemesterTwo">Semester 2</option>
+                        <option value="0">Select your starting semester</option>
+                        <option value="@CourseRuntime.Semester1">Semester 1</option>
+                        <option value="@CourseRuntime.Semester2">Semester 2</option>
                     </select>
                 </div>
                 <br />
@@ -132,7 +132,11 @@
 
 @if (RenderedDegree != null)
 {
-    <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses Campus="AvailableCampus.Callaghan" />
+    <DegreePlan Degree=@RenderedDegree 
+                Major=@RenderedMajor 
+                CompletedCourses=@RenderedCompletedCourses 
+                RuntimeStart="@RenderedStartBlock" 
+                Campus="AvailableCampus.Callaghan" />
 }
 else if (JSON != null)
 {
@@ -183,6 +187,7 @@ else if (JSON != null)
     private IList<Course> SelectedCourse; //This is the list of selected Courses from the search results above.
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private Major SelectedMajor;
+    private CourseRuntime StartingBlock;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
@@ -192,6 +197,7 @@ else if (JSON != null)
     // this is the instance that is passed to the DegreePlan component
     private Degree RenderedDegree;
     private Major RenderedMajor;
+    private CourseRuntime RenderedStartBlock;
     private List<Course> RenderedCompletedCourses = null;
     private string JSON = null;
 
@@ -213,11 +219,17 @@ else if (JSON != null)
             RenderFragment message = @<text>Major has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
+        if (StartingBlock == 0)
+        { 
+            RenderFragment message = @<text>Starting Semester has not been selected</text>;
+            ToastService.ShowToast(ToastLevel.Error, message);
+        }
 
-        if (SelectedDegree != null && SelectedMajor != null)
+        if (SelectedDegree != null && SelectedMajor != null && StartingBlock != 0)
         {
             RenderedDegree = SelectedDegree;
             RenderedMajor = SelectedMajor;
+            RenderedStartBlock = StartingBlock;
             StateHasChanged();
         }
     }
