@@ -301,7 +301,7 @@
     //Returns true if the plan contains the course
     public bool ContainsCourse(Course course)
     {
-    return courseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
+        return courseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
     }
 
 
@@ -309,16 +309,16 @@
     private string Serialize()
     {
         SaveState state = new SaveState()
-    {
-        Campus = this.Campus,
-        CompletedCourses = this.CompletedCourses,
-        Degree = this.Degree,
-        BlocksPerYear = this.BlocksPerYear,
-        CourseData = this.courseData,
-        Major = this.Major,
-        UnitsPerBlock = this.UnitsPerBlock
-    };
+        {
+            Campus = this.Campus,
+            CompletedCourses = this.CompletedCourses,
+            Degree = this.Degree,
+            BlocksPerYear = this.BlocksPerYear,
+            CourseData = this.courseData,
+            Major = this.Major,
+            UnitsPerBlock = this.UnitsPerBlock
+        };
 
-    return JsonConvert.SerializeObject(state);
+        return JsonConvert.SerializeObject(state);
     }
 }
