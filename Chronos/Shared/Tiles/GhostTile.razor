@@ -4,16 +4,30 @@
 
 @if (fastHide == false)
 {
-    <div class="@hide @expand Tile" @ondrop="HandleDrop"
-         @ondragenter="HandleDragEnter"
-         @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
-    </div>
+    if (CompletedFlag == false)
+    {
+        <div class="@hide @expand Tile" @ondrop="HandleDrop"
+             @ondragenter="HandleDragEnter"
+             @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
+        </div>
+    }
+    else
+    {
+        <div class="@hide @expand CompletedTile" @ondrop="HandleDrop"
+             @ondragenter="HandleDragEnter"
+             @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
+        </div>
+    }
+
 }
 
 @code {
     //Core control to show or hide the tile
     [Parameter]
-    public bool Show { get; set; }
+    public bool Show { get; set; } = false;
+
+    [Parameter]
+    public bool CompletedFlag { get; set; } = false;
 
     [CascadingParameter]
     TileSlot Slot { get; set; }
@@ -55,7 +69,7 @@
     // Handling Dropping
     private void HandleDrop()
     {
-        //FastHide works by toggling so the div gets unrendered. When OnParameter retriggered and it is set to false again. 
+        //FastHide works by toggling so the div gets unrendered. When OnParameter retriggered and it is set to false again.
         fastHide = true;
         hide = "Hidden";
         Show = false;
