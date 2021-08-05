@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Blazored.Modal;
 using Blazored.Toast;
 using BlazorDownloadFile;
+using Chronos.Shared.Wrappers;
 
 namespace Chronos
 {
@@ -48,6 +49,7 @@ namespace Chronos
             services.AddScoped<ElectiveService>();
             services.AddScoped<MajorCourseService>();
             services.AddScoped<MajorService>();
+            services.AddScoped<SaveState>();
 
             services.AddBlazoredModal();
             services.AddBlazoredToast();
