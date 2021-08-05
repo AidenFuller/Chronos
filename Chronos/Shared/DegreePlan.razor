@@ -3,21 +3,25 @@
 @inject MajorCourseService MajorCourseService
 @inject IBlazorDownloadFileService DownloadService
 @inject IToastService ToastService
-@inject SaveState State
+@inject SaveState State 
+
 @using Newtonsoft.Json;
 
 @using Chronos.Shared.Tiles;
 
-<div class="year-label">
+@*<div class="year-label">
     <h7><b>Year 1</b></h7>
 </div>
 
 <div class="year-label">
     <h7><b>Year 2</b></h7>
-</div>
+</div>*@
+<CascadingValue Value="this">
+    <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+        <TileSlot Tiles="@completedData" CompletedFlag="true" />
+    </div>
 
-<div class="degreePlan">
-    <CascadingValue Value="this">
+    <div class="degreePlan">
         @*Pass boolean to determine if ghosts are showing to all children*@
         @if (State.CourseData == null)
         {
@@ -25,42 +29,40 @@
         }
         else
         {
-            for (int j = 0; j < (State.CourseData.Count + 1) / State.BlocksPerYear; j++)
+            bool EOF = false;
+            for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
             {
-
-
                 <div class="year-row">
                     @for (int i = 0; i < State.BlocksPerYear; i++)
                     {
-                        <h6 class="semester-label">Semester @(i + 1)</h6>
-                        if (i + (j * State.BlocksPerYear) >= State.CourseData.Count)
+                        if (EOF = !enumerator.MoveNext())
                         {
-                            continue;
+                            break;
                         }
+                        <h6 class="semester-label">Semester @(i + 1)</h6>
                         <div class="semester">
                             @* Assuming Semesters *@
 
                             @if (i == 0)
                             {
                                 //Semester 1
-                                <TileSlot Tiles="@State.CourseData[i + (j * State.BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
                             }
                             else
                             {
                                 //Semester 2
-                                <TileSlot Tiles="@State.CourseData[i + (j * State.BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
                             }
-
                         </div>
                     }
                 </div>
             }
 
             <button @onclick="AddYear">Add Year</button>
-
         }
-    </CascadingValue>
-</div>
+    </div>
+</CascadingValue>
+
 
 <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
     Save
@@ -74,6 +76,7 @@
     public AvailableCampus Campus { get; private set; }
 
 
+    private List<TileData> completedData;
     private int blockSize = 2;
     private bool fiftyUnitsWarningBool = false;
 
@@ -214,29 +217,18 @@
             // Throw toast error
         }
 
-
-        /*
-        List<TileData> tempCourses = new List<TileData>();
-
-        while (cache.Count > 0)
+        //Parameters set, modify as needed
+        completedData = new List<TileData>();
+        foreach (Course c in State.CompletedCourses)
         {
-            if (tempCourses.Sum(t => (t.Course?.Units ?? 10)) >= UnitsPerBlock)
+            TileData td = new TileData()
             {
-                courseData.Add(tempCourses);
-                tempCourses = new List<TileData>();
-            }
+                Course = c,
+                TileType = TileType.Elective
+            };
+            completedData.Add(td);
 
-            TileData tile = cache.First();
-            cache.RemoveAt(0);
-            //List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, tile.Course);
-            //tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
-
-            tempCourses.Add(tile);
-            //Console.WriteLine(tile.Course.CourseCode);
         }
-        courseData.Add(tempCourses);
-        */
-
     }
 
     //Returns a list of missing prerequisite courses

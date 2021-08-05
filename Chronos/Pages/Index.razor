@@ -213,6 +213,7 @@
             State.Degree = SelectedDegree;
             State.Major = SelectedMajor;
             State.RuntimeStart = CourseRuntime.Semester1;
+            State.CompletedCourses = SelectedCourse is not null ? SelectedCourse.ToList() : new List<Course>();
             readyToRender = true;
             StateHasChanged();
         }
