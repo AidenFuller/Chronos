@@ -1,14 +1,23 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
 @using Chronos.Shared.Modals;
-<button class="Tile @tileClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+<button class="@tileClass @typeClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
         @ondrop="HandleDrop"
         @ondragenter="HandleDragEnter"
         @ondragleave="HandleDragLeave"
         @ondragend="HandleDragEnd">
 
-    @if (Data.Course is null)
+    @if (CompletedFlag)
+    {
+        //This tile is in the completed box
+        <div style= "width:100%;">
+            CourseID: @Data.Course.CourseCode
+            Description: @Data.Course.Name
+            Units: @Data.Course.Units
+            Treated as: @Data.TileType;
+        </div>
+    }else if (Data.Course is null)
     {
         @if (Data.TileType == TileType.Core)
         {
@@ -107,6 +116,9 @@
     [Parameter]
     public TileData Data { get; set; }
 
+    [Parameter]
+    public bool CompletedFlag { get; set; } = false;
+
     //[Parameter]
     //public string Width { get; set; } = "200px";
 
@@ -114,8 +126,17 @@
 
     [CascadingParameter] public IModalService Modal { get; set; }
 
-    private string tileClass; //CSS class based on TileType
+    private string tileClass = "Tile"; //CSS class based on TileType
+    private string typeClass; //CSS class based on TileType
 
+    protected override void OnParametersSet()
+    {
+        if (CompletedFlag)
+        {
+            tileClass = "CompletedCourse";
+        }
+        UpdateTileType();
+    }
     public void UpdateTileType()
     {
         if (Data.Status == 0)
@@ -123,39 +144,42 @@
             switch (Data.TileType)
             {
                 case TileType.Core:
-                    tileClass = "Core";
+                    typeClass = "Core";
                     break;
                 case TileType.Directed:
                     if (Data.Course is null)
                     {
-                        tileClass = "AddDirected";
+                        typeClass = "AddDirected";
                     }
                     else
                     {
-                        tileClass = "Directed";
+                        typeClass = "Directed";
                     }
 
                     break;
                 case TileType.Elective:
                     if (Data.Course is null)
                     {
-                        tileClass = "AddElective";
+                        typeClass = "AddElective";
                     }
                     else
                     {
-                        tileClass = "Elective";
+                        typeClass = "Elective";
                     }
                     break;
             }
         }
 
-        if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0)
+        if (CompletedFlag == false)
         {
-            tileClass = "Error";
-        }
-        else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
-        {
-            tileClass = "Warning";
+            if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0)
+            {
+                typeClass = "Error";
+            }
+            else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
+            {
+                typeClass = "Warning";
+            }
         }
     }
 
@@ -257,9 +281,6 @@
     }
 
 
-    protected override void OnParametersSet()
-    {
-        UpdateTileType();
-    }
+
 
 }

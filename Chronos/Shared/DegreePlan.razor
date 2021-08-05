@@ -7,53 +7,58 @@
 
 @using Chronos.Shared.Tiles;
 
-<div class="year-label">
+@*<div class="year-label">
     <h7><b>Year 1</b></h7>
 </div>
 
 <div class="year-label">
     <h7><b>Year 2</b></h7>
-</div>
+</div>*@
+<CascadingValue Value="this">
 
-<div class="degreePlan">
-    <CascadingValue Value="this">
-        @*Pass boolean to determine if ghosts are showing to all children*@
-        @if (courseData == null)
-        {
-            <p>Loading...</p>
-        }
-        else
-        {
-            for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
+
+        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+            <TileSlot Tiles="@completedData" CompletedFlag="true" />
+        </div>
+
+        <div class="degreePlan">
+
+
+            @*Pass boolean to determine if ghosts are showing to all children*@
+            @if (courseData == null)
             {
-
-
-                <div class="year-row">
-                    @for (int i = 0; i < BlocksPerYear; i++)
-                    {
-                        <h6 class="semester-label">Semester @(i + 1)</h6>
-                        if (i + (j * BlocksPerYear) >= courseData.Count)
-                        {
-                            continue;
-                        }
-                        <div class="semester">
-                            @* Assuming Semesters *@
-
-                            @if (i == 0)
-                            {
-                                //Semester 1
-                                <TileSlot Tiles="@courseData[i + (j * BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                            }
-                            else
-                            {
-                                //Semester 2
-                                <TileSlot Tiles="@courseData[i + (j * BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                            }
-
-                        </div>
-                    }
-                </div>
+                <p>Loading...</p>
             }
+            else
+            {
+                for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
+                {
+                    <div class="year-row">
+                        @for (int i = 0; i < BlocksPerYear; i++)
+                        {
+                            <h6 class="semester-label">Semester @(i + 1)</h6>
+                            if (i + (j * BlocksPerYear) >= courseData.Count)
+                            {
+                                continue;
+                            }
+                            <div class="semester">
+                                @* Assuming Semesters *@
+
+                                @if (i == 0)
+                                {
+                                    //Semester 1
+                                    <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                }
+                                else
+                                {
+                                    //Semester 2
+                                    <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                }
+
+                            </div>
+                        }
+                    </div>
+                }
 
             <br />
 
@@ -74,7 +79,7 @@
 
         }
     </CascadingValue>
-</div>
+
 
 <br />
 <br />
@@ -95,6 +100,8 @@
     [Parameter] public string JSON { get; set; } = null;
     [Parameter] public CourseRuntime RuntimeStart { get; set; } = CourseRuntime.Semester1;
 
+
+    private List<TileData> completedData;
     private List<List<TileData>> courseData;
     private int blockSize = 2;
     private bool fiftyUnitsWarningBool = false;
@@ -272,6 +279,19 @@
             }
             courseData.Add(tempCourses);
             */
+        }
+
+        //Parameters set, modify as needed
+        completedData = new List<TileData>();
+        foreach (Course c in CompletedCourses)
+        {
+            TileData td = new TileData()
+            {
+                Course = c,
+                TileType = TileType.Elective
+            };
+            completedData.Add(td);
+
         }
     }
 
