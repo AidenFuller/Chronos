@@ -18,9 +18,41 @@
     
     flex: 1 1 0;
 }
-.Expand {
-    max-width: 20%;
+    .Tile.Expand{
+        max-width: 20%;
+    }
+
+.CompletedTile {
+    border-style: solid;
+    border-radius: 20px;
+    opacity: 20%;
+    background-color: green;
+    display: inline-block;
+    text-align: center;
+    height: 25px;
+    transition: .5s;
+    /*Makes it so items will each be given the same space*/
+    width: 50%;
 }
+
+    .CompletedTile.Expand {
+        width: 75%;
+    }
+
+
+/*.CompletedGhost {
+    border-style: solid;
+    border-radius: 20px;
+    opacity: 20%;
+    background-color: lightblue;
+    height: 50px;
+    transition: .5s;*/
+    /*Makes it so items will each be given the same space*/
+    /*width: 50%;
+    max-width: 50%;
+    align-self: center;
+}*/
+
 
 
 .Hiding {

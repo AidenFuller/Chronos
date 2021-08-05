@@ -218,8 +218,7 @@ else if (JSON != null)
         {
             RenderedDegree = SelectedDegree;
             RenderedMajor = SelectedMajor;
-            if (SelectedCourses != null && SelectedCourses.Count != 0)
-                RenderedCompletedCourses = new (SelectedCourses);
+            RenderedCompletedCourses = SelectedCourse?.ToList() ?? new List<Course>();
             StateHasChanged();
         }
     }
