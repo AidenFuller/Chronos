@@ -7,13 +7,19 @@
 
 @using Chronos.Shared.Tiles;
 
-<div class="year-label">
+@*<div class="year-label">
     <h7><b>Year 1</b></h7>
 </div>
 
 <div class="year-label">
     <h7><b>Year 2</b></h7>
-</div>
+</div>*@
+<CascadingValue Value="this">
+
+
+        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+            <TileSlot Tiles="@completedData" CompletedFlag="true" />
+        </div>
 
 <div class="degreePlan">
     <CascadingValue Value="this">
@@ -53,11 +59,12 @@
                 </div>
             }
 
-            <button @onclick="AddYear">Add Year</button>
+                <button @onclick="AddYear">Add Year</button>
 
-        }
+            }
+        </div>
     </CascadingValue>
-</div>
+
 
 <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", Serialize(), "application/octet-stream"))>
     Save
@@ -73,8 +80,10 @@
     [Parameter] public List<Course> CompletedCourses { get; set; }
     [Parameter] public AvailableCampus Campus { get; set; }
     [Parameter] public string JSON { get; set; } = null;
-    [Parameter] public CourseRuntime RuntimeStart { get; set; } = CourseRuntime.Semester2;
+    [Parameter] public CourseRuntime RuntimeStart { get; set; } = CourseRuntime.Semester1;
 
+
+    private List<TileData> completedData;
     private List<List<TileData>> courseData;
     private int blockSize = 2;
     private bool fiftyUnitsWarningBool = false;
@@ -252,6 +261,19 @@
             }
             courseData.Add(tempCourses);
             */
+        }
+
+        //Parameters set, modify as needed
+        completedData = new List<TileData>();
+        foreach (Course c in CompletedCourses)
+        {
+            TileData td = new TileData()
+            {
+                Course = c,
+                TileType = TileType.Elective
+            };
+            completedData.Add(td);
+
         }
     }
 
