@@ -1,64 +1,71 @@
 @inject DegreeCourseService DegreeCourseService
-@inject CourseService CourseService 
+@inject CourseService CourseService
 @inject MajorCourseService MajorCourseService
-@inject IBlazorDownloadFileService DownloadService 
-@using Newtonsoft.Json;  
+@inject IBlazorDownloadFileService DownloadService
+@inject IToastService ToastService 
+@using Newtonsoft.Json;
 
 @using Chronos.Shared.Tiles;
 
-<div class="year-label">
+@*<div class="year-label">
     <h7><b>Year 1</b></h7>
 </div>
 
 <div class="year-label">
     <h7><b>Year 2</b></h7>
-</div>
+</div>*@
+<CascadingValue Value="this">
 
-<div class="degreePlan">
-    <CascadingValue Value="this">
-        @*Pass boolean to determine if ghosts are showing to all children*@
-        @if (courseData == null)
-        {
-            <p>Loading...</p>
-        }
-        else
-        {
-            for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
+
+        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+            <TileSlot Tiles="@completedData" CompletedFlag="true" />
+        </div>
+
+        <div class="degreePlan">
+
+
+            @*Pass boolean to determine if ghosts are showing to all children*@
+            @if (courseData == null)
             {
-
-
-                <div class="year-row">
-                    @for (int i = 0; i < BlocksPerYear; i++)
-                    {
-                        <h6 class="semester-label">Semester @(i + 1)</h6>
-                        if (i + (j * BlocksPerYear) >= courseData.Count)
-                        {
-                            continue;
-                        }
-                        <div class="semester">
-                            @* Assuming Semesters *@
-
-                            @if (i == 0)
-                            {
-                                //Semester 1
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1/>
-                            }
-                            else
-                            {
-                                //Semester 2
-                                <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2/>
-                            }
-
-                        </div>
-                    }
-                </div>
+                <p>Loading...</p>
             }
+            else
+            {
+                for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
+                {
+                    <div class="year-row">
+                        @for (int i = 0; i < BlocksPerYear; i++)
+                        {
+                            <h6 class="semester-label">Semester @(i + 1)</h6>
+                            if (i + (j * BlocksPerYear) >= courseData.Count)
+                            {
+                                continue;
+                            }
+                            <div class="semester">
+                                @* Assuming Semesters *@
 
-            <button @onclick="AddYear">Add Year</button>
+                                @if (i == 0)
+                                {
+                                    //Semester 1
+                                    <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                }
+                                else
+                                {
+                                    //Semester 2
+                                    <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                }
 
-        }
+                            </div>
+                        }
+                    </div>
+                }
+
+                <button @onclick="AddYear">Add Year</button>
+
+            }
+        </div>
     </CascadingValue>
-</div>
+
 
 <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", Serialize(), "application/octet-stream"))>
     Save
@@ -76,8 +83,11 @@
     [Parameter] public string JSON { get; set; } = null;
     [Parameter] public CourseRuntime RuntimeStart { get; set; } = CourseRuntime.Semester1;
 
+
+    private List<TileData> completedData;
     private List<List<TileData>> courseData;
     private int blockSize = 2;
+    private bool fiftyUnitsWarningBool = false;
 
     //Dragging Variables
     public TileData DragPayload { get; set; }
@@ -111,7 +121,8 @@
     }
 
     //Hide all ghost tiles in the plan
-    public void HideGhostTiles() {
+    public void HideGhostTiles()
+    {
         //remove the ghost tiles
         ShowGhosts = false;
         StateHasChanged();
@@ -125,6 +136,7 @@
         slot.Tiles.Add(DragPayload);
         DragFrom.Remove(DragPayload);
         DragPayload.Status = 0;
+        FiftyUnitWarning(slot);
     }
 
 
@@ -252,6 +264,19 @@
             courseData.Add(tempCourses);
             */
         }
+
+        //Parameters set, modify as needed
+        completedData = new List<TileData>();
+        foreach (Course c in CompletedCourses)
+        {
+            TileData td = new TileData()
+            {
+                Course = c,
+                TileType = TileType.Elective
+            };
+            completedData.Add(td);
+
+        }
     }
 
     //Returns a list of missing prerequisite courses
@@ -275,11 +300,11 @@
     //Returns all courses in the plan
     public IEnumerable<Course> getAllCourses()
     {
-        IEnumerable <Course> allC = new List<Course>();
+        IEnumerable<Course> allC = new List<Course>();
 
-        foreach(List<TileData> sem in courseData)
+        foreach (List<TileData> sem in courseData)
         {
-            foreach(TileData td in sem)
+            foreach (TileData td in sem)
             {
                 allC.Append(td.Course);
             }
@@ -288,6 +313,15 @@
         return allC;
     }
 
+    public void FiftyUnitWarning(TileSlot slot)
+    {
+        if (slot.Tiles.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
+        {
+        RenderFragment message =@<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
+        ToastService.ShowToast(ToastLevel.Warning, message);
+        fiftyUnitsWarningBool = true;
+        }
+    }
     //Returns true if the plan contains the course
     public bool ContainsCourse(Course course)
     {
