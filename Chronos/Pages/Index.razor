@@ -2,12 +2,14 @@
 @inject DegreeService degreeService
 @inject CourseService courseService
 @inject MajorService majorService
+@inject SaveState State
 @inject IToastService ToastService
 @inject IWebHostEnvironment env
 
 @using System
 @using System.Text
 @using Microsoft.AspNetCore.Hosting
+@using Newtonsoft.Json; 
 
 <h1 class="heading-for-landing">Welcome to Chronos!</h1>
 <div>
@@ -48,12 +50,12 @@
                 <div class="semester-div">
                     <!--Another Div to break up spacing on the page, this is for the Semester type.-->
                     <h4>Choose your semester</h4>
-                    <select name="semester" class="semester-selection">
+                    <select name="semester" class="semester-selection" @bind="StartingBlock">
                         <!--Selection that allows for the Semester type a student is undertaking.-->
                         <!--Potentially change this to radio buttons, that are next to each other?-->
-                        <option value="">Select your starting semester</option>
-                        <option value="SemesterOne">Semester 1</option>
-                        <option value="SemesterTwo">Semester 2</option>
+                        <option value="0">Select your starting semester</option>
+                        <option value="@CourseRuntime.Semester1">Semester 1</option>
+                        <option value="@CourseRuntime.Semester2">Semester 2</option>
                     </select>
                 </div>
                 <br />
@@ -81,7 +83,7 @@
             <!--This BlazoredTypeahead tag instead searches based on Courses, it is a multi select so you can selected multiple completed courses.-->
             <!--Bind values are the courses that were selected-->
             <BlazoredTypeahead SearchMethod="SearchCourses"
-                               @bind-Values="SelectedCourse"
+                               @bind-Values="SelectedCourses"
                                Disabled="IsItDisabled"
                                EnableDropDown="true"
                                placeholder="Please enter a course...">
@@ -130,13 +132,9 @@
     <p>You can do this!</p>
 </div>
 
-@if (RenderedDegree != null)
+@if (readyToRender)
 {
-    <DegreePlan Degree=@RenderedDegree Major=@RenderedMajor CompletedCourses=@RenderedCompletedCourses Campus="AvailableCampus.Callaghan" />
-}
-else if (JSON != null)
-{
-    <DegreePlan JSON="@JSON" />
+    <DegreePlan  />
 }
 
 
@@ -180,20 +178,17 @@ else if (JSON != null)
     protected IEnumerable<Degree> Degrees { get; set; } //IEnumerables of degrees and courses to hold the databases.
     protected IEnumerable<Course> Courses { get; set; }
     protected IEnumerable<Major> Majors { get; set; }
-    private IList<Course> SelectedCourse; //This is the list of selected Courses from the search results above.
+    private IList<Course> SelectedCourses; //This is the list of selected Courses from the search results above.
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private Major SelectedMajor;
+    private CourseRuntime StartingBlock;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
     private bool IsItDisabled;
     private bool IsAdminLoginThere = false; //This bool will be a checker to see if the Admin Login should appear or not.
 
-    // this is the instance that is passed to the DegreePlan component
-    private Degree RenderedDegree;
-    private Major RenderedMajor;
-    private List<Course> RenderedCompletedCourses = null;
-    private string JSON = null;
+    private bool readyToRender = false;
 
     //This function is here so it can toggle the admin button when the admin login button is hit.
     private void ToggleAdminLogin()
@@ -213,12 +208,19 @@ else if (JSON != null)
             RenderFragment message = @<text>Major has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
+        if (StartingBlock == 0)
+        { 
+            RenderFragment message = @<text>Starting Semester has not been selected</text>;
+            ToastService.ShowToast(ToastLevel.Error, message);
+        }
 
-        if (SelectedDegree != null && SelectedMajor != null)
+        if (SelectedDegree != null && SelectedMajor != null && StartingBlock != 0)
         {
-            RenderedDegree = SelectedDegree;
-            RenderedMajor = SelectedMajor;
-            RenderedCompletedCourses = SelectedCourse is not null ? SelectedCourse.ToList() : new List<Course>();
+            State.Degree = SelectedDegree;
+            State.Major = SelectedMajor;
+            State.RuntimeStart = StartingBlock;
+            State.CompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
+            readyToRender = true;
             StateHasChanged();
         }
     }
@@ -236,7 +238,11 @@ else if (JSON != null)
         byte[] buffer = new byte[stream.Length];
 
         await stream.ReadAsync(buffer);
-        JSON = Encoding.UTF8.GetString(buffer);
+        string json = Encoding.UTF8.GetString(buffer);
+
+        SaveState newState = JsonConvert.DeserializeObject<SaveState>(json);
+
+        State.CloneFrom(newState);
 
         isLoading = false;
     }

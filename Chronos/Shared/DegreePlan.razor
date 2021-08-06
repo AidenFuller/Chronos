@@ -3,6 +3,8 @@
 @inject MajorCourseService MajorCourseService
 @inject IBlazorDownloadFileService DownloadService
 @inject IToastService ToastService
+@inject SaveState State 
+
 @using Newtonsoft.Json;
 
 @using Chronos.Shared.Tiles;
@@ -15,50 +17,46 @@
     <h7><b>Year 2</b></h7>
 </div>*@
 <CascadingValue Value="this">
+    <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+        <TileSlot Tiles="@completedData" CompletedFlag="true" />
+    </div>
 
-
-        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
-            <TileSlot Tiles="@completedData" CompletedFlag="true" />
-        </div>
-
-        <div class="degreePlan">
-
-
-            @*Pass boolean to determine if ghosts are showing to all children*@
-            @if (courseData == null)
+    <div class="degreePlan">
+        @*Pass boolean to determine if ghosts are showing to all children*@
+        @if (State.CourseData == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            bool EOF = false;
+            for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
             {
-                <p>Loading...</p>
-            }
-            else
-            {
-                for (int j = 0; j < (courseData.Count + 1) / BlocksPerYear; j++)
-                {
-                    <div class="year-row">
-                        @for (int i = 0; i < BlocksPerYear; i++)
+                <div class="year-row">
+                    @for (int i = 0; i < State.BlocksPerYear; i++)
+                    {
+                        if (EOF = !enumerator.MoveNext())
                         {
-                            <h6 class="semester-label">Semester @(i + 1)</h6>
-                            if (i + (j * BlocksPerYear) >= courseData.Count)
-                            {
-                                continue;
-                            }
-                            <div class="semester">
-                                @* Assuming Semesters *@
-
-                                @if (i == 0)
-                                {
-                                    //Semester 1
-                                    <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                                }
-                                else
-                                {
-                                    //Semester 2
-                                    <TileSlot Tiles="@courseData[i+(j*BlocksPerYear)]" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                                }
-
-                            </div>
+                            break;
                         }
-                    </div>
-                }
+                        <h6 class="semester-label">Semester @(i + 1)</h6>
+                        <div class="semester">
+                            @* Assuming Semesters *@
+
+                            @if (i == 0)
+                            {
+                                //Semester 1
+                                <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                            }
+                            else
+                            {
+                                //Semester 2
+                                <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                            }
+                        </div>
+                    }
+                </div>
+            }
 
             <br />
 
@@ -78,31 +76,23 @@
             </div>
 
         }
-    </CascadingValue>
+    </div>
+</CascadingValue>
 
-
-<br />
-<br />
-
-<div style="float:left; background-color:burlywood" class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", Serialize(), "application/octet-stream"))>
+<br /><br />
+<div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
     Save
 </div>
 
 
 @code {
-        //Parameters
-    [Parameter] public int BlocksPerYear { get; set; } = 2;
-    [Parameter] public int UnitsPerBlock { get; set; } = 40;
-    [Parameter] public Degree Degree { get; set; }
-    [Parameter] public Major Major { get; set; }
-    [Parameter] public List<Course> CompletedCourses { get; set; }
-    [Parameter] public AvailableCampus Campus { get; set; }
-    [Parameter] public string JSON { get; set; } = null;
-    [Parameter] public CourseRuntime RuntimeStart { get; set; } = CourseRuntime.Semester1;
+    // Cascaded Parameters
+    public Degree Degree { get; private set; }
+    public Major Major { get; private set; }
+    public AvailableCampus Campus { get; private set; }
 
 
     private List<TileData> completedData;
-    private List<List<TileData>> courseData;
     private int blockSize = 2;
     private bool fiftyUnitsWarningBool = false;
 
@@ -120,7 +110,7 @@
     {
         if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
         {
-            Utilities.SwapValues(courseData, DragPayload, draggedOn);
+            Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
             draggedOn.Status = 0;
             DragPayload.Status = 0;
             StateHasChanged();
@@ -158,63 +148,71 @@
 
 
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        //JSON Management
-        if (JSON != null)
-        {
-            //JSON Input
-            SaveState state = JsonConvert.DeserializeObject<SaveState>(JSON);
-            courseData = state.CourseData;
-            BlocksPerYear = state.BlocksPerYear;
-            UnitsPerBlock = state.UnitsPerBlock;
-            Degree = state.Degree;
-            Major = state.Major;
-            CompletedCourses = state.CompletedCourses;
-            Campus = state.Campus;
-        }
-        else
-        {
-            //Manaul input
+        Degree = State.Degree;
+        Major = State.Major;
+        Campus = State.Campus;
+        //Query database
+        List<TileData> allCourseData = new List<TileData>();
+        List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(State.Degree.DegreeID)).ToList();
 
-            //Query database
-            List<TileData> allCourseData = new List<TileData>();
-            List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).ToList();
+            List<Course> completedCourseValidator = new List<Course>(State.CompletedCourses);
+            int completedUnitCount = 0;
 
             //Loop through pulled courses
             foreach (Course course in coreCourses)
             {
+                int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+                if (counter > 0)
+                {
+                    completedUnitCount += counter;
+                    continue;
+                }
                 //Create a tile data and add to list
                 TileData td = new TileData()
                 {
                     Course = course,
                     TileType = TileType.Core,
-                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
+                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
                 };
 
-                allCourseData.Add(td);
-            }
+            allCourseData.Add(td);
+        }
 
-            var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(Major.MajorID);
+            var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(State.Major.MajorID);
             //Pull directed courses
             foreach (Course course in coreDirectedCourses)
             {
+                int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+                if (counter > 0)
+                {
+                    completedUnitCount += counter;
+                    continue;
+                }
                 //Add to list
                 TileData td = new TileData()
                 {
                     Course = course,
                     TileType = TileType.Directed,
                     IsDirectedCore = true,
-                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, Campus)
+                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
                 };
 
-                allCourseData.Add(td);
-            }
+            allCourseData.Add(td);
+        }
 
-            List<TileData> tempCache = new List<TileData>();
+        List<TileData> tempCache = new List<TileData>();
+
 
             //Create all empty directed
-            for (int i = 0; i < Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (Degree.ElectiveCount * 10); i += 10)
+            if (completedCourseValidator.Count > 0)
+            {
+                var nonCompulsoryCourses = await MajorCourseService.GetNonCompulsoryCoursesAsync(State.Major.MajorID);
+                completedUnitCount += completedCourseValidator.RemoveAll(c => nonCompulsoryCourses.Any(n => n.CourseID == c.CourseID));
+            }
+
+            for (int i = 0; i < State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (State.Degree.ElectiveCount * 10) - (completedUnitCount * 10); i += 10)
             {
                 TileData td = new TileData()
                 {
@@ -225,7 +223,7 @@
             }
 
             //Create all empty elective courses
-            for (int i = 0; i < Degree.ElectiveCount; i++)
+            for (int i = 0; i < State.Degree.ElectiveCount - completedCourseValidator.Count; i++)
             {
                 TileData td = new TileData()
                 {
@@ -235,55 +233,31 @@
                 tempCache.Add(td);
             }
 
-            //Add them to plan
-            allCourseData.AddRange(tempCache);
+        //Add them to plan
+        allCourseData.AddRange(tempCache);
 
-            List<TileData> cache = allCourseData.OrderBy(c => c.Course?.CourseCode[4..] ?? "9999").ToList();
+        List<TileData> cache = allCourseData.OrderBy(c => c.Course?.CourseCode[4..] ?? "9999").ToList();
 
-            output = SetupStructure(RuntimeStart == CourseRuntime.Semester2);
+        output = SetupStructure(State.RuntimeStart == CourseRuntime.Semester2);
 
-            int n = RuntimeStart == CourseRuntime.Semester2 ? 1 : 0;
+        int n = State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0;
 
-            if (await Autocomplete(cache, n))
+        if (await Autocomplete(cache, n))
+        {
+            for(int i = 0; i < output.Count; i++)
             {
-                for (int i = 0; i < output.Count; i++)
-                {
-                    output[i] = output[i].OrderBy(c => c.Course?.CourseCode ?? "ZZZZ9999").ToList();
-                }
-                courseData = output;
+                output[i] = output[i].OrderBy(c => c.Course?.CourseCode ?? "ZZZZ9999").ToList();
             }
-            else
-            {
-                // Throw toast error
-            }
-
-
-            /*
-            List<TileData> tempCourses = new List<TileData>();
-
-            while (cache.Count > 0)
-            {
-                if (tempCourses.Sum(t => (t.Course?.Units ?? 10)) >= UnitsPerBlock)
-                {
-                    courseData.Add(tempCourses);
-                    tempCourses = new List<TileData>();
-                }
-
-                TileData tile = cache.First();
-                cache.RemoveAt(0);
-                //List<Course> missingPrerequisites = await FindMissingPrerequisites(BlockedCourses, tile.Course);
-                //tile.Status = missingPrerequisites.Count > 0 ? ErrorStatus.Warning : 0;
-
-                tempCourses.Add(tile);
-                //Console.WriteLine(tile.Course.CourseCode);
-            }
-            courseData.Add(tempCourses);
-            */
+            State.CourseData = output;
+        }
+        else
+        {
+            // Throw toast error
         }
 
         //Parameters set, modify as needed
         completedData = new List<TileData>();
-        foreach (Course c in CompletedCourses)
+        foreach (Course c in State.CompletedCourses)
         {
             TileData td = new TileData()
             {
@@ -318,7 +292,7 @@
     {
         IEnumerable<Course> allC = new List<Course>();
 
-        foreach (List<TileData> sem in courseData)
+        foreach (List<TileData> sem in State.CourseData)
         {
             foreach (TileData td in sem)
             {
@@ -341,30 +315,12 @@
     //Returns true if the plan contains the course
     public bool ContainsCourse(Course course)
     {
-        return courseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
-    }
-
-
-    //Returns string Serialized for JSON
-    private string Serialize()
-    {
-        SaveState state = new SaveState()
-        {
-            Campus = this.Campus,
-            CompletedCourses = this.CompletedCourses,
-            Degree = this.Degree,
-            BlocksPerYear = this.BlocksPerYear,
-            CourseData = this.courseData,
-            Major = this.Major,
-            UnitsPerBlock = this.UnitsPerBlock
-        };
-
-        return JsonConvert.SerializeObject(state);
+        return State.CourseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
     }
 
     private List<List<TileData>> SetupStructure(bool sem2Start)
     {
-        int yearCount = Degree.UnitLength / (UnitsPerBlock * BlocksPerYear);
+        int yearCount = State.Degree.UnitLength / (State.UnitsPerBlock * State.BlocksPerYear);
         if (sem2Start)
             yearCount++;
 
@@ -396,10 +352,10 @@
         do
         {
             TileData td = cache[index++];
-            if (output[n].Sum(c => c.Course?.Units ?? 10) >= UnitsPerBlock)
+            if (output[n].Sum(c => c.Course?.Units ?? 10) >= State.UnitsPerBlock)
                 n++;
 
-            if (n >= Degree.UnitLength / UnitsPerBlock + (RuntimeStart == CourseRuntime.Semester2 ? 1 : 0))
+            if (n >= State.Degree.UnitLength / State.UnitsPerBlock + (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0))
                 return false;
 
             while (!await ValidateCourse(td, n))
@@ -435,9 +391,9 @@
     {
         bool flag = true;
 
-        int groupNumber = (n - (RuntimeStart == CourseRuntime.Semester2 ? 1 : 0)) / 2 + 1;
+        int groupNumber = (n - (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0)) / 2 + 1;
 
-        int minDirectedGroup = int.Parse((await MajorCourseService.GetAllDirectedCoursesAsync(Major.MajorID)).ToList().Min(c => c.CourseCode[4]).ToString());
+        int minDirectedGroup = int.Parse((await MajorCourseService.GetAllDirectedCoursesAsync(State.Major.MajorID)).ToList().Min(c => c.CourseCode[4]).ToString());
 
         if (td.Course == null)
         {
@@ -524,13 +480,15 @@
             tally += courseList.Count(c => output[i].Any(t => t.Course?.CourseCode == c.CourseCode));
         }
 
+        tally += courseList.Count(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseCode == c.CourseCode));
+
         return tally == courseList.Count();
     }
 
     private void AddYear()
     {
-        courseData.Add(new List<TileData>());
-        courseData.Add(new List<TileData>());
+        State.CourseData.Add(new List<TileData>());
+        State.CourseData.Add(new List<TileData>());
         StateHasChanged();
     }
 
@@ -542,15 +500,15 @@
         //Remove the last index from the total tile
         //----------------------------------------
 
-        if (courseData.Count > 0)
+        if (State.CourseData.Count > 0)
         {
-            courseData.RemoveAt(courseData.Count - 1);
+            State.CourseData.RemoveAt(State.CourseData.Count - 1);
 
         }
 
-        if (courseData.Count > 0)
+        if (State.CourseData.Count > 0)
         {
-            courseData.RemoveAt(courseData.Count - 1);
+            State.CourseData.RemoveAt(State.CourseData.Count - 1);
 
         }
 
