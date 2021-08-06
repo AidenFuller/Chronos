@@ -154,6 +154,7 @@
             Major = state.Major;
             CompletedCourses = state.CompletedCourses;
             Campus = state.Campus;
+            RuntimeStart = state.RuntimeStart;
         }
         else
         {
@@ -360,7 +361,8 @@
             BlocksPerYear = this.BlocksPerYear,
             CourseData = this.courseData,
             Major = this.Major,
-            UnitsPerBlock = this.UnitsPerBlock
+            UnitsPerBlock = this.UnitsPerBlock,
+            RuntimeStart = this.RuntimeStart
         };
 
         return JsonConvert.SerializeObject(state);

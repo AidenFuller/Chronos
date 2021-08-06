@@ -16,5 +16,6 @@ namespace Chronos.Shared.Wrappers
         public int UnitsPerBlock { get; set; } = 40;
         public List<Course> CompletedCourses { get; set; }
         public AvailableCampus Campus { get; set; }
+        public CourseRuntime RuntimeStart { get; set; }
     }
 }
