@@ -230,7 +230,7 @@ else if (JSON != null)
             RenderedDegree = SelectedDegree;
             RenderedMajor = SelectedMajor;
             RenderedStartBlock = StartingBlock;
-            RenderedCompletedCourses = SelectedCourse?.ToList() ?? new List<Course>();
+            RenderedCompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
             StateHasChanged();
         }
     }
