@@ -22,7 +22,6 @@
         </div>
 
 <div class="degreePlan">
-    <CascadingValue Value="this">
         @*Pass boolean to determine if ghosts are showing to all children*@
         @if (courseData == null)
         {
@@ -164,9 +163,18 @@
             List<TileData> allCourseData = new List<TileData>();
             List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(Degree.DegreeID)).ToList();
 
+            List<Course> completedCourseValidator = new List<Course>(CompletedCourses);
+            int completedUnitCount = 0;
+
             //Loop through pulled courses
             foreach (Course course in coreCourses)
             {
+                int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+                if (counter > 0)
+                {
+                    completedUnitCount += counter;
+                    continue;
+                }
                 //Create a tile data and add to list
                 TileData td = new TileData()
                 {
@@ -182,6 +190,12 @@
             //Pull directed courses
             foreach (Course course in coreDirectedCourses)
             {
+                int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+                if (counter > 0)
+                {
+                    completedUnitCount += counter;
+                    continue;
+                }
                 //Add to list
                 TileData td = new TileData()
                 {
@@ -196,8 +210,15 @@
 
             List<TileData> tempCache = new List<TileData>();
 
+
             //Create all empty directed
-            for (int i = 0; i < Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (Degree.ElectiveCount * 10); i += 10)
+            if (completedCourseValidator.Count > 0)
+            {
+                var nonCompulsoryCourses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Major.MajorID);
+                completedUnitCount += completedCourseValidator.RemoveAll(c => nonCompulsoryCourses.Any(n => n.CourseID == c.CourseID));
+            }
+
+            for (int i = 0; i < Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (Degree.ElectiveCount * 10) - (completedUnitCount * 10); i += 10)
             {
                 TileData td = new TileData()
                 {
@@ -208,7 +229,7 @@
             }
 
             //Create all empty elective courses
-            for (int i = 0; i < Degree.ElectiveCount; i++)
+            for (int i = 0; i < Degree.ElectiveCount - completedCourseValidator.Count; i++)
             {
                 TileData td = new TileData()
                 {
@@ -316,9 +337,9 @@
     {
         if (slot.Tiles.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
         {
-        RenderFragment message =@<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
-        ToastService.ShowToast(ToastLevel.Warning, message);
-        fiftyUnitsWarningBool = true;
+            RenderFragment message =@<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
+            ToastService.ShowToast(ToastLevel.Warning, message);
+            fiftyUnitsWarningBool = true;
         }
     }
     //Returns true if the plan contains the course
@@ -507,6 +528,8 @@
         {
             tally += courseList.Count(c => output[i].Any(t => t.Course?.CourseCode == c.CourseCode));
         }
+
+        tally += courseList.Count(c => CompletedCourses.Any(completedCourse => completedCourse.CourseCode == c.CourseCode));
 
         return tally == courseList.Count();
     }

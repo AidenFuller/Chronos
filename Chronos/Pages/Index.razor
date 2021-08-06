@@ -81,7 +81,7 @@
             <!--This BlazoredTypeahead tag instead searches based on Courses, it is a multi select so you can selected multiple completed courses.-->
             <!--Bind values are the courses that were selected-->
             <BlazoredTypeahead SearchMethod="SearchCourses"
-                               @bind-Values="SelectedCourse"
+                               @bind-Values="SelectedCourses"
                                Disabled="IsItDisabled"
                                EnableDropDown="true"
                                placeholder="Please enter a course...">
@@ -184,7 +184,7 @@ else if (JSON != null)
     protected IEnumerable<Degree> Degrees { get; set; } //IEnumerables of degrees and courses to hold the databases.
     protected IEnumerable<Course> Courses { get; set; }
     protected IEnumerable<Major> Majors { get; set; }
-    private IList<Course> SelectedCourse; //This is the list of selected Courses from the search results above.
+    private IList<Course> SelectedCourses; //This is the list of selected Courses from the search results above.
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private Major SelectedMajor;
     private CourseRuntime StartingBlock;
@@ -229,8 +229,8 @@ else if (JSON != null)
         {
             RenderedDegree = SelectedDegree;
             RenderedMajor = SelectedMajor;
-            RenderedCompletedCourses = SelectedCourse is not null ? SelectedCourse.ToList() : new List<Course>();
             RenderedStartBlock = StartingBlock;
+            RenderedCompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
             StateHasChanged();
         }
     }
