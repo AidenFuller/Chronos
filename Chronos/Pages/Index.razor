@@ -2,12 +2,14 @@
 @inject DegreeService degreeService
 @inject CourseService courseService
 @inject MajorService majorService
+@inject SaveState State
 @inject IToastService ToastService
 @inject IWebHostEnvironment env
 
 @using System
 @using System.Text
 @using Microsoft.AspNetCore.Hosting
+@using Newtonsoft.Json; 
 
 <h1 class="heading-for-landing">Welcome to Chronos!</h1>
 <div>
@@ -130,17 +132,9 @@
     <p>You can do this!</p>
 </div>
 
-@if (RenderedDegree != null)
+@if (readyToRender)
 {
-    <DegreePlan Degree=@RenderedDegree 
-                Major=@RenderedMajor 
-                CompletedCourses=@RenderedCompletedCourses 
-                RuntimeStart="@RenderedStartBlock" 
-                Campus="AvailableCampus.Callaghan" />
-}
-else if (JSON != null)
-{
-    <DegreePlan JSON="@JSON" />
+    <DegreePlan  />
 }
 
 
@@ -194,12 +188,7 @@ else if (JSON != null)
     private bool IsItDisabled;
     private bool IsAdminLoginThere = false; //This bool will be a checker to see if the Admin Login should appear or not.
 
-    // this is the instance that is passed to the DegreePlan component
-    private Degree RenderedDegree;
-    private Major RenderedMajor;
-    private CourseRuntime RenderedStartBlock;
-    private List<Course> RenderedCompletedCourses = null;
-    private string JSON = null;
+    private bool readyToRender = false;
 
     //This function is here so it can toggle the admin button when the admin login button is hit.
     private void ToggleAdminLogin()
@@ -227,10 +216,11 @@ else if (JSON != null)
 
         if (SelectedDegree != null && SelectedMajor != null && StartingBlock != 0)
         {
-            RenderedDegree = SelectedDegree;
-            RenderedMajor = SelectedMajor;
-            RenderedStartBlock = StartingBlock;
-            RenderedCompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
+            State.Degree = SelectedDegree;
+            State.Major = SelectedMajor;
+            State.RuntimeStart = StartingBlock;
+            State.CompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
+            readyToRender = true;
             StateHasChanged();
         }
     }
@@ -248,7 +238,11 @@ else if (JSON != null)
         byte[] buffer = new byte[stream.Length];
 
         await stream.ReadAsync(buffer);
-        JSON = Encoding.UTF8.GetString(buffer);
+        string json = Encoding.UTF8.GetString(buffer);
+
+        SaveState newState = JsonConvert.DeserializeObject<SaveState>(json);
+
+        State.CloneFrom(newState);
 
         isLoading = false;
     }

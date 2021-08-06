@@ -15,7 +15,19 @@ namespace Chronos.Shared.Wrappers
         public int BlocksPerYear { get; set; } = 2;
         public int UnitsPerBlock { get; set; } = 40;
         public List<Course> CompletedCourses { get; set; }
-        public AvailableCampus Campus { get; set; }
+        public AvailableCampus Campus { get; set; } = AvailableCampus.Callaghan;
         public CourseRuntime RuntimeStart { get; set; }
+
+        public void CloneFrom(SaveState state)
+        {
+            CourseData = state.CourseData;
+            Degree = state.Degree;
+            Major = state.Major;
+            BlocksPerYear = state.BlocksPerYear;
+            UnitsPerBlock = state.UnitsPerBlock;
+            CompletedCourses = state.CompletedCourses;
+            Campus = state.Campus;
+            RuntimeStart = state.RuntimeStart;
+        }
     }
 }
