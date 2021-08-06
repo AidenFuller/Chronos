@@ -503,7 +503,7 @@
 
             if (State.CourseData.Count >= 2)
             {
-                if (State.CourseData[^1].Count > 0 && State.CourseData[^2].Count > 0)
+                if (State.CourseData[^1].Count == 0 && State.CourseData[^2].Count == 0)
 
                 {
                     State.CourseData.RemoveAt(State.CourseData.Count - 1);
