@@ -12,8 +12,8 @@ namespace Chronos.Shared.Wrappers
         public List<List<TileData>> CourseData { get; set; }
         public Degree Degree;
         public Major Major;
-        public int BlocksPerYear { get; set; }
-        public int UnitsPerBlock { get; set; }
+        public int BlocksPerYear { get; set; } = 2;
+        public int UnitsPerBlock { get; set; } = 40;
         public List<Course> CompletedCourses { get; set; }
         public AvailableCampus Campus { get; set; }
         public CourseRuntime RuntimeStart { get; set; }
