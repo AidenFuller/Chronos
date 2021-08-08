@@ -109,6 +109,14 @@
     //Updates the degree plan after a drag
     public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
     {
+        if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{DragPayload.Course.CourseCode} does not run in {blockTypeTo}");
+        }
+        if (draggedOn.Course is not null && (BlockTypeFrom & draggedOn.Runtime) == 0)
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{draggedOn.Course.CourseCode} does not run in {BlockTypeFrom}");
+        }
         if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
         {
             Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
