@@ -3,19 +3,19 @@
 @inject MajorCourseService MajorCourseService
 @inject IBlazorDownloadFileService DownloadService
 @inject IToastService ToastService
-@inject SaveState State 
+@inject SaveState State
 
 @using Newtonsoft.Json;
 
 @using Chronos.Shared.Tiles;
 
 @*<div class="year-label">
-    <h7><b>Year 1</b></h7>
-</div>
+        <h7><b>Year 1</b></h7>
+    </div>
 
-<div class="year-label">
-    <h7><b>Year 2</b></h7>
-</div>*@
+    <div class="year-label">
+        <h7><b>Year 2</b></h7>
+    </div>*@
 <CascadingValue Value="this">
     <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
         <TileSlot Tiles="@completedData" CompletedFlag="true" />
@@ -58,19 +58,36 @@
                 </div>
             }
 
-            <button @onclick="AddYear">Add Year</button>
+            <br />
+
+            <div>
+                <div style="float:left">
+                    <button @onclick="AddYear" class="btn-info">Add Year</button>
+                </div>
+
+
+                @*//-----------------------------------------------
+                    //This button will remove the empty year
+                    //----------------------------------------------*@
+
+                <div style="float:right;">
+                    <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+                </div>
+            </div>
+
         }
     </div>
 </CascadingValue>
 
-
+<br />
+<br />
 <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
     Save
 </div>
 
 
 @code {
-    // Cascaded Parameters
+        // Cascaded Parameters
     public Degree Degree { get; private set; }
     public Major Major { get; private set; }
     public AvailableCampus Campus { get; private set; }
@@ -236,7 +253,7 @@
 
         if (await Autocomplete(cache, n))
         {
-            for(int i = 0; i < output.Count; i++)
+            for (int i = 0; i < output.Count; i++)
             {
                 output[i] = output[i].OrderBy(c => c.Course?.CourseCode ?? "ZZZZ9999").ToList();
             }
@@ -483,4 +500,28 @@
         State.CourseData.Add(new List<TileData>());
         StateHasChanged();
     }
+
+    private void RemoveYear()
+    {
+        //----------------------------------------
+        //Count the total number of rows(semester tiles)
+        //Check if total tiles is greater than 1
+        //Remove the last index from the total tile
+        //----------------------------------------
+
+        if (State.CourseData.Count >= 2)
+        {
+            if (State.CourseData[^1].Count == 0 && State.CourseData[^2].Count == 0)
+
+            {
+                State.CourseData.RemoveAt(State.CourseData.Count - 1);
+                State.CourseData.RemoveAt(State.CourseData.Count - 1);
+            }
+
+
+        }
+
+        StateHasChanged(); //Will update in all the components
+    }
 }
+

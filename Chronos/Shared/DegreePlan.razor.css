@@ -44,3 +44,8 @@
     width: 50%;
     text-align: center;
 }
+
+.json-save {
+    float: left;
+    background-color: burlywood;
+}
