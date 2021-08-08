@@ -317,211 +317,211 @@
         if (slot.Tiles.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
         {
             RenderFragment message =@<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
-                ToastService.ShowToast(ToastLevel.Warning, message);
-                fiftyUnitsWarningBool = true;
-            }
+            ToastService.ShowToast(ToastLevel.Warning, message);
+            fiftyUnitsWarningBool = true;
         }
-        //Returns true if the plan contains the course
-        public bool ContainsCourse(Course course)
+    }
+    //Returns true if the plan contains the course
+    public bool ContainsCourse(Course course)
+    {
+        return State.CourseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
+    }
+
+    private List<List<TileData>> SetupStructure(bool sem2Start)
+    {
+        int yearCount = State.Degree.UnitLength / (State.UnitsPerBlock * State.BlocksPerYear);
+        if (sem2Start)
+            yearCount++;
+
+
+        List<List<TileData>> toReturn = new List<List<TileData>>();
+
+        for (int i = 0; i < yearCount; i++)
         {
-            return State.CourseData.Any(sem => sem.Any(c => (c.Course?.CourseID ?? -1) == course.CourseID));
+            toReturn.Add(new List<TileData>());
+            toReturn.Add(new List<TileData>());
         }
 
-        private List<List<TileData>> SetupStructure(bool sem2Start)
+        return toReturn;
+    }
+
+
+    private List<List<TileData>> output;
+
+    /// <summary>
+    /// THE MAIN ALGORITHM
+    /// </summary>
+    private async Task<bool> Autocomplete(List<TileData> cache, int n)
+    {
+        if (cache.Count == 0)
+            return true;
+
+        int index = 0;
+        bool flag = false;
+        do
         {
-            int yearCount = State.Degree.UnitLength / (State.UnitsPerBlock * State.BlocksPerYear);
-            if (sem2Start)
-                yearCount++;
+            TileData td = cache[index++];
+            if (output[n].Sum(c => c.Course?.Units ?? 10) >= State.UnitsPerBlock)
+                n++;
 
+            if (n >= State.Degree.UnitLength / State.UnitsPerBlock + (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0))
+                return false;
 
-            List<List<TileData>> toReturn = new List<List<TileData>>();
-
-            for (int i = 0; i < yearCount; i++)
+            while (!await ValidateCourse(td, n))
             {
-                toReturn.Add(new List<TileData>());
-                toReturn.Add(new List<TileData>());
-            }
-
-            return toReturn;
-        }
-
-
-        private List<List<TileData>> output;
-
-        /// <summary>
-        /// THE MAIN ALGORITHM
-        /// </summary>
-        private async Task<bool> Autocomplete(List<TileData> cache, int n)
-        {
-            if (cache.Count == 0)
-                return true;
-
-            int index = 0;
-            bool flag = false;
-            do
-            {
-                TileData td = cache[index++];
-                if (output[n].Sum(c => c.Course?.Units ?? 10) >= State.UnitsPerBlock)
-                    n++;
-
-                if (n >= State.Degree.UnitLength / State.UnitsPerBlock + (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0))
+                if (index == cache.Count)
                     return false;
+                td = cache[index++];
+            }
 
-                while (!await ValidateCourse(td, n))
-                {
-                    if (index == cache.Count)
-                        return false;
-                    td = cache[index++];
-                }
-
-                //DisplayOutput();
-                output[n].Add(td);
-                if (StateHasAppeared())
+            //DisplayOutput();
+            output[n].Add(td);
+            if (StateHasAppeared())
+            {
+                output[n].Remove(td);
+            }
+            else
+            {
+                cache.RemoveAt(index - 1);
+                flag = await Autocomplete(new List<TileData>(cache), n);
+                if (!flag)
                 {
                     output[n].Remove(td);
                 }
-                else
-                {
-                    cache.RemoveAt(index - 1);
-                    flag = await Autocomplete(new List<TileData>(cache), n);
-                    if (!flag)
-                    {
-                        output[n].Remove(td);
-                    }
-                    cache.Insert(index - 1, td);
-                }
-            }
-            while (!flag && index < cache.Count);
-
-            return flag;
-        }
-
-        private async Task<bool> ValidateCourse(TileData td, int n)
-        {
-            bool flag = true;
-
-            int groupNumber = (n - (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0)) / 2 + 1;
-
-            int minDirectedGroup = int.Parse((await MajorCourseService.GetAllDirectedCoursesAsync(State.Major.MajorID)).ToList().Min(c => c.CourseCode[4]).ToString());
-
-            if (td.Course == null)
-            {
-                if (td.TileType == TileType.Directed && minDirectedGroup <= groupNumber)
-                    return true;
-                else if (td.TileType == TileType.Elective)
-                    return true;
-                else
-                    return false;
-            }
-
-            if (n % 2 == 0 && (td.Runtime & CourseRuntime.Semester1) == 0)
-                flag = false;
-            else if (n % 2 == 1 && (td.Runtime & CourseRuntime.Semester2) == 0)
-                flag = false;
-            else if (n > 0 && td.Course.CourseCode == "COMP3851B" && !output[n - 1].Any(c => (c.Course?.CourseCode ?? "lmfao") == "COMP3851A"))
-                flag = false;
-            else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber)
-                flag = false;
-            else if (!await CheckPrerequisites(td, n))
-                flag = false;
-
-            return flag;
-        }
-
-        private void DisplayOutput()
-        {
-            int n = 0;
-            foreach (List<TileData> block in output)
-            {
-                Console.Write("|");
-                foreach (TileData td in block)
-                {
-                    Console.Write(" ");
-                    Console.Write(td.Course?.CourseCode ?? "Blank");
-                    Console.Write(" ");
-                }
-                Console.Write("|");
-                if (n++ % 2 == 1)
-                    Console.WriteLine();
+                cache.Insert(index - 1, td);
             }
         }
+        while (!flag && index < cache.Count);
 
-        private List<int> states = new List<int>();
-        private bool StateHasAppeared()
+        return flag;
+    }
+
+    private async Task<bool> ValidateCourse(TileData td, int n)
+    {
+        bool flag = true;
+
+        int groupNumber = (n - (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0)) / 2 + 1;
+
+        int minDirectedGroup = int.Parse((await MajorCourseService.GetAllDirectedCoursesAsync(State.Major.MajorID)).ToList().Min(c => c.CourseCode[4]).ToString());
+
+        if (td.Course == null)
         {
-            int hash = EncodeOutput();
-            if (states.Contains(hash))
+            if (td.TileType == TileType.Directed && minDirectedGroup <= groupNumber)
                 return true;
-            states.Add(hash);
-            return false;
-        }
-
-        private int EncodeOutput()
-        {
-            string hashStr = "";
-            foreach (List<TileData> block in output)
-            {
-                foreach (TileData td in block.OrderBy(c => c.Course?.CourseCode ?? "9999"))
-                {
-                    if (td.Course != null)
-                    {
-                        hashStr += td.Course.CourseCode;
-                    }
-                    else
-                    {
-                        hashStr += "BLANK";
-                    }
-                }
-            }
-            return hashStr.GetHashCode();
-        }
-
-        private async Task<bool> CheckPrerequisites(TileData tile, int n)
-        {
-            if (tile.Course == null)
+            else if (td.TileType == TileType.Elective)
                 return true;
-
-            var courseList = (await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID)).ToList();
-
-            int tally = 0;
-            for (int i = 0; i < n; i++)
-            {
-                tally += courseList.Count(c => output[i].Any(t => t.Course?.CourseCode == c.CourseCode));
-            }
-
-            tally += courseList.Count(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseCode == c.CourseCode));
-
-            return tally == courseList.Count();
+            else
+                return false;
         }
 
-        private void AddYear()
-        {
-            State.CourseData.Add(new List<TileData>());
-            State.CourseData.Add(new List<TileData>());
-            StateHasChanged();
-        }
+        if (n % 2 == 0 && (td.Runtime & CourseRuntime.Semester1) == 0)
+            flag = false;
+        else if (n % 2 == 1 && (td.Runtime & CourseRuntime.Semester2) == 0)
+            flag = false;
+        else if (n > 0 && td.Course.CourseCode == "COMP3851B" && !output[n - 1].Any(c => (c.Course?.CourseCode ?? "lmfao") == "COMP3851A"))
+            flag = false;
+        else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber)
+            flag = false;
+        else if (!await CheckPrerequisites(td, n))
+            flag = false;
 
-        private void RemoveYear()
-        {
-            //----------------------------------------
-            //Count the total number of rows(semester tiles)
-            //Check if total tiles is greater than 1
-            //Remove the last index from the total tile
-            //----------------------------------------
+        return flag;
+    }
 
-            if (State.CourseData.Count >= 2)
+    private void DisplayOutput()
+    {
+        int n = 0;
+        foreach (List<TileData> block in output)
+        {
+            Console.Write("|");
+            foreach (TileData td in block)
             {
-                if (State.CourseData[^1].Count == 0 && State.CourseData[^2].Count == 0)
-
-                {
-                    State.CourseData.RemoveAt(State.CourseData.Count - 1);
-                    State.CourseData.RemoveAt(State.CourseData.Count - 1);
-                }
-
-
+                Console.Write(" ");
+                Console.Write(td.Course?.CourseCode ?? "Blank");
+                Console.Write(" ");
             }
-
-            StateHasChanged(); //Will update in all the components
+            Console.Write("|");
+            if (n++ % 2 == 1)
+                Console.WriteLine();
         }
     }
+
+    private List<int> states = new List<int>();
+    private bool StateHasAppeared()
+    {
+        int hash = EncodeOutput();
+        if (states.Contains(hash))
+            return true;
+        states.Add(hash);
+        return false;
+    }
+
+    private int EncodeOutput()
+    {
+        string hashStr = "";
+        foreach (List<TileData> block in output)
+        {
+            foreach (TileData td in block.OrderBy(c => c.Course?.CourseCode ?? "9999"))
+            {
+                if (td.Course != null)
+                {
+                    hashStr += td.Course.CourseCode;
+                }
+                else
+                {
+                    hashStr += "BLANK";
+                }
+            }
+        }
+        return hashStr.GetHashCode();
+    }
+
+    private async Task<bool> CheckPrerequisites(TileData tile, int n)
+    {
+        if (tile.Course == null)
+            return true;
+
+        var courseList = (await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID)).ToList();
+
+        int tally = 0;
+        for (int i = 0; i < n; i++)
+        {
+            tally += courseList.Count(c => output[i].Any(t => t.Course?.CourseCode == c.CourseCode));
+        }
+
+        tally += courseList.Count(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseCode == c.CourseCode));
+
+        return tally == courseList.Count();
+    }
+
+    private void AddYear()
+    {
+        State.CourseData.Add(new List<TileData>());
+        State.CourseData.Add(new List<TileData>());
+        StateHasChanged();
+    }
+
+    private void RemoveYear()
+    {
+        //----------------------------------------
+        //Count the total number of rows(semester tiles)
+        //Check if total tiles is greater than 1
+        //Remove the last index from the total tile
+        //----------------------------------------
+
+        if (State.CourseData.Count >= 2)
+        {
+            if (State.CourseData[^1].Count == 0 && State.CourseData[^2].Count == 0)
+
+            {
+                State.CourseData.RemoveAt(State.CourseData.Count - 1);
+                State.CourseData.RemoveAt(State.CourseData.Count - 1);
+            }
+
+
+        }
+
+        StateHasChanged(); //Will update in all the components
+    }
+}
 
