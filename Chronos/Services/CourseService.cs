@@ -29,9 +29,17 @@ namespace Chronos.Services
         {
             return await db.Courses.FindAsync(courseID); //This will find a specific course in the DB. 
         }
+
         public async Task<IEnumerable<Course>> GetAllCoursesAsync()
         {
             return db.Courses; //This will return all the courses. 
+        }
+
+        public async Task<IEnumerable<Course>> GetCoursesByCampusAsync(AvailableCampus campus)
+        {
+            IEnumerable<int> courseIDs = db.CourseAvailabilities.Where(i => i.Campus == campus).Select(i => i.CourseID);
+
+            return db.Courses.Where(i => courseIDs.Contains(i.CourseID));
         }
 
         public async Task<IEnumerable<Course>> GetPrerequisiteCoursesAsync(int CourseID)
