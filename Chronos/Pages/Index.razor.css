@@ -107,7 +107,7 @@ button.button-for-admin {
     position: relative;
     border-width: 0;
     text-align: center;
-    transition: all .7s;
+    transition: all .6s;
     color: white;
 }
 
@@ -147,7 +147,7 @@ button.button-for-admin {
     background-color: #59007F;
     text-align: center;
     z-index: -1;
-    transition: all .7s;
+    transition: all .6s;
     color: white;
 }
 
@@ -157,7 +157,7 @@ button.button-for-admin {
 
 .submit-button-animation:hover::after 
 {
-    transform: scaleX(2.0) scaleY(2.4);
+    transform: scaleX(1.6) scaleY(1.8);
     opacity: 0;
 }
 
@@ -168,7 +168,7 @@ button.button-for-admin {
     0%
     {
         opacity: 0;
-        transform: translateY(70px);
+        transform: translateY(50px);
     }
     100%
     {
