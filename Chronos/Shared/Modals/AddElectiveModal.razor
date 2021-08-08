@@ -4,8 +4,6 @@
     <div>
         @foreach (var item in CheckableEnums)
         {
-
-
             @if (item.DataPoint.Equals(InputSem))
             {
                 <input type="checkbox" @bind-value="item.IsSelected" checked/>
@@ -18,7 +16,7 @@
             <span> @item.DataPoint.ToString() &nbsp;</span>
         }
     </div>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="selectedCourse" placeholder="Please search for your directected course..." EnableDropDown="true">
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="selectedCourse" placeholder="Please search for your elective course..." EnableDropDown="true">
         <SelectedTemplate Context="course">
             <!--This is the search Template and what will be returned.-->
 
@@ -126,7 +124,7 @@
 
         IEnumerable<Course> courses = await CourseService.GetAllCoursesAsync();
         //Get all courses that relate to search
-        IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
+        IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => (x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())) && !Plan.ContainsCourse(x)));
 
         //Sort and trim
         //Trim the list to 10
