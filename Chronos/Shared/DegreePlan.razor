@@ -17,11 +17,13 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 <CascadingValue Value="this">
-    <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
-        <TileSlot Tiles="@completedData" CompletedFlag="true" />
-    </div>
+
 
     <div class="degreePlan">
+        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+            <TileSlot Tiles="@completedData" CompletedFlag="true" />
+        </div>
+
         @*Pass boolean to determine if ghosts are showing to all children*@
         @if (State.CourseData == null)
         {
@@ -67,8 +69,8 @@
 
 
                 @*//-----------------------------------------------
-                    //This button will remove the empty year
-                    //----------------------------------------------*@
+                //This button will remove the empty year
+                //----------------------------------------------*@
 
                 <div style="float:right;">
                     <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
@@ -88,191 +90,195 @@
 
 @code {
         // Cascaded Parameters
-    public Degree Degree { get; private set; }
-    public Major Major { get; private set; }
-    public AvailableCampus Campus { get; private set; }
+        public Degree Degree { get; private set; }
+        public Major Major { get; private set; }
+        public AvailableCampus Campus { get; private set; }
 
 
-    private List<TileData> completedData;
-    private int blockSize = 2;
-    private bool fiftyUnitsWarningBool = false;
+        private List<TileData> completedData;
+        private int blockSize = 2;
+        private bool fiftyUnitsWarningBool = false;
 
-    //Dragging Variables
-    public TileData DragPayload { get; set; }
-    public List<TileData> DragFrom { get; set; }
-    public CourseRuntime BlockTypeFrom { get; set; }
+        //Dragging Variables
+        public TileData DragPayload { get; set; }
+        public List<TileData> DragFrom { get; set; }
+        public CourseRuntime BlockTypeFrom { get; set; }
 
 
-    public int ErrorCount { get; set; }
-    public int WarningCount { get; set; }
+        public int ErrorCount { get; set; }
+        public int WarningCount { get; set; }
 
-    //Updates the degree plan after a drag
-    public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
-    {
-        if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
+        //Updates the degree plan after a drag
+        public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
         {
-            ToastService.ShowToast(ToastLevel.Error, $"{DragPayload.Course.CourseCode} does not run in {blockTypeTo}");
+            if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
+            {
+                ToastService.ShowToast(ToastLevel.Error, $"{DragPayload.Course.CourseCode} does not run in {blockTypeTo}");
+            }
+            if (draggedOn.Course is not null && (BlockTypeFrom & draggedOn.Runtime) == 0)
+            {
+                ToastService.ShowToast(ToastLevel.Error, $"{draggedOn.Course.CourseCode} does not run in {BlockTypeFrom}");
+            }
+            if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
+            {
+                Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
+                draggedOn.Status = 0;
+                DragPayload.Status = 0;
+                StateHasChanged();
+            }
         }
-        if (draggedOn.Course is not null && (BlockTypeFrom & draggedOn.Runtime) == 0)
+
+        //Boolean to show the ghost tiles
+        public bool ShowGhosts { get; set; } = false;
+        //Show all ghost tiles in the plan
+        public void ShowGhostTiles()
         {
-            ToastService.ShowToast(ToastLevel.Error, $"{draggedOn.Course.CourseCode} does not run in {BlockTypeFrom}");
-        }
-        if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
-        {
-            Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
-            draggedOn.Status = 0;
-            DragPayload.Status = 0;
+            //Show a ghost tile in all places where the tile can be added
+            ShowGhosts = true;
             StateHasChanged();
         }
-    }
 
-    //Boolean to show the ghost tiles
-    public bool ShowGhosts { get; set; } = false;
-    //Show all ghost tiles in the plan
-    public void ShowGhostTiles()
-    {
-        //Show a ghost tile in all places where the tile can be added
-        ShowGhosts = true;
-        StateHasChanged();
-    }
-
-    //Hide all ghost tiles in the plan
-    public void HideGhostTiles()
-    {
-        //remove the ghost tiles
-        ShowGhosts = false;
-        StateHasChanged();
-    }
-
-    //Move payload from one slot to a new slot
-    public void MovePayloadTo(TileSlot slot)
-    {
-        //Made design decision to handle this hear, saves intensive cascading parameters.
-        //Leaving this note here as I may decide to change later.
-        slot.Tiles.Add(DragPayload);
-        DragFrom.Remove(DragPayload);
-        DragPayload.Status = 0;
-        FiftyUnitWarning(slot);
-    }
-
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        Degree = State.Degree;
-        Major = State.Major;
-        Campus = State.Campus;
-        //Query database
-        List<TileData> allCourseData = new List<TileData>();
-        List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(State.Degree.DegreeID)).ToList();
-
-        List<Course> completedCourseValidator = new List<Course>(State.CompletedCourses);
-        int completedUnitCount = 0;
-
-        //Loop through pulled courses
-        foreach (Course course in coreCourses)
+        //Hide all ghost tiles in the plan
+        public void HideGhostTiles()
         {
-            int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
-            if (counter > 0)
+            //remove the ghost tiles
+            ShowGhosts = false;
+            StateHasChanged();
+        }
+
+        //Move payload from one slot to a new slot
+        public void MovePayloadTo(TileSlot slot)
+        {
+            //Made design decision to handle this hear, saves intensive cascading parameters.
+            //Leaving this note here as I may decide to change later.
+            slot.Tiles.Add(DragPayload);
+            DragFrom.Remove(DragPayload);
+            DragPayload.Status = 0;
+            FiftyUnitWarning(slot);
+        }
+
+
+
+        protected override async Task OnInitializedAsync()
+        {
+            Degree = State.Degree;
+            Major = State.Major;
+            Campus = State.Campus;
+            //Query database
+            List<TileData> allCourseData = new List<TileData>();
+            List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(State.Degree.DegreeID)).ToList();
+
+            List<Course> completedCourseValidator = new List<Course>(State.CompletedCourses);
+            int completedUnitCount = 0;
+
+            //Loop through pulled courses
+            foreach (Course course in coreCourses)
             {
-                completedUnitCount += counter;
-                continue;
+                int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+                if (counter > 0)
+                {
+                    completedUnitCount += counter;
+                    continue;
+                }
+                //Create a tile data and add to list
+                TileData td = new TileData()
+                {
+                    Course = course,
+                    TileType = TileType.Core,
+                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
+                };
+
+                allCourseData.Add(td);
             }
-            //Create a tile data and add to list
-            TileData td = new TileData()
-            {
-                Course = course,
-                TileType = TileType.Core,
-                Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
-            };
 
-            allCourseData.Add(td);
-        }
-
-        var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(State.Major.MajorID);
-        //Pull directed courses
-        foreach (Course course in coreDirectedCourses)
-        {
-            int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
-            if (counter > 0)
+            var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(State.Major.MajorID);
+            //Pull directed courses
+            foreach (Course course in coreDirectedCourses)
             {
-                completedUnitCount += counter;
-                continue;
+                int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+                if (counter > 0)
+                {
+                    completedUnitCount += counter;
+                    continue;
+                }
+                //Add to list
+                TileData td = new TileData()
+                {
+                    Course = course,
+                    TileType = TileType.Directed,
+                    IsDirectedCore = true,
+                    Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
+                };
+
+                allCourseData.Add(td);
             }
-            //Add to list
-            TileData td = new TileData()
+
+            List<TileData> tempCache = new List<TileData>();
+
+
+            //Create all empty directed
+            if (completedCourseValidator.Count > 0)
             {
-                Course = course,
-                TileType = TileType.Directed,
-                IsDirectedCore = true,
-                Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
-            };
-
-            allCourseData.Add(td);
-        }
-
-        List<TileData> tempCache = new List<TileData>();
-
-
-        //Create all empty directed
-        if (completedCourseValidator.Count > 0)
-        {
-            var nonCompulsoryCourses = await MajorCourseService.GetNonCompulsoryCoursesAsync(State.Major.MajorID);
-            completedUnitCount += completedCourseValidator.RemoveAll(c => nonCompulsoryCourses.Any(n => n.CourseID == c.CourseID));
-        }
-
-        for (int i = 0; i < State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (State.Degree.ElectiveCount * 10) - (completedUnitCount * 10); i += 10)
-        {
-            TileData td = new TileData()
-            {
-                Course = null,
-                TileType = TileType.Directed
-            };
-            tempCache.Add(td);
-        }
-
-        //Create all empty elective courses
-        for (int i = 0; i < State.Degree.ElectiveCount - completedCourseValidator.Count; i++)
-        {
-            TileData td = new TileData()
-            {
-                Course = null,
-                TileType = TileType.Elective
-            };
-            tempCache.Add(td);
-        }
-
-        //Add them to plan
-        allCourseData.AddRange(tempCache);
-
-        List<TileData> cache = allCourseData.OrderBy(c => c.Course?.CourseCode[4..] ?? "9999").ToList();
-
-        output = SetupStructure(State.RuntimeStart == CourseRuntime.Semester2);
-
-        int n = State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0;
-
-        if (await Autocomplete(cache, n))
-        {
-            for (int i = 0; i < output.Count; i++)
-            {
-                output[i] = output[i].OrderBy(c => c.Course?.CourseCode ?? "ZZZZ9999").ToList();
+                var nonCompulsoryCourses = await MajorCourseService.GetNonCompulsoryCoursesAsync(State.Major.MajorID);
+                completedUnitCount += completedCourseValidator.RemoveAll(c => nonCompulsoryCourses.Any(n => n.CourseID == c.CourseID));
             }
-            State.CourseData = output;
-        }
-        else
-        {
-            // Throw toast error
-        }
 
-        //Parameters set, modify as needed
-        completedData = new List<TileData>();
-        foreach (Course c in State.CompletedCourses)
-        {
-            TileData td = new TileData()
+            for (int i = 0; i < State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (State.Degree.ElectiveCount * 10) - (completedUnitCount * 10); i += 10)
             {
-                Course = c,
-                TileType = TileType.Elective
-            };
+                TileData td = new TileData()
+                {
+                    Course = null,
+                    TileType = TileType.Directed
+                };
+                tempCache.Add(td);
+            }
+
+            //Create all empty elective courses
+            for (int i = 0; i < State.Degree.ElectiveCount - completedCourseValidator.Count; i++)
+            {
+                TileData td = new TileData()
+                {
+                    Course = null,
+                    TileType = TileType.Elective
+                };
+                tempCache.Add(td);
+            }
+
+            //Add them to plan
+            allCourseData.AddRange(tempCache);
+
+            List<TileData> cache = allCourseData.OrderBy(c => c.Course?.CourseCode[4..] ?? "9999").ToList();
+
+            output = SetupStructure(State.RuntimeStart == CourseRuntime.Semester2);
+
+            int n = State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0;
+
+            if (await Autocomplete(cache, n))
+            {
+                for (int i = 0; i < output.Count; i++)
+                {
+                    output[i] = output[i].OrderBy(c => c.Course?.CourseCode ?? "ZZZZ9999").ToList();
+                }
+                State.CourseData = output;
+            }
+            else
+            {
+                // Throw toast error
+            }
+
+            //Parameters set, modify as needed
+            completedData = new List<TileData>();
+            foreach (Course c in State.CompletedCourses)
+            {
+                TileData td = new TileData()
+                {
+                    Course = c,
+
+                    //TBD Should be changed by algorithm
+                    TileType = TileType.Elective,
+
+                Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
+                };
             completedData.Add(td);
 
         }
