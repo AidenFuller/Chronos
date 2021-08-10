@@ -17,12 +17,12 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 <CascadingValue Value="this">
-
+    <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+        <TileSlot Tiles="@completedData" CompletedFlag="true" />
+    </div>
 
     <div class="degreePlan">
-        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
-            <TileSlot Tiles="@completedData" CompletedFlag="true" />
-        </div>
+
 
         @*Pass boolean to determine if ghosts are showing to all children*@
         @if (State.CourseData == null)
@@ -69,8 +69,8 @@
 
 
                 @*//-----------------------------------------------
-                //This button will remove the empty year
-                //----------------------------------------------*@
+                    //This button will remove the empty year
+                    //----------------------------------------------*@
 
                 <div style="float:right;">
                     <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
