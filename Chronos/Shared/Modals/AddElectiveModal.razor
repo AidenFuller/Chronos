@@ -125,6 +125,10 @@
         }
 
         IEnumerable<Course> courses = await CourseService.GetAllCoursesAsync();
+        if (SumValue <= 0)
+        {
+            return courses;
+        }
         //Get all courses that relate to search
         IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())));
 
