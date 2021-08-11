@@ -11,13 +11,14 @@
     @if (CompletedFlag)
     {
         //This tile is in the completed box
-        <div style= "width:100%;">
+        <div style="width:100%;">
             CourseID: @Data.Course.CourseCode
             Description: @Data.Course.Name
             Units: @Data.Course.Units
             Treated as: @Data.TileType;
         </div>
-    }else if (Data.Course is null)
+    }
+    else if (Data.Course is null)
     {
         @if (Data.TileType == TileType.Core)
         {
@@ -27,7 +28,9 @@
         else
         {
             //Directed Course or Elective
-            <h1>+</h1>
+            <h1 class="plusSign">
+                <img src="../Images/PlusSign.png" />
+            </h1>
         }
     }
     else
@@ -65,7 +68,7 @@
 
 
 
-        <div class="courseDes" >
+        <div class="courseDes">
 
             @*//---------------------------------------------------
                 //This piece of code is to show Units, Semester and available campus
@@ -107,24 +110,24 @@
 
 @code {
 
-    [CascadingParameter]
-    DegreePlan Plan { get; set; }
+        [CascadingParameter]
+        DegreePlan Plan { get; set; }
 
-    [CascadingParameter]
-    TileSlot Slot { get; set; }
+        [CascadingParameter]
+        TileSlot Slot { get; set; }
 
-    [Parameter]
-    public TileData Data { get; set; }
+        [Parameter]
+        public TileData Data { get; set; }
 
-    [Parameter]
-    public bool CompletedFlag { get; set; } = false;
+        [Parameter]
+        public bool CompletedFlag { get; set; } = false;
 
-    //[Parameter]
-    //public string Width { get; set; } = "200px";
+        //[Parameter]
+        //public string Width { get; set; } = "200px";
 
-    //private string Height = "100px";
+        //private string Height = "100px";
 
-    [CascadingParameter] public IModalService Modal { get; set; }
+        [CascadingParameter] public IModalService Modal { get; set; }
 
     private string tileClass = "Tile"; //CSS class based on TileType
     private string typeClass; //CSS class based on TileType
