@@ -22,6 +22,8 @@
     </div>
 
     <div class="degreePlan">
+
+
         @*Pass boolean to determine if ghosts are showing to all children*@
         @if (State.CourseData == null)
         {
@@ -271,7 +273,11 @@
             TileData td = new TileData()
             {
                 Course = c,
-                TileType = TileType.Elective
+
+                //TBD Should be changed by algorithm
+                TileType = TileType.Elective,
+
+                Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
             };
             completedData.Add(td);
 
