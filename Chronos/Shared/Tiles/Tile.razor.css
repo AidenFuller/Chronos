@@ -15,7 +15,6 @@
     
 
 }
-
     .Tile:hover {
         /*height can be put here when needed*/
         transition: .2s;
@@ -40,8 +39,8 @@
     visibility: visible;
 }
 
-.Tile:hover .courseName {    
-    font-weight: 900;    
+.Tile:hover .courseName {
+    font-weight: 900;
 }
 
 
@@ -69,14 +68,27 @@
     background-color: #FFCC99
 }
 
-.AddElective > .courseCode {
-    background-color: #ffffff;
-    border-color: #000000;
+.AddElective > .plusSign {
+    /*background-color: #ffffff;*/
+   /* border-color: #000000;*/
     color: #F2DD60;
 }
 
-.AddDirected > .courseCode {
-    background-color: #ffffff;
-    border-color: #000000;
+.AddDirected > .plusSign {
+    /*background-color: #ffffff;*/
+    /*border-color: #000000;*/
     color: #458EE7;
 }
+
+.plusSign {
+    border-radius: 50%;
+    border:4px solid black;
+    margin-left:auto;
+    margin-right:auto;
+    width: 60px;
+    font-weight:900;
+    height: 60px;
+    position: center;
+    display:block;
+}
+
