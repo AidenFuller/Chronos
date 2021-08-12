@@ -53,7 +53,7 @@
                     <select name="semester" class="semester-selection" @bind="StartingBlock">
                         <!--Selection that allows for the Semester type a student is undertaking.-->
                         <!--Potentially change this to radio buttons, that are next to each other?-->
-                        <option value="@CourseRuntime.Semester1">Semester 1</option>
+                        <option value="@CourseRuntime.Semester1" selected>Semester 1</option>
                         <option value="@CourseRuntime.Semester2">Semester 2</option>
                     </select>
                 </div>
@@ -180,7 +180,7 @@
     private IList<Course> SelectedCourses; //This is the list of selected Courses from the search results above.
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private Major SelectedMajor;
-    private CourseRuntime StartingBlock;
+    private CourseRuntime StartingBlock = CourseRuntime.Semester1;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
