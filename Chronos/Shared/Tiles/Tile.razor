@@ -11,13 +11,14 @@
     @if (CompletedFlag)
     {
         //This tile is in the completed box
-        <div style= "width:100%;">
+        <div style="width:100%;">
             CourseID: @Data.Course.CourseCode
             Description: @Data.Course.Name
             Units: @Data.Course.Units
             Treated as: @Data.TileType;
         </div>
-    }else if (Data.Course is null)
+    }
+    else if (Data.Course is null)
     {
         @if (Data.TileType == TileType.Core)
         {
@@ -27,7 +28,7 @@
         else
         {
             //Directed Course or Elective
-            <h1>+</h1>
+            <h1 class="plusSign"> + </h1>
         }
     }
     else
@@ -63,7 +64,13 @@
             <p style="font-size:10.8px;"> @Data.Course.Name </p>
         </div>
 
+<<<<<<< HEAD
         <div class="courseDes" >
+=======
+
+
+        <div class="courseDes">
+>>>>>>> sprint
 
             @*//---------------------------------------------------
                 //This piece of code is to show Units, Semester and available campus

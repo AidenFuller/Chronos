@@ -53,14 +53,18 @@
     visibility: hidden;
 }
 
-.courseCode {
+
+.Tile:hover .courseName {
+    font-weight: 900;
+}
+
+
+.courseCode{
     margin-left: auto;
     margin-right: auto;
     left: 0;
     right: 0;
     text-align: center;
-
-
     position: absolute;
     top: 5px;
 }
@@ -90,14 +94,27 @@
     background-color: #FFCC99
 }
 
-.AddElective > .courseCode {
-    background-color: #ffffff;
-    border-color: #000000;
+.AddElective > .plusSign {
+    /*background-color: #ffffff;*/
+   /* border-color: #000000;*/
     color: #F2DD60;
 }
 
-.AddDirected > .courseCode {
-    background-color: #ffffff;
-    border-color: #000000;
+.AddDirected > .plusSign {
+    /*background-color: #ffffff;*/
+    /*border-color: #000000;*/
     color: #458EE7;
 }
+
+.plusSign {
+    border-radius: 50%;
+    border:4px solid black;
+    margin-left:auto;
+    margin-right:auto;
+    width: 60px;
+    font-weight:900;
+    height: 60px;
+    position: center;
+    display:block;
+}
+

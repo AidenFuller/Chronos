@@ -89,7 +89,7 @@
 
 
 @code {
-        // Cascaded Parameters
+    // Cascaded Parameters
     public Degree Degree { get; private set; }
     public Major Major { get; private set; }
     public AvailableCampus Campus { get; private set; }
@@ -171,16 +171,11 @@
         List<Course> completedCourseValidator = new List<Course>(State.CompletedCourses);
         int completedUnitCount = 0;
 
+        completedData = new List<TileData>();
+
         //Loop through pulled courses
         foreach (Course course in coreCourses)
         {
-            int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
-            if (counter > 0)
-            {
-                completedUnitCount += counter;
-                continue;
-            }
-            //Create a tile data and add to list
             TileData td = new TileData()
             {
                 Course = course,
@@ -188,20 +183,22 @@
                 Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
             };
 
-            allCourseData.Add(td);
+            int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+            if (counter > 0)
+            {
+                completedData.Add(td);
+                completedUnitCount += counter;
+            }
+            else
+            {
+                allCourseData.Add(td);
+            }
         }
 
         var coreDirectedCourses = await MajorCourseService.GetCompulsoryCoursesAsync(State.Major.MajorID);
         //Pull directed courses
         foreach (Course course in coreDirectedCourses)
         {
-            int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
-            if (counter > 0)
-            {
-                completedUnitCount += counter;
-                continue;
-            }
-            //Add to list
             TileData td = new TileData()
             {
                 Course = course,
@@ -210,20 +207,78 @@
                 Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
             };
 
-            allCourseData.Add(td);
+            int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
+            if (counter > 0)
+            {
+                completedData.Add(td);
+                completedUnitCount += counter;
+            }
+            else
+            {
+                allCourseData.Add(td);
+            }
         }
 
         List<TileData> tempCache = new List<TileData>();
 
 
         //Create all empty directed
+        int directedUnits = State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - completedData.Sum(t => t.Course.Units) - (State.Degree.ElectiveCount * 10);
         if (completedCourseValidator.Count > 0)
         {
             var nonCompulsoryCourses = await MajorCourseService.GetNonCompulsoryCoursesAsync(State.Major.MajorID);
-            completedUnitCount += completedCourseValidator.RemoveAll(c => nonCompulsoryCourses.Any(n => n.CourseID == c.CourseID));
+            var courses = completedCourseValidator.Where(c => nonCompulsoryCourses.Any(n => n.CourseID == c.CourseID));
+            if (courses.Count() > 0 && courses.Sum(t => t.Units) < directedUnits)
+            {
+                foreach (Course c in courses)
+                {
+                    TileData td = new TileData()
+                    {
+                        Course = c,
+                        TileType = TileType.Directed,
+                        Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
+                    };
+                    completedData.Add(td);
+                }
+                directedUnits -= courses.Sum(t => t.Units);
+                completedCourseValidator.RemoveAll(c => courses.Any(comp => comp.CourseID == c.CourseID));
+                
+            }
+            else if (courses.Count() > 0)
+            {
+                var tempCourses = new List<Course>();
+                int i = 0;
+                while (tempCourses.Sum(t => t.Units) < directedUnits)
+                {
+                    tempCourses.Add(courses.ElementAt(i++));
+                }
+                foreach (Course c in tempCourses)
+                {
+                    TileData td = new TileData()
+                    {
+                        Course = c,
+                        TileType = TileType.Directed,
+                        Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
+                    };
+                    completedData.Add(td);
+                    completedCourseValidator.Remove(c);
+                }
+                directedUnits = 0;
+            }
+
+            foreach (Course c in completedCourseValidator)
+            {
+                TileData td = new TileData()
+                {
+                    Course = c,
+                    TileType = TileType.Elective,
+                    Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
+                };
+                completedData.Add(td);
+            }
         }
 
-        for (int i = 0; i < State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - (State.Degree.ElectiveCount * 10) - (completedUnitCount * 10); i += 10)
+        for (int i = 0; i < directedUnits; i += 10)
         {
             TileData td = new TileData()
             {
@@ -234,7 +289,8 @@
         }
 
         //Create all empty elective courses
-        for (int i = 0; i < State.Degree.ElectiveCount - completedCourseValidator.Count; i++)
+        // Add excess for the number of completed courses
+        for (int i = 0; i < State.Degree.ElectiveCount - completedCourseValidator.Count + State.CompletedCourses.Count; i++)
         {
             TileData td = new TileData()
             {
@@ -259,6 +315,24 @@
             {
                 output[i] = output[i].OrderBy(c => c.Course?.CourseCode ?? "ZZZZ9999").ToList();
             }
+
+            int total = State.CompletedCourses.Count;
+            foreach(List<TileData> tiles in output)
+            {
+                if (total == 0)
+                    break;
+                for (int i = tiles.Count - 1; i >= 0; i--)
+                {
+                    if (total == 0)
+                        break;
+                    if (tiles[i].TileType == TileType.Elective)
+                    {
+                        tiles.RemoveAt(i);
+                        total--;
+                    }
+                }
+            }
+
             State.CourseData = output;
         }
         else
@@ -267,21 +341,8 @@
         }
 
         //Parameters set, modify as needed
-        completedData = new List<TileData>();
-        foreach (Course c in State.CompletedCourses)
-        {
-            TileData td = new TileData()
-            {
-                Course = c,
+        
 
-                //TBD Should be changed by algorithm
-                TileType = TileType.Elective,
-
-                Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
-            };
-            completedData.Add(td);
-
-        }
     }
 
     //Returns a list of missing prerequisite courses
@@ -322,7 +383,8 @@
     {
         if (slot.Tiles.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
         {
-            RenderFragment message =@<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
+            RenderFragment message =
+    @<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
             ToastService.ShowToast(ToastLevel.Warning, message);
             fiftyUnitsWarningBool = true;
         }

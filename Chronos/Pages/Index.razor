@@ -53,8 +53,7 @@
                     <select name="semester" class="semester-selection" @bind="StartingBlock">
                         <!--Selection that allows for the Semester type a student is undertaking.-->
                         <!--Potentially change this to radio buttons, that are next to each other?-->
-                        <option value="0">Select your starting semester</option>
-                        <option value="@CourseRuntime.Semester1">Semester 1</option>
+                        <option value="@CourseRuntime.Semester1" selected>Semester 1</option>
                         <option value="@CourseRuntime.Semester2">Semester 2</option>
                     </select>
                 </div>
@@ -62,20 +61,18 @@
                 <h4>What campuses are you able to attend?</h4>
                 <div class="checklistColumns">
                     <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
-                    <input type="checkbox" id="Callaghan" name="Callaghan" value="Callaghan" />
+                    <input type="radio" id="Callaghan" name="Campus" value="Callaghan" />
                     <label for="Callaghan">Callaghan Campus</label><br />
-                    <input type="checkbox" id="Newcastle" name="Newcastle" value="Newcastle" />
+                    <input type="radio" id="Newcastle" name="Campus" value="Newcastle" />
                     <label for="Newcastle">Newcastle Campus</label><br />
-                    <input type="checkbox" id="Ourimbah" name="Ourimbah" value="Ourimbah" />
+                    <input type="radio" id="Ourimbah" name="Campus" value="Ourimbah" />
                     <label for="Ourimbah">Ourimbah Campus</label><br />
-                    <input type="checkbox" id="Port Macquarie" name="Port Macquarie" value="Port Macquarie" />
+                    <input type="radio" id="Port Macquarie" name="Campus" value="Port Macquarie" />
                     <label for="Port Macquarie">Port Macquarie Campus</label><br />
-                    <input type="checkbox" id="Signapore" name="Signapore" value="Signapore" />
+                    <input type="radio" id="Signapore" name="Campus" value="Signapore" />
                     <label for="Signapore">Signapore Campus</label><br />
-                    <input type="checkbox" id="Sydney" name="Sydney" value="Sydney" />
+                    <input type="radio" id="Sydney" name="Campus" value="Sydney" />
                     <label for="Sydney">Sydney Campus</label><br />
-                    <input type="checkbox" id="Online" name="Online" value="Online" />
-                    <label for="Online">Online Campus</label><br />
                 </div>
             </form> <!--Initial Form ends here.-->
             <br />
@@ -181,7 +178,7 @@
     private IList<Course> SelectedCourses; //This is the list of selected Courses from the search results above.
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private Major SelectedMajor;
-    private CourseRuntime StartingBlock;
+    private CourseRuntime StartingBlock = CourseRuntime.Semester1;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
