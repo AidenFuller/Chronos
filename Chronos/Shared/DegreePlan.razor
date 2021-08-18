@@ -682,7 +682,7 @@
         }
         else
         {
-            courseList.RemoveAll(c => !State.CourseData.Take(n).Any(s => s.Any(t => t.Course?.CourseID == c.CourseID)));
+            courseList.RemoveAll(c => !State.CourseData.Take(n+1).Any(s => s.Any(t => t.Course?.CourseID == c.CourseID)));
         }
 
         return courseList;
@@ -705,7 +705,7 @@
         }
         else
         {
-            courseList.RemoveAll(c => State.CourseData.Take(n).Any(s => s.Any(t => t.Course?.CourseID == c.CourseID && t.Status == 0)));
+            courseList.RemoveAll(c => State.CourseData.Take(n+1).Any(s => s.Any(t => t.Course?.CourseID == c.CourseID && t.Status == 0)));
         }
 
         return courseList;
