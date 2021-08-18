@@ -447,7 +447,7 @@
 
         //Create all empty elective courses
         // Add excess for the number of completed courses
-        for (int i = 0; i < State.Degree.ElectiveUnits - completedCourseValidator.Sum(c => c.Units) + State.CompletedCourses.Sum(c => c.Units); i++)
+        for (int i = 0; i < State.Degree.ElectiveUnits - completedCourseValidator.Sum(c => c.Units) + State.CompletedCourses.Sum(c => c.Units); i += 10)
         {
             TileData td = new TileData()
             {
