@@ -732,16 +732,19 @@
 
     private async Task<List<Course>> GetReliants(TileData tile, int n, RequisiteType requisite)
     {
-        if (tile.Course == null || n == output.Count - 1)
+        if (tile.Course == null)
             return new List<Course>();
 
         var courseList = (await CourseService.GetReliantCoursesAsync(tile.Course.CourseID, requisite)).ToList();
 
         courseList.RemoveAll(c => completedData.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
 
+        if (n == State.CourseData.Count - 1)
+            return courseList;
+
         if (requisite == RequisiteType.MustPreceed)
         {
-            courseList.RemoveAll(c => !State.CourseData[n + 1].Any(t => t.Course?.CourseID == c.CourseID));
+            courseList.RemoveAll(c => State.CourseData[n + 1].Any(t => t.Course?.CourseID == c.CourseID));
         }
         else
         {
@@ -764,7 +767,7 @@
 
         if (requisite == RequisiteType.MustPreceed)
         {
-            courseList.RemoveAll(c => State.CourseData[n + 1].Any(t => t.Course?.CourseID == c.CourseID));
+            courseList.RemoveAll(c => !State.CourseData[n + 1].Any(t => t.Course?.CourseID == c.CourseID));
         }
         else
         {

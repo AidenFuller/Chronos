@@ -395,7 +395,7 @@ namespace Chronos.Data
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2130"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); 
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2260"), PrerequisiteCourseID = CourseID("SENG1110"), CourseRequisite = RequisiteType.AssumedKnowledge }); //Has ors with INFT (MOST SENG1110s DO)
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG2260"), PrerequisiteCourseID = CourseID("SENG1050"), CourseRequisite = RequisiteType.AssumedKnowledge });
-            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3851B"), PrerequisiteCourseID = CourseID("COMP3851A"), CourseRequisite = RequisiteType.HardRequisite });
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("COMP3851B"), PrerequisiteCourseID = CourseID("COMP3851A"), CourseRequisite = RequisiteType.MustPreceed });
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC3500"), PrerequisiteCourseID = CourseID("COMP2240"), CourseRequisite = RequisiteType.AssumedKnowledge }); //Has ors with ELEC
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("ELEC3500"), PrerequisiteCourseID = CourseID("MATH1510"), CourseRequisite = RequisiteType.AssumedKnowledge });
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("INFT3800"), PrerequisiteCourseID = CourseID("SENG2130"), CourseRequisite = RequisiteType.AssumedKnowledge }); //HAS OR WITH INFT2150
