@@ -127,7 +127,7 @@
 
 @if (readyToRender)
 {
-    <DegreePlan  />
+    <DegreePlan />
 }
 
 
@@ -175,7 +175,7 @@
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private Major SelectedMajor;
     private CourseRuntime StartingBlock = CourseRuntime.Semester1;
-    private AvailableCampus ChosenCampus = AvailableCampus.Online | AvailableCampus.Callaghan;
+    private AvailableCampus ChosenCampus = AvailableCampus.Callaghan;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
