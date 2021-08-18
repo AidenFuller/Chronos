@@ -8,6 +8,7 @@ namespace Chronos.Models.Enums
     public enum RequisiteType
     {
         HardRequisite,
-        AssumedKnowledge
+        AssumedKnowledge,
+        MustPreceed
     }
 }

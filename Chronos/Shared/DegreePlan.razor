@@ -16,80 +16,83 @@
     <div class="year-label">
         <h7><b>Year 2</b></h7>
     </div>*@
-<CascadingValue Value="this">
-    <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
-        <TileSlot Tiles="@completedData" CompletedFlag="true" />
-    </div>
 
-    <div class="degreePlan">
+@if (isReady)
+{
+    <CascadingValue Value="this">
+        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+            <TileSlot Tiles="@completedData" CompletedFlag="true" />
+        </div>
+
+        <div class="degreePlan">
 
 
-        @*Pass boolean to determine if ghosts are showing to all children*@
-        @if (State.CourseData == null)
-        {
-            <p>Loading...</p>
-        }
-        else
-        {
-            bool EOF = false;
-            for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
+            @*Pass boolean to determine if ghosts are showing to all children*@
+            @if (State.CourseData == null)
             {
-                <div class="year-row">
-                    @for (int i = 0; i < State.BlocksPerYear; i++)
-                    {
-                        if (EOF = !enumerator.MoveNext())
-                        {
-                            break;
-                        }
-                        <h6 class="semester-label">Semester @(i + 1)</h6>
-                        <div class="semester">
-                            @* Assuming Semesters *@
-
-                            @if (i == 0)
-                            {
-                                //Semester 1
-                                <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                            }
-                            else
-                            {
-                                //Semester 2
-                                <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                            }
-                        </div>
-                    }
-                </div>
+                <p>Loading...</p>
             }
+            else
+            {
+                bool EOF = false;
+                for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
+                {
+                    <div class="year-row">
+                        @for (int i = 0; i < State.BlocksPerYear; i++)
+                        {
+                            if (EOF = !enumerator.MoveNext())
+                            {
+                                break;
+                            }
+                            <h6 class="semester-label">Semester @(i + 1)</h6>
+                            <div class="semester">
+                                @* Assuming Semesters *@
 
-            <br />
+                                @if (i == 0)
+                                {
+                                    //Semester 1
+                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                }
+                                else
+                                {
+                                    //Semester 2
+                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                }
+                            </div>
+                        }
+                    </div>
+                }
 
-            <div>
-                <div style="float:left">
-                    <button @onclick="AddYear" class="btn-info">Add Year</button>
+                <br />
+
+                <div>
+                    <div style="float:left">
+                        <button @onclick="AddYear" class="btn-info">Add Year</button>
+                    </div>
+
+
+                    @*//-----------------------------------------------
+                        //This button will remove the empty year
+                        //----------------------------------------------*@
+
+                    <div style="float:right;">
+                        <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+                    </div>
                 </div>
 
+            }
+        </div>
+    </CascadingValue>
 
-                @*//-----------------------------------------------
-                    //This button will remove the empty year
-                    //----------------------------------------------*@
-
-                <div style="float:right;">
-                    <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
-                </div>
-            </div>
-
-        }
+    <br />
+    <br />
+    <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+        Save
     </div>
-</CascadingValue>
-
-<br />
-<br />
-<div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
-    Save
-</div>
-
+}
 
 @code {
-        // Cascaded Parameters
+    // Cascaded Parameters
     public Degree Degree { get; private set; }
     public Major Major { get; private set; }
     public AvailableCampus Campus { get; private set; }
@@ -98,6 +101,8 @@
     private List<TileData> completedData;
     private int blockSize = 2;
     private bool fiftyUnitsWarningBool = false;
+
+    private bool isReady = false;
 
     //Dragging Variables
     public TileData DragPayload { get; set; }
@@ -124,7 +129,155 @@
             Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
             draggedOn.Status = 0;
             DragPayload.Status = 0;
+
+            await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
+            await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
+
+
+
             StateHasChanged();
+        }
+    }
+
+    private async Task UpdateReliants(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)
+    {
+        foreach (Course course in await GetCorrectReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
+        {
+            RemoveStatus(course, ErrorStatus.MissingAssumedKnowledge);
+        }
+
+        foreach (Course course in await GetCorrectReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
+        {
+            RemoveStatus(course, ErrorStatus.MissingPrerequisite);
+        }
+
+        foreach (Course course in await GetCorrectReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.MustPreceed))
+        {
+            RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+
+        foreach (Course course in await GetCorrectReliants(swapped, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
+        {
+            RemoveStatus(course, ErrorStatus.MissingAssumedKnowledge);
+        }
+
+        foreach (Course course in await GetCorrectReliants(swapped, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
+        {
+            RemoveStatus(course, ErrorStatus.MissingPrerequisite);
+        }
+
+        foreach (Course course in await GetCorrectReliants(swapped, State.CourseData.IndexOf(listTo), RequisiteType.MustPreceed))
+        {
+            RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+    }
+
+    private async Task ShowSwapWarnings(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)
+    {
+        List<(int, int)> pairs = new List<(int, int)>();
+
+        foreach (Course course in await GetMissingPrerequisites(payload, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
+        {
+            ToastService.ShowToast(ToastLevel.Warning, $"{course.CourseCode} is assumed knowledge of {payload.Course.CourseCode}");
+            payload.Status |= ErrorStatus.MissingAssumedKnowledge;
+            pairs.Add((course.CourseID, payload.Course.CourseID));
+        }
+
+        foreach (Course course in await GetMissingPrerequisites(payload, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed before {payload.Course.CourseCode}");
+            payload.Status |= ErrorStatus.MissingPrerequisite;
+            pairs.Add((course.CourseID, payload.Course.CourseID));
+        }
+
+        foreach (Course course in await GetMissingPrerequisites(payload, State.CourseData.IndexOf(listTo), RequisiteType.MustPreceed))
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed in the semester before {payload.Course.CourseCode}");
+            payload.Status |= ErrorStatus.MissingSiblingCourse;
+            pairs.Add((course.CourseID, payload.Course.CourseID));
+            SetStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+
+        foreach (Course course in await GetReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
+        {
+            ToastService.ShowToast(ToastLevel.Warning, $"{payload.Course.CourseCode} is assumed knowledge of {course.CourseCode}");
+            pairs.Add((payload.Course.CourseID, course.CourseID));
+            SetStatus(course, ErrorStatus.MissingAssumedKnowledge);
+        }
+
+        foreach (Course course in await GetReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{payload.Course.CourseCode} must be completed before {course.CourseCode}");
+            pairs.Add((payload.Course.CourseID, course.CourseID));
+            SetStatus(course, ErrorStatus.MissingPrerequisite);
+        }
+
+        foreach (Course course in await GetReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.MustPreceed))
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{payload.Course.CourseCode} must be completed in the semester before {course.CourseCode}");
+            pairs.Add((payload.Course.CourseID, course.CourseID));
+            payload.Status = ErrorStatus.MissingSiblingCourse;
+            SetStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+
+
+        if (swapped != null)
+        {
+            foreach (Course course in await GetMissingPrerequisites(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.AssumedKnowledge))
+            {
+                if (!pairs.Any(p => p.Item1 == course.CourseID && p.Item2 == swapped.Course.CourseID))
+                {
+                    ToastService.ShowToast(ToastLevel.Warning, $"{course.CourseCode} is assumed knowledge of {swapped.Course.CourseCode}");
+                }
+                swapped.Status |= ErrorStatus.MissingAssumedKnowledge;
+            }
+
+            foreach (Course course in await GetMissingPrerequisites(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.HardRequisite))
+            {
+                if (!pairs.Any(p => p.Item1 == course.CourseID && p.Item2 == swapped.Course.CourseID))
+                {
+                    ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed before {swapped.Course.CourseCode}");
+                }
+                swapped.Status |= ErrorStatus.MissingPrerequisite;
+            }
+
+            foreach (Course course in await GetMissingPrerequisites(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.MustPreceed))
+            {
+                if (!pairs.Any(p => p.Item1 == course.CourseID && p.Item2 == swapped.Course.CourseID))
+                {
+                    ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed in the semester before {swapped.Course.CourseCode}");
+                }
+                swapped.Status |= ErrorStatus.MissingSiblingCourse;
+                SetStatus(course, ErrorStatus.MissingSiblingCourse);
+            }
+
+            foreach (Course course in await GetReliants(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.AssumedKnowledge))
+            {
+                if (!pairs.Any(p => p.Item1 == swapped.Course.CourseID && p.Item2 == course.CourseID))
+                {
+                    ToastService.ShowToast(ToastLevel.Warning, $"{swapped.Course.CourseCode} is assumed knowledge of {course.CourseCode}");
+                }
+                SetStatus(course, ErrorStatus.MissingAssumedKnowledge);
+            }
+
+            foreach (Course course in await GetReliants(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.HardRequisite))
+            {
+                if (!pairs.Any(p => p.Item1 == swapped.Course.CourseID && p.Item2 == course.CourseID))
+                {
+                    ToastService.ShowToast(ToastLevel.Error, $"{swapped.Course.CourseCode} must be completed before {course.CourseCode}");
+                }
+                SetStatus(course, ErrorStatus.MissingPrerequisite);
+            }
+
+            foreach (Course course in await GetReliants(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.MustPreceed))
+            {
+                if (!pairs.Any(p => p.Item1 == swapped.Course.CourseID && p.Item2 == course.CourseID))
+                {
+                    ToastService.ShowToast(ToastLevel.Error, $"{swapped.Course.CourseCode} must be completed in the semester before {course.CourseCode}");
+                }
+                swapped.Status |= ErrorStatus.MissingSiblingCourse;
+                SetStatus(course, ErrorStatus.MissingSiblingCourse);
+            }
         }
     }
 
@@ -147,14 +300,18 @@
     }
 
     //Move payload from one slot to a new slot
-    public void MovePayloadTo(TileSlot slot)
+    public void MovePayloadTo(List<TileData> slot)
     {
         //Made design decision to handle this hear, saves intensive cascading parameters.
         //Leaving this note here as I may decide to change later.
-        slot.Tiles.Add(DragPayload);
+        slot.Add(DragPayload);
         DragFrom.Remove(DragPayload);
         DragPayload.Status = 0;
         FiftyUnitWarning(slot);
+
+        UpdateReliants(DragFrom, slot, DragPayload, null);
+        ShowSwapWarnings(DragFrom, slot, DragPayload, null);
+
     }
 
 
@@ -282,24 +439,8 @@
             completedData.Add(td);
 
         }
-    }
 
-    //Returns a list of missing prerequisite courses
-    private async Task<List<Course>> FindMissingPrerequisites(List<List<TileData>> courses, Course course)
-    {
-        List<Course> pCourses = (await CourseService.GetPrerequisiteCoursesAsync(course.CourseID)).ToList();
-
-        List<Course> missing = new List<Course>();
-
-        foreach (Course pCourse in pCourses)
-        {
-            if (!courses.Any(c => c.Any(i => i.Course.CourseID == pCourse.CourseID)))
-            {
-                missing.Add(pCourse);
-            }
-        }
-
-        return missing;
+        isReady = true;
     }
 
     //Returns all courses in the plan
@@ -318,9 +459,9 @@
         return allC;
     }
 
-    public void FiftyUnitWarning(TileSlot slot)
+    public void FiftyUnitWarning(List<TileData> slot)
     {
-        if (slot.Tiles.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
+        if (slot.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
         {
             RenderFragment message =@<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
             ToastService.ShowToast(ToastLevel.Warning, message);
@@ -487,17 +628,119 @@
         if (tile.Course == null)
             return true;
 
-        var courseList = (await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID)).ToList();
+        var courseIDList = (await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID)).ToList();
 
         int tally = 0;
+        //var list = await CourseService.GetCoursesAsync(courseIDList.Select(c => c.PrerequisiteCourseID));
         for (int i = 0; i < n; i++)
         {
-            tally += courseList.Count(c => output[i].Any(t => t.Course?.CourseCode == c.CourseCode));
+
+            tally += courseIDList.Count(c => output[i].Any(t => t.Course?.CourseID == c.CourseID));
         }
 
-        tally += courseList.Count(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseCode == c.CourseCode));
+        tally += courseIDList.Count(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseID == c.CourseID));
 
-        return tally == courseList.Count();
+        return tally == courseIDList.Count();
+    }
+
+    private async Task<List<Course>> GetMissingPrerequisites(TileData tile, int n, RequisiteType requisite)
+    {
+        if (tile.Course == null)
+            return new List<Course>();
+
+        var courseList = (await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID, requisite)).ToList();
+
+        courseList.RemoveAll(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseID == c.CourseID));
+
+        if (requisite == RequisiteType.MustPreceed && n > 0)
+        {
+            courseList.RemoveAll(c => State.CourseData[n - 1].Any(t => t.Course?.CourseID == c.CourseID));
+        }
+        else
+        {
+            for (int i = 0; i < n; i++)
+            {
+                courseList.RemoveAll(c => State.CourseData[i].Any(t => t.Course?.CourseID == c.CourseID));
+            }
+        }
+
+        return courseList;
+    }
+
+    private async Task<List<Course>> GetReliants(TileData tile, int n, RequisiteType requisite)
+    {
+        if (tile.Course == null || n == output.Count - 1)
+            return new List<Course>();
+
+        var courseList = (await CourseService.GetReliantCoursesAsync(tile.Course.CourseID, requisite)).ToList();
+
+        courseList.RemoveAll(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseID == c.CourseID));
+
+        if (requisite == RequisiteType.MustPreceed)
+        {
+            courseList.RemoveAll(c => !State.CourseData[n + 1].Any(t => t.Course?.CourseID == c.CourseID));
+        }
+        else
+        {
+            courseList.RemoveAll(c => !State.CourseData.Take(n).Any(s => s.Any(t => t.Course?.CourseID == c.CourseID)));
+        }
+
+        return courseList;
+    }
+
+
+    private async Task<List<Course>> GetCorrectReliants(TileData tile, int n, RequisiteType requisite)
+    {
+        if (tile?.Course == null || n == output.Count - 1)
+            return new List<Course>();
+        
+        var courseList = (await CourseService.GetReliantCoursesAsync(tile.Course.CourseID, requisite)).ToList();
+
+        courseList.RemoveAll(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseID == c.CourseID));
+        courseList.RemoveAll(c => !ContainsCourse(c));
+
+        if (requisite == RequisiteType.MustPreceed)
+        {
+            courseList.RemoveAll(c => State.CourseData[n + 1].Any(t => t.Course?.CourseID == c.CourseID));
+        }
+        else
+        {
+            courseList.RemoveAll(c => State.CourseData.Take(n).Any(s => s.Any(t => t.Course?.CourseID == c.CourseID && t.Status == 0)));
+        }
+
+        return courseList;
+    }
+
+    private void SetStatus(Course course, ErrorStatus status)
+    {
+        foreach (var slot in State.CourseData)
+        {
+            foreach (var td in slot)
+            {
+                if (td.Course == null) continue;
+                if (td.Course.CourseID == course.CourseID)
+                {
+                    td.Status = status;
+                    return;
+                }
+            }
+        }
+    }
+
+    private void RemoveStatus(Course course, ErrorStatus status)
+    {
+        foreach (var slot in State.CourseData)
+        {
+            foreach (var td in slot)
+            {
+                if (td.Course == null) continue;
+                if (td.Course.CourseID == course.CourseID && (td.Status & status) > 0)
+                {
+                    td.Status ^= td.Status & status;
+                    return;
+                }
+            }
+        }
     }
 
     private void AddYear()
