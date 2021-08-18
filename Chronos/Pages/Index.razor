@@ -59,20 +59,16 @@
                 </div>
                 <br />
                 <h4>What campuses are you able to attend?</h4>
-                <div class="checklistColumns" >
+                <div>
+                <select name="campus" class="semester-selection" @bind="ChosenCampus">
                     <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
-                    <input type="radio" id="Callaghan" name="Campus" @bind="ChosenCampus = AvailableCampus.Callaghan"/>
-                    <label for="Callaghan">Callaghan Campus</label><br />
-                    <input type="radio" id="Newcastle" name="Campus" @bind="ChosenCampus = AvailableCampus.NewcastleCity" />
-                    <label for="Newcastle">Newcastle Campus</label><br />
-                    <input type="radio" id="Ourimbah" name="Campus" @bind="ChosenCampus = AvailableCampus.Ourimbah" />
-                    <label for="Ourimbah">Ourimbah Campus</label><br />
-                    <input type="radio" id="Port Macquarie" name="Campus" @bind="ChosenCampus = AvailableCampus.PortMacquarie" />
-                    <label for="Port Macquarie">Port Macquarie Campus</label><br />
-                    <input type="radio" id="Signapore" name="Campus" @bind="ChosenCampus = AvailableCampus.SingaporeBCA | AvailableCampus.SingaporePSB" />
-                    <label for="Signapore">Signapore Campus</label><br />
-                    <input type="radio" id="Sydney" name="Campus" @bind="ChosenCampus = AvailableCampus.Sydney" />
-                    <label for="Sydney">Sydney Campus</label><br />
+                    <option value="@AvailableCampus.Callaghan" selected>Callaghan Campus</option>
+                    <option value="@AvailableCampus.NewcastleCity">Newcastle Campus</option>
+                    <option value="@AvailableCampus.Ourimbah">Ourimbah Campus</option>
+                    <option value="@AvailableCampus.PortMacquarie">Port Macquarie Campus</option>
+                    <option value="@AvailableCampus.SingaporeBCA | @AvailableCampus.SingaporePSB">Signapore Campus</option>
+                    <option value="@AvailableCampus.Sydney">Sydney Campus</option>
+                </select>
                 </div>
             </form> <!--Initial Form ends here.-->
             <br />
@@ -179,7 +175,7 @@
     private Degree SelectedDegree; //This is the selected degree from the search results above.
     private Major SelectedMajor;
     private CourseRuntime StartingBlock = CourseRuntime.Semester1;
-    private AvailableCampus ChosenCampus = AvailableCampus.Online;
+    private AvailableCampus ChosenCampus = AvailableCampus.Online | AvailableCampus.Callaghan;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
