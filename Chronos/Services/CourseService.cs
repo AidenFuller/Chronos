@@ -30,6 +30,11 @@ namespace Chronos.Services
             return await db.Courses.FindAsync(courseID); //This will find a specific course in the DB. 
         }
 
+        public async Task<IEnumerable<Course>> GetCoursesAsync(IEnumerable<int> courseIDs)
+        {
+            return courseIDs.Select(c => db.Courses.Find(c));
+        }
+
         public async Task<IEnumerable<Course>> GetAllCoursesAsync()
         {
             return db.Courses; //This will return all the courses. 
@@ -47,6 +52,19 @@ namespace Chronos.Services
             IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.CourseID == CourseID).Select(i => i.PrerequisiteCourseID); //This will return an IEnumerable of Ints that relates to the specific Preqreuisite Courses in the Database. 
 
             return db.Courses.Where(i => courseIDs.Contains(i.CourseID)); //This will return the specific Prerequisite courses for that course ID. 
+        }
+
+        public async Task<IEnumerable<Course>> GetPrerequisiteCoursesAsync(int CourseID, RequisiteType type)
+        {
+            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.CourseID == CourseID && i.CourseRequisite == type).Select(i => i.PrerequisiteCourseID);
+
+            return db.Courses.Where(i => courseIDs.Contains(i.CourseID));
+        }
+
+        public async Task<IEnumerable<Course>> GetReliantCoursesAsync(int CourseID, RequisiteType type)
+        {
+            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.PrerequisiteCourseID == CourseID && i.CourseRequisite == type).Select(i => i.CourseID);
+            return db.Courses.Where(i => courseIDs.Contains(i.CourseID));
         }
 
         public async Task<CourseRuntime> GetCourseRuntimeAsync(int CourseID, AvailableCampus Campus)
