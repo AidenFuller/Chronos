@@ -86,9 +86,9 @@
 
     <br />
     <br />
-    <div class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+    <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
         Save
-    </div>
+    </button>
 }
 
 @code {
@@ -133,7 +133,7 @@
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
             await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
 
-
+            State.CompletedCourses = completedData.Select(c => c.Course).ToList();
 
             StateHasChanged();
         }
