@@ -15,6 +15,7 @@ namespace Chronos.Shared.Wrappers
         public int BlocksPerYear { get; set; } = 2;
         public int UnitsPerBlock { get; set; } = 40;
         public List<Course> CompletedCourses { get; set; }
+        public List<TileData> CompletedTiles { get; set; }
         public AvailableCampus Campus { get; set; }
         public CourseRuntime RuntimeStart { get; set; }
 
@@ -26,6 +27,7 @@ namespace Chronos.Shared.Wrappers
             BlocksPerYear = state.BlocksPerYear;
             UnitsPerBlock = state.UnitsPerBlock;
             CompletedCourses = state.CompletedCourses;
+            CompletedTiles = state.CompletedTiles;
             Campus = state.Campus;
             RuntimeStart = state.RuntimeStart;
         }

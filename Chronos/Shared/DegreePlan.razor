@@ -21,7 +21,7 @@
 {
     <CascadingValue Value="this">
         <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
-            <TileSlot Tiles="@completedData" CompletedFlag="true" />
+            <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
         </div>
 
         <div class="degreePlan">
@@ -89,6 +89,10 @@
     <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
         Save
     </button>
+
+    <button class="json-save" @onclick=@(async () => await ResetAsync(true))>
+        Reset Plan
+    </button>
 }
 
 @code {
@@ -98,7 +102,6 @@
     public AvailableCampus Campus { get; private set; }
 
 
-    private List<TileData> completedData;
     private int blockSize = 2;
     private bool fiftyUnitsWarningBool = false;
 
@@ -137,7 +140,7 @@
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
             await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
 
-            State.CompletedCourses = completedData.Select(c => c.Course).ToList();
+            State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
 
             StateHasChanged();
         }
@@ -315,7 +318,7 @@
 
         UpdateReliants(DragFrom, slot, DragPayload, null);
         ShowSwapWarnings(DragFrom, slot, DragPayload, null);
-        State.CompletedCourses = completedData.Select(c => c.Course).ToList();
+        State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
     }
 
 
@@ -325,6 +328,25 @@
         Degree = State.Degree;
         Major = State.Major;
         Campus = State.Campus;
+
+        if (State.CourseData == null)
+        {
+            await ResetAsync(false);
+        }
+
+        isReady = true;
+    }
+
+    private async Task ResetAsync(bool resetCompletedCourses)
+    {
+        if (resetCompletedCourses)
+        {
+            State.CompletedCourses = new List<Course>();
+        }
+
+        State.CourseData = null;
+
+        isReady = false;
         //Query database
         List<TileData> allCourseData = new List<TileData>();
         List<Course> coreCourses = (await DegreeCourseService.GetCoreCoursesAsync(State.Degree.DegreeID)).ToList();
@@ -332,7 +354,7 @@
         List<Course> completedCourseValidator = new List<Course>(State.CompletedCourses);
         int completedUnitCount = 0;
 
-        completedData = new List<TileData>();
+        State.CompletedTiles = new List<TileData>();
 
         //Loop through pulled courses
         foreach (Course course in coreCourses)
@@ -347,7 +369,7 @@
             int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
             if (counter > 0)
             {
-                completedData.Add(td);
+                State.CompletedTiles.Add(td);
                 completedUnitCount += counter;
             }
             else
@@ -371,7 +393,7 @@
             int counter = completedCourseValidator.RemoveAll(c => c.CourseID == course.CourseID);
             if (counter > 0)
             {
-                completedData.Add(td);
+                State.CompletedTiles.Add(td);
                 completedUnitCount += counter;
             }
             else
@@ -384,7 +406,7 @@
 
 
         //Create all empty directed
-        int directedUnits = State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - completedData.Sum(t => t.Course.Units) - State.Degree.ElectiveUnits;
+        int directedUnits = State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - State.CompletedTiles.Sum(t => t.Course.Units) - State.Degree.ElectiveUnits;
         if (completedCourseValidator.Count > 0)
         {
             var nonCompulsoryCourses = await MajorCourseService.GetNonCompulsoryCoursesAsync(State.Major.MajorID);
@@ -399,7 +421,7 @@
                         TileType = TileType.Directed,
                         Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
                     };
-                    completedData.Add(td);
+                    State.CompletedTiles.Add(td);
                 }
                 directedUnits -= courses.Sum(t => t.Units);
                 completedCourseValidator.RemoveAll(c => courses.Any(comp => comp.CourseID == c.CourseID));
@@ -421,7 +443,7 @@
                         TileType = TileType.Directed,
                         Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
                     };
-                    completedData.Add(td);
+                    State.CompletedTiles.Add(td);
                     completedCourseValidator.Remove(c);
                 }
                 directedUnits = 0;
@@ -435,7 +457,7 @@
                     TileType = TileType.Elective,
                     Runtime = await CourseService.GetCourseRuntimeAsync(c.CourseID, State.Campus)
                 };
-                completedData.Add(td);
+                State.CompletedTiles.Add(td);
             }
         }
 
@@ -470,11 +492,8 @@
 
         int n = State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0;
 
-        if (State.CourseData != null)
-        {
-            isReady = true;
-            return;
-        }
+        states = new List<int>();
+
         if (await Autocomplete(cache, n))
         {
             for (int i = 0; i < output.Count; i++)
@@ -507,10 +526,6 @@
         }
 
         //Parameters set, modify as needed
-
-
-
-
         isReady = true;
     }
 
@@ -723,7 +738,7 @@
 
         var courseList = (await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID, requisite)).ToList();
 
-        courseList.RemoveAll(c => completedData.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
+        courseList.RemoveAll(c => State.CompletedTiles.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
 
         if (requisite == RequisiteType.MustPreceed && n > 0)
         {
@@ -747,7 +762,7 @@
 
         var courseList = (await CourseService.GetReliantCoursesAsync(tile.Course.CourseID, requisite)).ToList();
 
-        courseList.RemoveAll(c => completedData.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
+        courseList.RemoveAll(c => State.CompletedTiles.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
 
         if (n == State.CourseData.Count - 1)
             return courseList;
@@ -767,12 +782,12 @@
 
     private async Task<List<Course>> GetCorrectReliants(TileData tile, int n, RequisiteType requisite)
     {
-        if (tile?.Course == null || n == output.Count - 1)
+        if (tile?.Course == null || n == State.CourseData.Count - 1)
             return new List<Course>();
         
         var courseList = (await CourseService.GetReliantCoursesAsync(tile.Course.CourseID, requisite)).ToList();
 
-        courseList.RemoveAll(c => completedData.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
+        courseList.RemoveAll(c => State.CompletedTiles.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
         courseList.RemoveAll(c => !ContainsCourse(c));
 
         if (requisite == RequisiteType.MustPreceed)
