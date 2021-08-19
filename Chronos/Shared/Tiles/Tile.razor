@@ -34,6 +34,15 @@
     else
     {
 
+
+        //Non Compulsory
+        @if (!Data.IsDirectedCore && !Data.TileType.Equals(TileType.Core)) {
+
+        <div class="TrashButton" @onclick="trashButton" @onclick:stopPropagation="true">
+            <p>X</p>
+        </div>
+         } 
+
         //Course
 
         //---------------------------------------
@@ -91,11 +100,6 @@
                         //This br tags are blocking the white spaces
                         //-------------------------------------------------*@
 
-                    @*<br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />*@
 
                 </div>
             </div>
@@ -106,24 +110,24 @@
 
 @code {
 
-        [CascadingParameter]
-        DegreePlan Plan { get; set; }
+    [CascadingParameter]
+    DegreePlan Plan { get; set; }
 
-        [CascadingParameter]
-        TileSlot Slot { get; set; }
+    [CascadingParameter]
+    TileSlot Slot { get; set; }
 
-        [Parameter]
-        public TileData Data { get; set; }
+    [Parameter]
+    public TileData Data { get; set; }
 
-        [Parameter]
-        public bool CompletedFlag { get; set; } = false;
+    [Parameter]
+    public bool CompletedFlag { get; set; } = false;
 
-        //[Parameter]
-        //public string Width { get; set; } = "200px";
+    //[Parameter]
+    //public string Width { get; set; } = "200px";
 
-        //private string Height = "100px";
+    //private string Height = "100px";
 
-        [CascadingParameter] public IModalService Modal { get; set; }
+    [CascadingParameter] public IModalService Modal { get; set; }
 
     private string tileClass = "Tile"; //CSS class based on TileType
     private string typeClass; //CSS class based on TileType
@@ -287,11 +291,18 @@
         s = s.Replace("Semester1", "1");
         s = s.Replace("Semester2", "2");
 
-        
+
 
 
 
         return s;
+    }
+
+    private void trashButton()
+    {
+
+        Data.Course = null;
+        UpdateTileType();
     }
 
 

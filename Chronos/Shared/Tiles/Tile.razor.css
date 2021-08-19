@@ -118,3 +118,27 @@
     display:block;
 }
 
+/*Trash Button*/
+.TrashButton{
+    position: absolute;
+
+    right: 0px;
+    top: 0px;
+
+    
+    background-color: red;
+    opacity: 0.75;
+    visibility: hidden;
+    z-index: 5;
+
+    width: 20px;
+    height: 20px;
+}
+
+    .TrashButton:hover {
+        opacity: 1;
+    }
+.Tile:hover .TrashButton {
+    
+    visibility: visible;
+}
