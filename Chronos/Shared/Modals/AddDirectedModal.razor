@@ -71,7 +71,6 @@
         public CourseRuntime DataPoint { get; set; }
         public bool IsSelected;
     }
-    public CourseRuntime SumValue { get; set; }
 
 
 
@@ -116,7 +115,7 @@
             return new List<Course>();
         }
         IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
-        if(SumValue <= 0)
+        if(GetSemesterSelections() <= 0)
         {
             return courses;
         }
