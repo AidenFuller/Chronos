@@ -123,7 +123,7 @@
         }
 
         IEnumerable<Course> courses = await CourseService.GetAllCoursesAsync();
-        if (SumValue <= 0)
+        if (GetSemesterSelections() <= 0)
         {
             return courses;
         }
@@ -131,21 +131,19 @@
         IEnumerable<Course> ret = await Task.FromResult(courses.Where(x => (x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())) && !Plan.ContainsCourse(x)));
 
         //Sort and trim
-        //Trim the list to 10
         ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
 
-        if (ret.Count() > 10)
-        {
-            ret = ret.ToList().GetRange(0, 10);
-        }
+
 
         //Remove courses not in the selected semesters
         CourseRuntime sem = GetSemesterSelections();
-        if (sem != 0)
-        {
-            ret = ret.Where(x => (GetRuntime(x) & sem) > 0);
-        }
+        ret = ret.Where(x => (GetRuntime(x) & sem) > 0);
 
+        if (ret.Count() > 10)
+        {
+            //Trim the list to 10
+            ret = ret.ToList().GetRange(0, 10);
+        }
 
         return ret;
         //Remove courses already in the plan
