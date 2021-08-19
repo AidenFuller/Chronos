@@ -124,6 +124,10 @@
         {
             ToastService.ShowToast(ToastLevel.Error, $"{draggedOn.Course.CourseCode} does not run in {BlockTypeFrom}");
         }
+        if (completedData.Contains(DragPayload) && draggedOn.Course == null)
+        {
+            ToastService.ShowToast(ToastLevel.Error, "You cannot swap completed course with a blank course.");
+        }
         if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
         {
             Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
