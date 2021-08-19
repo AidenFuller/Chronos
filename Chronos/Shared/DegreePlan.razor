@@ -380,7 +380,7 @@
 
 
         //Create all empty directed
-        int directedUnits = State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - completedData.Sum(t => t.Course.Units) - (State.Degree.ElectiveCount * 10);
+        int directedUnits = State.Degree.UnitLength - allCourseData.Sum(t => t.Course.Units) - completedData.Sum(t => t.Course.Units) - State.Degree.ElectiveUnits;
         if (completedCourseValidator.Count > 0)
         {
             var nonCompulsoryCourses = await MajorCourseService.GetNonCompulsoryCoursesAsync(State.Major.MajorID);
@@ -447,7 +447,7 @@
 
         //Create all empty elective courses
         // Add excess for the number of completed courses
-        for (int i = 0; i < State.Degree.ElectiveCount - completedCourseValidator.Count + State.CompletedCourses.Count; i++)
+        for (int i = 0; i < State.Degree.ElectiveUnits - completedCourseValidator.Sum(c => c.Units) + State.CompletedCourses.Sum(c => c.Units); i += 10)
         {
             TileData td = new TileData()
             {
@@ -527,9 +527,10 @@
         {
             RenderFragment message =
     @<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
-            ToastService.ShowToast(ToastLevel.Warning, message);
+            ToastService.ShowToast(ToastLevel.Warning, "By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href=\"https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F\">Click Here</a>");
             fiftyUnitsWarningBool = true;
         }
+        
     }
     //Returns true if the plan contains the course
     public bool ContainsCourse(Course course)
@@ -584,7 +585,7 @@
                 td = cache[index++];
             }
 
-            //DisplayOutput();
+            DisplayOutput();
             output[n].Add(td);
             if (StateHasAppeared())
             {

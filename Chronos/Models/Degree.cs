@@ -9,6 +9,6 @@ namespace Chronos.Models
         public string Name { get; set; }
         public int UnitLength { get; set; }
         public bool InternationalsAllowed { get; set; }
-        public int ElectiveCount { get; set; }
+        public int ElectiveUnits { get; set; }
     }
 }
