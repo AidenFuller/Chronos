@@ -64,8 +64,6 @@
             <p style="font-size:10.8px;"> @Data.Course.Name </p>
         </div>
 
-
-
         <div class="courseDes">
 
             @*//---------------------------------------------------
@@ -79,25 +77,25 @@
                 <hr style="margin-bottom:0px; margin-top:-15px;" />
                 <div style="word-wrap:break-word; white-space:nowrap;">
                     <div>
-                        <p style="font-size:12px; display:block; float:inline-start"><b> Units: @Data.Course.Units</b> </p>
+                        <span style="font-size:12px; display:block; float:inline-start"><b> Units: @Data.Course.Units</b> </span>
                     </div>
                     <div>
                         @*//----------------------------------------
                             //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
                             //Delete this comment before final submission
                             //-----------------------------------------*@
-                        <p style="font-size:12px; display: block; float: inline-end;"><b>@Data.Runtime</b> </p>
+                        <span style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; "><b>@semesterStringOut(Data.Runtime)</b> </span>
                     </div>
 
                     @*//-------------------------------------------------
                         //This br tags are blocking the white spaces
                         //-------------------------------------------------*@
 
+                    @*<br />
                     <br />
                     <br />
                     <br />
-                    <br />
-                    <br />
+                    <br />*@
 
                 </div>
             </div>
@@ -279,6 +277,21 @@
         dropClass = "";
         if (Data == Plan.DragPayload) return;
         await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data, Slot.BlockType);
+    }
+
+    private String semesterStringOut(CourseRuntime c)
+    {
+        String courseStr = c.ToString();
+        String s = "Semesters: " + courseStr;
+
+        s = s.Replace("Semester1", "1");
+        s = s.Replace("Semester2", "2");
+
+        
+
+
+
+        return s;
     }
 
 

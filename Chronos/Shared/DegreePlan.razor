@@ -27,26 +27,26 @@
         <div class="degreePlan">
 
 
-            @*Pass boolean to determine if ghosts are showing to all children*@
-            @if (State.CourseData == null)
+        @*Pass boolean to determine if ghosts are showing to all children*@
+        @if (State.CourseData == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            bool EOF = false;
+            for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
             {
-                <p>Loading...</p>
-            }
-            else
-            {
-                bool EOF = false;
-                for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
-                {
-                    <div class="year-row">
-                        @for (int i = 0; i < State.BlocksPerYear; i++)
+                <div class="year-row">
+                    @for (int i = 0; i < State.BlocksPerYear; i++)
+                    {
+                        if (EOF = !enumerator.MoveNext())
                         {
-                            if (EOF = !enumerator.MoveNext())
-                            {
-                                break;
-                            }
-                            <h6 class="semester-label">Semester @(i + 1)</h6>
-                            <div class="semester">
-                                @* Assuming Semesters *@
+                            break;
+                        }
+                        <p class="semester-label">Semester @(i + 1)</p>
+                        <div class="semester">
+                            @* Assuming Semesters *@
 
                                 @if (i == 0)
                                 {

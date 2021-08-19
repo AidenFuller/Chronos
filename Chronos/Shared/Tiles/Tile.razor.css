@@ -4,21 +4,31 @@
     border-radius: 10px;
     display: inline-block;
     text-align: center;
+    align-content:center;
     height: 100%;
     transition: .2s;
     /*Makes it so items will each be given the same space*/
     width: 0;
     max-width: 40%;
+    min-width: 110px;
     flex: 1 1 0;
     margin: 5px 5px 5px 5px;
-    
-    
 
+    position: relative;
 }
     .Tile:hover {
         /*height can be put here when needed*/
         transition: .2s;
         transform: scale(1.05);
+    }
+
+    .Tile:hover .courseDes {
+        visibility: visible;
+        text-overflow: none;
+    }
+
+    .Tile:hover .courseName {
+        font-weight: 900;
     }
 
 .CompletedCourse{
@@ -32,15 +42,31 @@
 
 
 .courseDes {
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+
+
+    position: absolute;
     visibility: hidden;
 }
 
-.Tile:hover .courseDes {
-    visibility: visible;
-}
 
 .Tile:hover .courseName {
     font-weight: 900;
+}
+
+
+.courseCode{
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    position: absolute;
+    top: 5px;
 }
 
 
