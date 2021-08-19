@@ -437,7 +437,7 @@ namespace Chronos.Data
 
 
             var degree = "Computer Science";
-            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = degree, UnitLength = 240, ElectiveCount = 2 });
+            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = degree, UnitLength = 240, ElectiveUnits = 20 });
             db.SaveChanges();
 
             #region Computer Science Majors
@@ -553,7 +553,7 @@ namespace Chronos.Data
             
 
             degree = "Software Engineering";
-            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = degree, UnitLength = 360, ElectiveCount = 2 });
+            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = degree, UnitLength = 360, ElectiveUnits = 20 });
             
             db.SaveChanges();
             
