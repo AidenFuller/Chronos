@@ -311,7 +311,7 @@
 
         UpdateReliants(DragFrom, slot, DragPayload, null);
         ShowSwapWarnings(DragFrom, slot, DragPayload, null);
-
+        State.CompletedCourses = completedData.Select(c => c.Course).ToList();
     }
 
 
@@ -399,7 +399,7 @@
                 }
                 directedUnits -= courses.Sum(t => t.Units);
                 completedCourseValidator.RemoveAll(c => courses.Any(comp => comp.CourseID == c.CourseID));
-                
+
             }
             else if (courses.Count() > 0)
             {
@@ -466,6 +466,11 @@
 
         int n = State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0;
 
+        if (State.CourseData != null)
+        {
+            isReady = true;
+            return;
+        }
         if (await Autocomplete(cache, n))
         {
             for (int i = 0; i < output.Count; i++)
@@ -498,9 +503,9 @@
         }
 
         //Parameters set, modify as needed
-        
 
-        
+
+
 
         isReady = true;
     }
