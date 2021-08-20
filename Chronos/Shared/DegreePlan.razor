@@ -288,6 +288,28 @@
         }
     }
 
+    public async Task UpdateTileErrors(TileData td, List<TileData> slot)
+    {
+        foreach (Course course in await GetMissingPrerequisites(td, State.CourseData.IndexOf(slot), RequisiteType.AssumedKnowledge))
+        {
+            ToastService.ShowToast(ToastLevel.Warning, $"{course.CourseCode} is assumed knowledge of {td.Course.CourseCode}");
+            td.Status |= ErrorStatus.MissingAssumedKnowledge;
+        }
+
+        foreach (Course course in await GetMissingPrerequisites(td, State.CourseData.IndexOf(slot), RequisiteType.HardRequisite))
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed before {td.Course.CourseCode}");
+            td.Status |= ErrorStatus.MissingPrerequisite;
+        }
+
+        foreach (Course course in await GetMissingPrerequisites(td, State.CourseData.IndexOf(slot), RequisiteType.MustPreceed))
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed in the semester before {td.Course.CourseCode}");
+            td.Status |= ErrorStatus.MissingSiblingCourse;
+        }
+    }
+
+
     //Boolean to show the ghost tiles
     public bool ShowGhosts { get; set; } = false;
     //Show all ghost tiles in the plan
@@ -553,12 +575,19 @@
     {
         if (slot.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
         {
-            RenderFragment message =
-    @<text>By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href="https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F">Click Here</a> </text>;
-            ToastService.ShowToast(ToastLevel.Warning, "By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it here at this link: <a href=\"https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F\">Click Here</a>");
+            RenderFragment message = b =>
+            {
+                b.AddContent(0, "By including 50 units in a semester, you will have to go to the UON website and follow instructions in order to enrol in 50 units. Find it ");
+                b.OpenElement(1, "a");
+                b.AddAttribute(2, "href", "https://askuon.newcastle.edu.au/app/answers/detail/a_id/1764/~/can-i-enrol-in-more-than-40-units-in-a-semester%3F");
+                b.AddAttribute(3, "target", "_blank");
+                b.AddContent(4, "here");
+                b.CloseElement();
+            };
+            ToastService.ShowToast(ToastLevel.Warning, message);
             fiftyUnitsWarningBool = true;
         }
-        
+
     }
     //Returns true if the plan contains the course
     public bool ContainsCourse(Course course)
@@ -790,7 +819,7 @@
     {
         if (tile?.Course == null || n == State.CourseData.Count - 1)
             return new List<Course>();
-        
+
         var courseList = (await CourseService.GetReliantCoursesAsync(tile.Course.CourseID, requisite)).ToList();
 
         courseList.RemoveAll(c => State.CompletedTiles.Any(completedCourse => completedCourse.Course.CourseID == c.CourseID));
@@ -869,5 +898,5 @@
 
         StateHasChanged(); //Will update in all the components
     }
-}
+    }
 
