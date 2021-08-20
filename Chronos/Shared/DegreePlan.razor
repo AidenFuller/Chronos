@@ -502,7 +502,9 @@
             }
 
             int total = State.CompletedCourses.Count;
-            foreach(List<TileData> tiles in output)
+
+            output.Reverse();
+            foreach (List<TileData> tiles in output)
             {
                 if (total == 0)
                     break;
@@ -517,6 +519,8 @@
                     }
                 }
             }
+
+            output.Reverse();
 
             State.CourseData = output;
         }
@@ -635,13 +639,15 @@
     {
         bool flag = true;
 
-        int groupNumber = (n - (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0)) / 2 + 1;
+        int sum = output.Sum(i => i.Count) + State.CompletedTiles.Count;
+        double groupNumber = sum / 8.0 + 0.5;
+        //double groupNumber = (n - (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0)) / 2.0 + 1.5 + State.CompletedTiles.Count / 8.0;
 
         int minDirectedGroup = int.Parse((await MajorCourseService.GetAllDirectedCoursesAsync(State.Major.MajorID)).ToList().Min(c => c.CourseCode[4]).ToString());
 
         if (td.Course == null)
         {
-            if (td.TileType == TileType.Directed && minDirectedGroup <= groupNumber)
+            if (td.TileType == TileType.Directed && minDirectedGroup <= groupNumber + 0.5)
                 return true;
             else if (td.TileType == TileType.Elective)
                 return true;
@@ -655,7 +661,7 @@
             flag = false;
         else if (n > 0 && td.Course.CourseCode == "COMP3851B" && !output[n - 1].Any(c => (c.Course?.CourseCode ?? "lmfao") == "COMP3851A"))
             flag = false;
-        else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber)
+        else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber + 1)
             flag = false;
         else if (!await CheckPrerequisites(td, n))
             flag = false;
