@@ -14,15 +14,15 @@
     flex-direction: row;
     flex-wrap: nowrap;
     max-width: 100%;
-    /*border: 8px solid;*/
-    border-image: linear-gradient(45deg, turquoise, pink) 1;   /* greenyellow*/
-    border-bottom-width: thin;  /*Control the bottom border*/
+    border: 4px solid powderblue;
+    /*border-image: linear-gradient(45deg, #B0E0E6, #B0E0E6) 1;*/ /* greenyellow*/
+    border-bottom-width: thin; /*Control the bottom border*/
 }
 
 .semester {
     width: 50%;
-    border-style: solid;
-    border-image: linear-gradient(90deg, turquoise, pink) 100;
+   /* border-style: solid;*/
+    /*border-image: linear-gradient(90deg, turquoise, pink) 100;*/
     /*background-color: lightgrey;*/
     /*padding: 20px;*/
     height: 160px;
