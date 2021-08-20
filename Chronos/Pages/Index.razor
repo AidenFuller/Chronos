@@ -5,6 +5,7 @@
 @inject SaveState State
 @inject IToastService ToastService
 @inject IWebHostEnvironment env
+@inject NavigationManager NavManager 
 
 @using System
 @using System.Text
@@ -89,8 +90,14 @@
                     @course.CourseCode (@course.Name)
                 </ResultTemplate>
             </BlazoredTypeahead>
-
-            <button class="submit-button submit-button-colour submit-button-animation" @onclick="SubmitParameters">Submit</button>
+            @if (!readyToRender)
+            {
+                <button class="submit-button submit-button-colour submit-button-animation" @onclick="SubmitParameters">Submit</button>
+            }
+            else
+            {
+                <div class="spinner"></div>
+            }
         </div>
     </section>
 </div>
@@ -124,11 +131,6 @@
     <h4>Information regarding this Project</h4>
     <p>You can do this!</p>
 </div>
-
-@if (readyToRender)
-{
-    <DegreePlan />
-}
 
 
 @code {
@@ -216,7 +218,8 @@
             State.CompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
             State.Campus = ChosenCampus;
             readyToRender = true;
-            StateHasChanged();
+
+            NavManager.NavigateTo("DegreePlan");
         }
     }
 
@@ -241,6 +244,8 @@
 
         isLoading = false;
         readyToRender = true;
+
+        NavManager.NavigateTo("DegreePlan");
     }
 }
 

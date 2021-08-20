@@ -5,6 +5,8 @@
 @inject IToastService ToastService
 @inject SaveState State
 
+@page "/DegreePlan"
+
 @using Newtonsoft.Json;
 
 @using Chronos.Shared.Tiles;
@@ -93,6 +95,10 @@
     <button class="json-save" @onclick=@(async () => await ResetAsync(true))>
         Reset Plan
     </button>
+}
+else
+{
+    <p>Loading...</p>
 }
 
 @code {
