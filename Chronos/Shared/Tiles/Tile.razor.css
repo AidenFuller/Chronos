@@ -15,6 +15,7 @@
     margin: 5px 5px 5px 5px;
     position: relative;
     border: 2px solid black;
+
     /*--x: 100%;
     --y: 100%;
     border: 3px solid transparent;
@@ -124,20 +125,21 @@
 }
 
 /*Trash Button*/
-.TrashButton{
+.TrashButton {
     position: absolute;
-
     right: 0px;
     top: 0px;
-
-    
     background-color: red;
     opacity: 0.75;
     visibility: hidden;
     z-index: 5;
-
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
+    border-radius: 10px;
+    margin-top: 7px;
+    margin-right: 2px;
+    text-align: center;
+    vertical-align: middle;
 }
 
     .TrashButton:hover {
