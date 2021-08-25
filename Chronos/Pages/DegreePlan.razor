@@ -954,11 +954,18 @@ else
             {
                 if(tile.ErrorData[ErrorStatus.MissingSiblingCourse].Count != 0)
                 {
-                    errors += tile.ErrorData[ErrorStatus.MissingSiblingCourse].ToString() + "\n";
+                    foreach(var course in tile.ErrorData[ErrorStatus.MissingSiblingCourse])
+                    {
+                        errors += course.CourseCode + " must be completed the semester before " + tile.Course.CourseCode + "\n";
+                    }
+
                 }
                 if(tile.ErrorData[ErrorStatus.MissingPrerequisite].Count != 0)
                 {
-                    errors += tile.ErrorData[ErrorStatus.MissingPrerequisite].ToString() + "\n";
+                    foreach(var course in tile.ErrorData[ErrorStatus.MissingPrerequisite])
+                    {
+                        warnings += course.CourseCode + " must be completed before " + tile.Course.CourseCode + "\n";
+                    }
                 }
             }
         }
