@@ -26,6 +26,10 @@
     /*height can be put here when needed*/
     transition: .2s;
     transform: scale(1.05);
+    cursor:grab;
+}
+.Tile:active{
+    cursor: grabbing;
 }
 
     .Tile:hover .courseDes {
