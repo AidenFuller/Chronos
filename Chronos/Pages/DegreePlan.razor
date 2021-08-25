@@ -88,6 +88,13 @@
 
     <br />
     <br />
+    <h4>Errors in List</h4>
+    <div>
+        <h4>Errors:</h4>
+        <p>@GetErrors()</p>
+        <h4>Warnings:</h4>
+        <p>@GetWarnings()</p>
+    </div>
     <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
         Save
     </button>
@@ -112,6 +119,8 @@ else
     private bool fiftyUnitsWarningBool = false;
 
     private bool isReady = false;
+    private String warnings = "";
+    private String errors = "";
 
     //Dragging Variables
     public TileData DragPayload { get; set; }
@@ -135,7 +144,7 @@ else
         }
         if (State.CompletedTiles.Contains(DragPayload) && draggedOn.Course == null)
         {
-            ToastService.ShowToast(ToastLevel.Error, "You cannot swap completed course with a blank course.");
+            ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course with a blank course.");
         }
         if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
         {
@@ -143,8 +152,10 @@ else
             draggedOn.Status = 0;
             DragPayload.Status = 0;
 
+
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
             await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
+
 
             State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
 
@@ -157,49 +168,57 @@ else
         foreach (Course course in await GetCorrectReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
         {
             RemoveStatus(course, ErrorStatus.MissingAssumedKnowledge);
+            payload.ErrorData[ErrorStatus.MissingAssumedKnowledge].RemoveAll(c => c.CourseID == course.CourseID);
         }
 
         foreach (Course course in await GetCorrectReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
         {
             RemoveStatus(course, ErrorStatus.MissingPrerequisite);
+            payload.ErrorData[ErrorStatus.MissingPrerequisite].RemoveAll(c => c.CourseID == course.CourseID);
         }
 
         foreach (Course course in await GetCorrectReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.MustPreceed))
         {
             RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+            payload.ErrorData[ErrorStatus.MissingSiblingCourse].RemoveAll(c => c.CourseID == course.CourseID);
         }
 
         foreach (Course course in await GetCorrectReliants(swapped, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
         {
             RemoveStatus(course, ErrorStatus.MissingAssumedKnowledge);
+            swapped.ErrorData[ErrorStatus.MissingAssumedKnowledge].RemoveAll(c => c.CourseID == course.CourseID);
         }
 
         foreach (Course course in await GetCorrectReliants(swapped, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
         {
             RemoveStatus(course, ErrorStatus.MissingPrerequisite);
+            swapped.ErrorData[ErrorStatus.MissingPrerequisite].RemoveAll(c => c.CourseID == course.CourseID);
         }
 
         foreach (Course course in await GetCorrectReliants(swapped, State.CourseData.IndexOf(listTo), RequisiteType.MustPreceed))
         {
             RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+            swapped.ErrorData[ErrorStatus.MissingSiblingCourse].RemoveAll(c => c.CourseID == course.CourseID);
         }
     }
 
     private async Task ShowSwapWarnings(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)
     {
         List<(int, int)> pairs = new List<(int, int)>();
-
         foreach (Course course in await GetMissingPrerequisites(payload, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
         {
             ToastService.ShowToast(ToastLevel.Warning, $"{course.CourseCode} is assumed knowledge of {payload.Course.CourseCode}");
             payload.Status |= ErrorStatus.MissingAssumedKnowledge;
+            payload.ErrorData[ErrorStatus.MissingAssumedKnowledge].Add(course);
             pairs.Add((course.CourseID, payload.Course.CourseID));
         }
+
 
         foreach (Course course in await GetMissingPrerequisites(payload, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
         {
             ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed before {payload.Course.CourseCode}");
             payload.Status |= ErrorStatus.MissingPrerequisite;
+            payload.ErrorData[ErrorStatus.MissingPrerequisite].Add(course);
             pairs.Add((course.CourseID, payload.Course.CourseID));
         }
 
@@ -207,27 +226,36 @@ else
         {
             ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed in the semester before {payload.Course.CourseCode}");
             payload.Status |= ErrorStatus.MissingSiblingCourse;
+            payload.ErrorData[ErrorStatus.MissingSiblingCourse].Add(course);
             pairs.Add((course.CourseID, payload.Course.CourseID));
             SetStatus(course, ErrorStatus.MissingSiblingCourse);
         }
 
+
+
         foreach (Course course in await GetReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
         {
             ToastService.ShowToast(ToastLevel.Warning, $"{payload.Course.CourseCode} is assumed knowledge of {course.CourseCode}");
+            GetTile(course).ErrorData[ErrorStatus.MissingAssumedKnowledge].Add(payload.Course);
             pairs.Add((payload.Course.CourseID, course.CourseID));
             SetStatus(course, ErrorStatus.MissingAssumedKnowledge);
         }
 
+
         foreach (Course course in await GetReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
         {
             ToastService.ShowToast(ToastLevel.Error, $"{payload.Course.CourseCode} must be completed before {course.CourseCode}");
+            GetTile(course).ErrorData[ErrorStatus.MissingPrerequisite].Add(payload.Course);
             pairs.Add((payload.Course.CourseID, course.CourseID));
             SetStatus(course, ErrorStatus.MissingPrerequisite);
         }
 
+
+
         foreach (Course course in await GetReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.MustPreceed))
         {
             ToastService.ShowToast(ToastLevel.Error, $"{payload.Course.CourseCode} must be completed in the semester before {course.CourseCode}");
+            GetTile(course).ErrorData[ErrorStatus.MissingSiblingCourse].Add(payload.Course);
             pairs.Add((payload.Course.CourseID, course.CourseID));
             payload.Status = ErrorStatus.MissingSiblingCourse;
             SetStatus(course, ErrorStatus.MissingSiblingCourse);
@@ -241,7 +269,9 @@ else
                 if (!pairs.Any(p => p.Item1 == course.CourseID && p.Item2 == swapped.Course.CourseID))
                 {
                     ToastService.ShowToast(ToastLevel.Warning, $"{course.CourseCode} is assumed knowledge of {swapped.Course.CourseCode}");
+                    //swapped.ErrorData[ErrorStatus.MissingAssumedKnowledge].Add(course);
                 }
+
                 swapped.Status |= ErrorStatus.MissingAssumedKnowledge;
             }
 
@@ -250,7 +280,9 @@ else
                 if (!pairs.Any(p => p.Item1 == course.CourseID && p.Item2 == swapped.Course.CourseID))
                 {
                     ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed before {swapped.Course.CourseCode}");
+                    //swapped.ErrorData[ErrorStatus.MissingPrerequisite].Add(course);
                 }
+
                 swapped.Status |= ErrorStatus.MissingPrerequisite;
             }
 
@@ -259,6 +291,7 @@ else
                 if (!pairs.Any(p => p.Item1 == course.CourseID && p.Item2 == swapped.Course.CourseID))
                 {
                     ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed in the semester before {swapped.Course.CourseCode}");
+                    //swapped.ErrorData[ErrorStatus.MissingSiblingCourse].Add(course);
                 }
                 swapped.Status |= ErrorStatus.MissingSiblingCourse;
                 SetStatus(course, ErrorStatus.MissingSiblingCourse);
@@ -269,8 +302,11 @@ else
                 if (!pairs.Any(p => p.Item1 == swapped.Course.CourseID && p.Item2 == course.CourseID))
                 {
                     ToastService.ShowToast(ToastLevel.Warning, $"{swapped.Course.CourseCode} is assumed knowledge of {course.CourseCode}");
+                    //GetTile(course).ErrorData[ErrorStatus.MissingAssumedKnowledge].Add(swapped.Course);
                 }
+
                 SetStatus(course, ErrorStatus.MissingAssumedKnowledge);
+
             }
 
             foreach (Course course in await GetReliants(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.HardRequisite))
@@ -278,7 +314,9 @@ else
                 if (!pairs.Any(p => p.Item1 == swapped.Course.CourseID && p.Item2 == course.CourseID))
                 {
                     ToastService.ShowToast(ToastLevel.Error, $"{swapped.Course.CourseCode} must be completed before {course.CourseCode}");
+                    //GetTile(course).ErrorData[ErrorStatus.MissingPrerequisite].Add(swapped.Course);
                 }
+
                 SetStatus(course, ErrorStatus.MissingPrerequisite);
             }
 
@@ -287,7 +325,9 @@ else
                 if (!pairs.Any(p => p.Item1 == swapped.Course.CourseID && p.Item2 == course.CourseID))
                 {
                     ToastService.ShowToast(ToastLevel.Error, $"{swapped.Course.CourseCode} must be completed in the semester before {course.CourseCode}");
+                    //GetTile(course).ErrorData[ErrorStatus.MissingSiblingCourse].Add(swapped.Course);
                 }
+
                 swapped.Status |= ErrorStatus.MissingSiblingCourse;
                 SetStatus(course, ErrorStatus.MissingSiblingCourse);
             }
@@ -842,7 +882,15 @@ else
 
         return courseList;
     }
+    private void SetErrorData(TileData td, List<Course> errors, ErrorStatus error)
+    {
+        if(errors.Count != 0)
+        {
+            td.ErrorData.Add(error, errors);
+            errors.Clear();
+        }
 
+    }
     private void SetStatus(Course course, ErrorStatus status)
     {
         foreach (var slot in State.CourseData)
@@ -859,6 +907,22 @@ else
         }
     }
 
+    private TileData GetTile(Course course)
+    {
+        foreach(var slot in State.CourseData)
+        {
+            foreach(var td in slot)
+            {
+                if (td.Course == null) continue;
+                if(td.Course.CourseID == course.CourseID)
+                {
+                    return td;
+                }
+            }
+        }
+        return null;
+    }
+
     private void RemoveStatus(Course course, ErrorStatus status)
     {
         foreach (var slot in State.CourseData)
@@ -873,6 +937,45 @@ else
                 }
             }
         }
+    }
+
+    public String GetErrors()
+    {
+        errors = "";
+        foreach(var semester in State.CourseData)
+        {
+            foreach(var tile in semester)
+            {
+                if(tile.ErrorData[ErrorStatus.MissingSiblingCourse].Count != 0)
+                {
+                    errors += tile.ErrorData[ErrorStatus.MissingSiblingCourse].ToString() + "\n";
+                }
+                if(tile.ErrorData[ErrorStatus.MissingPrerequisite].Count != 0)
+                {
+                    errors += tile.ErrorData[ErrorStatus.MissingPrerequisite].ToString() + "\n";
+                }
+            }
+        }
+        return errors;
+    }
+
+    public String GetWarnings()
+    {
+        warnings = "";
+        foreach (var semester in State.CourseData)
+        {
+            foreach (var tile in semester)
+            {
+                if (tile.ErrorData[ErrorStatus.MissingAssumedKnowledge].Count != 0)
+                {
+                    foreach(var course in tile.ErrorData[ErrorStatus.MissingAssumedKnowledge])
+                    {
+                        warnings += course.CourseCode + " should be completed before " + tile.Course.CourseCode + "\n";
+                    }
+                }
+            }
+        }
+        return warnings;
     }
 
     private void AddYear()
