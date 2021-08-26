@@ -63,7 +63,7 @@
 
 .ColorCodelegend li {
         float: left;
-        margin-right: 63px;
+        margin-right: 84px;
         font-size: 17px;
 }
 
@@ -93,10 +93,6 @@
 
     .ColorCodelegend .Error {
         background-color: #FF9696;
-    }
-
-    .ColorCodelegend .Droppable {
-        background-color: yellowgreen;
     }
 
     .ColorCodelegend .Warning {
