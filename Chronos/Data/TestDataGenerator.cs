@@ -553,7 +553,7 @@ namespace Chronos.Data
             
 
             degree = "Software Engineering";
-            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = degree, UnitLength = 360, ElectiveUnits = 20 });
+            db.Degrees.Add(new Models.Degree() { InternationalsAllowed = false, Name = degree, UnitLength = 320, ElectiveUnits = 20 });
             
             db.SaveChanges();
             
@@ -587,10 +587,13 @@ namespace Chronos.Data
                 "COMP3260", "COMP3290", "COMP3320", "COMP3330", "COMP3340", "COMP3350", "COMP4110", "COMP4120", "SENG4150", "SENG4160"
             };
 
-            foreach (string softwareCourseMajor in directedCourses)
+            foreach (string course in directedCourses)
             {
-                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == softwareCourseMajor).CourseID, MajorID = db.Majors.First(i => i.Name == softwareMajor).MajorID, IsCompulsory = false });
+                db.MajorCourses.Add(new Models.MajorCourse() { CourseID = db.Courses.First(i => i.CourseCode == course).CourseID, MajorID = db.Majors.First(i => i.Name == major).MajorID, IsCompulsory = false });
             }
+
+            //SENG COURSE AVAILABILITY
+            db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG4211B"), PrerequisiteCourseID = CourseID("SENG4211A"), CourseRequisite = RequisiteType.MustPreceed });
 
 
             db.SaveChanges();
