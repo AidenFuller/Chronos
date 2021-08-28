@@ -22,6 +22,7 @@
 
 @if (isReady)
 {
+    <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
     <CascadingValue Value="this">
         <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
             <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
