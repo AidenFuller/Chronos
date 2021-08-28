@@ -8,6 +8,7 @@ namespace Chronos.Shared.Enums
     public enum TileType
     {
         Core,
+        Compulsory,
         Directed,
         Elective
     }

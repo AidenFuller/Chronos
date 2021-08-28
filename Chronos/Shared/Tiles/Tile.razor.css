@@ -90,13 +90,18 @@
 }
 
 .Directed > .courseCode {
-    background-color: #659EC7;
+    background-color: #ADD8E6;
+    /* color-before: #659EC7;*/
 }
 
 .Core > .courseCode {
-    background-color: #808080;
+    background-color: #BEBEBE;
+    /*Color-before: #808080;*/
 }
 
+.Compulsory > .courseCode {
+    background-color: #659EC7;
+}
 
 .Error > .courseCode {
     background-color: #FF9696
