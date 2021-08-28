@@ -143,7 +143,14 @@ else
             Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
             draggedOn.Status = 0;
             DragPayload.Status = 0;
+            draggedOn.ErrorData[ErrorStatus.MissingAssumedKnowledge].Clear();
+            draggedOn.ErrorData[ErrorStatus.MissingPrerequisite].Clear();
+            draggedOn.ErrorData[ErrorStatus.MissingSiblingCourse].Clear();
+            DragPayload.ErrorData[ErrorStatus.MissingAssumedKnowledge].Clear();
+            DragPayload.ErrorData[ErrorStatus.MissingPrerequisite].Clear();
+            DragPayload.ErrorData[ErrorStatus.MissingSiblingCourse].Clear();
 
+            await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
             await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
 
@@ -316,6 +323,25 @@ else
         }
     }
 
+    public async Task CheckPreceedingCourse(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)
+    {
+        var siblingCourses = await CourseService.GetPrerequisiteCoursesAsync(payload.Course.CourseID, RequisiteType.MustPreceed);
+        foreach (Course course in siblingCourses)
+        {
+            RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+
+        if (swapped == null) 
+            return;
+
+        siblingCourses = await CourseService.GetPrerequisiteCoursesAsync(swapped.Course.CourseID, RequisiteType.MustPreceed);
+        foreach (Course course in siblingCourses)
+        {
+            RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+    }
+
+
 
     //Boolean to show the ghost tiles
     public bool ShowGhosts { get; set; } = false;
@@ -345,6 +371,7 @@ else
         DragPayload.Status = 0;
         FiftyUnitWarning(slot);
 
+        CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
         UpdateReliants(DragFrom, slot, DragPayload, null);
         ShowSwapWarnings(DragFrom, slot, DragPayload, null);
         State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
