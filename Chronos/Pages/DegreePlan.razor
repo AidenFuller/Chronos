@@ -420,8 +420,7 @@ else
             TileData td = new TileData()
             {
                 Course = course,
-                TileType = TileType.Directed,
-                IsDirectedCore = true,
+                TileType = TileType.Compulsory,
                 Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
             };
 
