@@ -143,12 +143,6 @@ else
             Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
             draggedOn.Status = 0;
             DragPayload.Status = 0;
-            draggedOn.ErrorData[ErrorStatus.MissingAssumedKnowledge].Clear();
-            draggedOn.ErrorData[ErrorStatus.MissingPrerequisite].Clear();
-            draggedOn.ErrorData[ErrorStatus.MissingSiblingCourse].Clear();
-            DragPayload.ErrorData[ErrorStatus.MissingAssumedKnowledge].Clear();
-            DragPayload.ErrorData[ErrorStatus.MissingPrerequisite].Clear();
-            DragPayload.ErrorData[ErrorStatus.MissingSiblingCourse].Clear();
 
             await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
