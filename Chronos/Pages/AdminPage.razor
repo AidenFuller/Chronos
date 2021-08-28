@@ -1,7 +1,60 @@
 ﻿@page "/Admin"
 
+@inject DegreeService DegreeService
+@inject IToastService ToastService
+
+@using System.Text.RegularExpressions  
+
 <h3>Administration</h3>
 
-@code {
 
+
+
+
+
+<EditForm OnSubmit="SubmitDegree" Model="degree">
+    <h4>Degree Name</h4>
+    <InputText @bind-Value="degree.Name" placeholder="Enter Degree Name" required />
+    <h4>Amount Of Units</h4>
+    <InputNumber step="20" @bind-Value="degree.UnitLength" />
+    <h4>Can it be completed internationally?</h4>
+    <InputCheckbox @bind-Value="degree.InternationalsAllowed" />
+    <h4>How many Elective Units?</h4>
+    <InputNumber step="10" @bind-Value="degree.ElectiveUnits" />
+</EditForm>
+
+
+
+@code 
+{
+    private Degree degree;
+
+    protected override void OnInitialized()
+    {
+        degree = NewDegree();
+    }
+
+    private async Task SubmitDegree()
+    {
+        bool degreeError = false;
+        if(await DegreeService.DoesDegreeExist(degree.Name))
+        {
+            degreeError = true;
+
+            ToastService.ShowToast(ToastLevel.Error, "A degree with this name already exists in the Database.");
+        }
+        if (degree.UnitLength <= 320)
+        {
+            degreeError = true;
+            ToastService.ShowToast(ToastLevel.Error, "A degree must be a minimum of 3 years.");
+        }
+
+        if(!degreeError)
+        {
+            await DegreeService.AddDegreeAsync(degree);
+            ToastService.ShowToast(ToastLevel.Success, "Added to the database!");
+            degree = new Degree();
+        }
+    }
+    private Degree NewDegree() => new Degree() { UnitLength = 240 };
 }
