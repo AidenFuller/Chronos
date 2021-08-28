@@ -4,6 +4,7 @@
 @inject IBlazorDownloadFileService DownloadService
 @inject IToastService ToastService
 @inject SaveState State
+@inject NavigationManager NavManager
 
 @page "/DegreePlan"
 
@@ -356,6 +357,12 @@ else
         Degree = State.Degree;
         Major = State.Major;
         Campus = State.Campus;
+
+        if (Degree == null)
+        {
+            NavManager.NavigateTo("");
+            return;
+        }
 
         if (State.CourseData == null)
         {
