@@ -21,6 +21,8 @@
     <InputCheckbox @bind-Value="degree.InternationalsAllowed" />
     <h4>How many Elective Units?</h4>
     <InputNumber step="10" @bind-Value="degree.ElectiveUnits" />
+
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
 </EditForm>
 
 
@@ -43,7 +45,7 @@
 
             ToastService.ShowToast(ToastLevel.Error, "A degree with this name already exists in the Database.");
         }
-        if (degree.UnitLength <= 320)
+        if (degree.UnitLength < 240)
         {
             degreeError = true;
             ToastService.ShowToast(ToastLevel.Error, "A degree must be a minimum of 3 years.");
