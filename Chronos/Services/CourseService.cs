@@ -25,6 +25,11 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task<bool> DoesCourseExist(string courseCode)
+        {
+            return await Task.FromResult(db.Courses.Any(c => c.CourseCode == courseCode));
+        }
+
         public async Task<Course> GetCourseAsync(int courseID)
         {
             return await db.Courses.FindAsync(courseID); //This will find a specific course in the DB. 
