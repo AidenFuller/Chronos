@@ -22,6 +22,7 @@
 
 @if (isReady)
 {
+    <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
     <CascadingValue Value="this">
         <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
             <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
@@ -144,6 +145,7 @@ else
             draggedOn.Status = 0;
             DragPayload.Status = 0;
 
+            await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
             await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
 
@@ -316,6 +318,25 @@ else
         }
     }
 
+    public async Task CheckPreceedingCourse(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)
+    {
+        var siblingCourses = await CourseService.GetPrerequisiteCoursesAsync(payload.Course.CourseID, RequisiteType.MustPreceed);
+        foreach (Course course in siblingCourses)
+        {
+            RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+
+        if (swapped == null) 
+            return;
+
+        siblingCourses = await CourseService.GetPrerequisiteCoursesAsync(swapped.Course.CourseID, RequisiteType.MustPreceed);
+        foreach (Course course in siblingCourses)
+        {
+            RemoveStatus(course, ErrorStatus.MissingSiblingCourse);
+        }
+    }
+
+
 
     //Boolean to show the ghost tiles
     public bool ShowGhosts { get; set; } = false;
@@ -345,6 +366,7 @@ else
         DragPayload.Status = 0;
         FiftyUnitWarning(slot);
 
+        CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
         UpdateReliants(DragFrom, slot, DragPayload, null);
         ShowSwapWarnings(DragFrom, slot, DragPayload, null);
         State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
@@ -420,8 +442,7 @@ else
             TileData td = new TileData()
             {
                 Course = course,
-                TileType = TileType.Directed,
-                IsDirectedCore = true,
+                TileType = TileType.Compulsory,
                 Runtime = await CourseService.GetCourseRuntimeAsync(course.CourseID, State.Campus)
             };
 
@@ -685,7 +706,7 @@ else
         double groupNumber = sum / 8.0 + 0.5;
         //double groupNumber = (n - (State.RuntimeStart == CourseRuntime.Semester2 ? 1 : 0)) / 2.0 + 1.5 + State.CompletedTiles.Count / 8.0;
 
-        int minDirectedGroup = int.Parse((await MajorCourseService.GetAllDirectedCoursesAsync(State.Major.MajorID)).ToList().Min(c => c.CourseCode[4]).ToString());
+        int minDirectedGroup = int.Parse((await MajorCourseService.GetNonCompulsoryCoursesAsync(State.Major.MajorID)).ToList().Min(c => c.CourseCode[4]).ToString());
 
         if (td.Course == null)
         {
@@ -701,7 +722,7 @@ else
             flag = false;
         else if (n % 2 == 1 && (td.Runtime & CourseRuntime.Semester2) == 0)
             flag = false;
-        else if (n > 0 && td.Course.CourseCode == "COMP3851B" && !output[n - 1].Any(c => (c.Course?.CourseCode ?? "lmfao") == "COMP3851A"))
+        else if (!await CheckSiblingCourse(td, n))
             flag = false;
         else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber + 1)
             flag = false;
@@ -777,6 +798,23 @@ else
         tally += courseIDList.Count(c => State.CompletedCourses.Any(completedCourse => completedCourse.CourseID == c.CourseID));
 
         return tally == courseIDList.Count();
+    }
+
+    private async Task<bool> CheckSiblingCourse(TileData tile, int n)
+    {
+        if (n == 0) 
+            return true;
+
+        var courseIDList = await CourseService.GetPrerequisiteCoursesAsync(tile.Course.CourseID, RequisiteType.MustPreceed);
+        
+        foreach (Course course in courseIDList)
+        {
+            if (!output[n - 1].Any(c => (c.Course?.CourseCode ?? "lmfao") == course.CourseCode))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private async Task<List<Course>> GetMissingPrerequisites(TileData tile, int n, RequisiteType requisite)

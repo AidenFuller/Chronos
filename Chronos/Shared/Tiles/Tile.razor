@@ -36,7 +36,7 @@
 
 
         //Non Compulsory
-        @if (!Data.IsDirectedCore && !Data.TileType.Equals(TileType.Core))
+        @if (Data.TileType != TileType.Compulsory && Data.TileType != TileType.Core)
         {
 
         <div class="TrashButton" @onclick="trashButton" @onclick:stopPropagation="true">
@@ -151,14 +151,13 @@
                 case TileType.Core:
                     typeClass = "Core";
                     break;
+                case TileType.Compulsory:
+                    typeClass = "Compulsory";
+                    break;
                 case TileType.Directed:
                     if (Data.Course is null)
                     {
                         typeClass = "AddDirected";
-                    }
-                    else if(Data.IsDirectedCore)
-                    {
-                        typeClass = "Compulsory";
                     }
                     else
                     {
