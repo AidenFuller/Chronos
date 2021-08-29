@@ -13,7 +13,6 @@ namespace Chronos.Shared.Wrappers
         public Course Course { get; set; }
         public ErrorStatus Status { get; set; }
         public TileType TileType { get; set; }
-        public bool IsDirectedCore { get; set; }
         public CourseRuntime Runtime { get; set; }
         public Dictionary<ErrorStatus, List<Course>> ErrorData { get; set; }
 
