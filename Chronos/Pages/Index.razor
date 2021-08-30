@@ -216,23 +216,28 @@
 
     private void SubmitParameters()
     {
+        bool error = false;
+
+
         if (SelectedDegree == null)
         {
             RenderFragment message = @<text>Degree has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
-        if (SelectedMajor == null)
+        if (SelectedMajor == null || SelectedMajor.Name == null)
         {
+            error = true;
             RenderFragment message = @<text>Major has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
         if (StartingBlock == 0)
-        { 
+        {
+            error = true;
             RenderFragment message = @<text>Starting Semester has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
 
-        if (SelectedDegree != null && SelectedMajor != null && StartingBlock != 0)
+        if (error == false)
         {
             State.Degree = SelectedDegree;
             State.Major = SelectedMajor;
