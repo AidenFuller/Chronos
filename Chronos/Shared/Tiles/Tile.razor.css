@@ -1,7 +1,5 @@
 ﻿
 .Tile {
-    border-style: solid;
-    border-radius: 10px;
     display: inline-block;
     text-align: center;
     align-content: center;
@@ -9,24 +7,27 @@
     transition: .2s;
     /*Makes it so items will each be given the same space*/
     width: 0;
-    max-width: 40%;
+    max-width: 25%;
     min-width: 110px;
     flex: 1 1 0;
     margin: 5px 5px 5px 5px;
     position: relative;
     border: 2px solid black;
-
+    border-radius: 10px;
     /*--x: 100%;
     --y: 100%;
     border: 3px solid transparent;
     background: linear-gradient(white, white) padding-box, radial-gradient(farthest-corner at var(--x) var(--y), #00C9A7, #845EC2 ) border-box;*/
 }
-
+.DoubleUnits {
+    flex-grow: 5;
+    max-width: calc(50%);
+}
 .Tile:hover {
     /*height can be put here when needed*/
     transition: .2s;
     transform: scale(1.05);
-    cursor:grab;
+    cursor: grab;
 }
 .Tile:active{
     cursor: grabbing;

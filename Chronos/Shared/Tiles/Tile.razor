@@ -170,35 +170,37 @@
     }
     public void UpdateTileType()
     {
+        typeClass = "";
+
         if (Data.Status == 0)
         {
             errorClass = "none";
             switch (Data.TileType)
             {
                 case TileType.Core:
-                    typeClass = "Core";
+                    typeClass += "Core";
                     break;
                 case TileType.Compulsory:
-                    typeClass = "Compulsory";
+                    typeClass += "Compulsory";
                     break;
                 case TileType.Directed:
                     if (Data.Course is null)
                     {
-                        typeClass = "AddDirected";
+                        typeClass += "AddDirected";
                     }
                     else
                     {
-                        typeClass = "Directed";
+                        typeClass += "Directed";
                     }
                     break;
                 case TileType.Elective:
                     if (Data.Course is null)
                     {
-                        typeClass = "AddElective";
+                        typeClass += "AddElective";
                     }
                     else
                     {
-                        typeClass = "Elective";
+                        typeClass += "Elective";
                     }
                     break;
             }
@@ -206,13 +208,20 @@
 
         if (CompletedFlag == false)
         {
+            if (Data.Course is not null)
+            {
+                if (Data.Course.Units == 20)
+                {
+                    typeClass += " DoubleUnits";
+                }
+            }
             if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0)
             {
-                errorClass = "Error";
+                typeClass += " Error";
             }
             else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
             {
-                errorClass = "Warning";
+                typeClass += " Warning";
             }
         }
     }
