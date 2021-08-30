@@ -47,6 +47,7 @@
 
     protected override void OnInitialized()
     {
+        course = NewCourse();
         degree = NewDegree();
     }
 
@@ -73,10 +74,7 @@
         }
     }
 
-    protected override void OnInitialized()
-    {
-        course = NewCourse();
-    }
+
 
     private async Task SubmitCourse()
     {
@@ -119,5 +117,5 @@
     }
 
 
-    
+
 }
