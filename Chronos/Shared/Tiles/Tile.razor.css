@@ -99,9 +99,11 @@
     /*Color-before: #808080;*/
 }
 
+
 .Compulsory > .courseCode {
     background-color: #659EC7;
 }
+
 
 .Error > .courseCode {
     background-color: #FF9696
@@ -158,4 +160,32 @@
 .Tile:hover .TrashButton {
     
     visibility: visible;
+}
+
+.ErrorSymbol
+{
+    position: absolute;
+
+    left: 0px;
+    bottom: 0px;
+}
+div.red-square
+{
+    height:25px;
+    width:25px;
+    background-color: red;
+}
+
+div.yellow-square
+{
+    height: 25px;
+    width: 25px;
+    background-color: yellow;
+}
+
+div.blue-square
+{
+    height:25px;
+    width:25px;
+    background-color: blue;
 }

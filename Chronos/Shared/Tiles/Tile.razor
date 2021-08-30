@@ -1,7 +1,7 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
 @using Chronos.Shared.Modals;
-<button class="@tileClass @typeClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+<button class="@tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
         @ondrop="HandleDrop"
         @ondragenter="HandleDragEnter"
@@ -36,6 +36,31 @@
 
 
         //Non Compulsory
+        @if (!Data.TileType.Equals(TileType.Compulsory) && !Data.TileType.Equals(TileType.Core))
+        {
+
+            <div class="TrashButton" @onclick="trashButton" @onclick:stopPropagation="true">
+                <p>X</p>
+            </div>
+        }
+        @if (!errorClass.Equals("none"))
+        {
+            <div class="ErrorSymbol">
+                @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
+                {
+                    <div class="red-square"></div>
+                }
+                @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
+                {
+                    <div class="yellow-square"></div>
+                }
+                @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
+                {
+                    <div class="blue-square"></div>
+                }
+            </div>
+        }
+
         @if (Data.TileType != TileType.Compulsory && Data.TileType != TileType.Core)
         {
 
@@ -133,6 +158,7 @@
 
     private string tileClass = "Tile"; //CSS class based on TileType
     private string typeClass; //CSS class based on TileType
+    private string errorClass; //Css class based on Errors. 
 
     protected override void OnParametersSet()
     {
@@ -148,6 +174,7 @@
 
         if (Data.Status == 0)
         {
+            errorClass = "none";
             switch (Data.TileType)
             {
                 case TileType.Core:
@@ -198,6 +225,8 @@
             }
         }
     }
+
+    //if ((10101 & ErrorStatus.WrongCampus) > 0) Use this for error checking
 
 
     async void Clicked()
