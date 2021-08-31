@@ -44,29 +44,26 @@
                 <p>X</p>
             </div>
         }
-        @if (!errorClass.Equals("none"))
-        {
-            <div class="ErrorSymbol">
-                @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
-                {
-                <div class="WarningTip Tooltip">
-                    <span class="ToolTipText">Missing Assumed Knowledge: </span>
-                </div>
-                }
-                @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
-                {
-                <div class="ErrorTip Tooltip">
-                    <span class="ToolTipText">Missing Pre-requisite: </span>
-                </div>
-                }
-                @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
-                {
-                <div class="SiblingTip Tooltip">
-                    <span class="ToolTipText">Missing sibling course: </span>
-                </div>
-                }
+        <div class="ErrorSymbol">
+            @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
+            {
+            <div class="WarningTip Tooltip">
+                <span class="ToolTipText">Missing Assumed Knowledge: </span>
             </div>
-        }
+            }
+            @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
+            {
+            <div class="ErrorTip Tooltip">
+                <span class="ToolTipText">Missing Pre-requisite: </span>
+            </div>
+            }
+            @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
+            {
+            <div class="SiblingTip Tooltip">
+                <span class="ToolTipText">Missing sibling course: </span>
+            </div>
+            }
+        </div>
 
         @if (Data.TileType != TileType.Compulsory && Data.TileType != TileType.Core)
         {
