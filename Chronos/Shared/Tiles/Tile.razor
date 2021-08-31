@@ -1,7 +1,8 @@
 ﻿@inject CourseService courseService
 @using Chronos.Shared.Enums;
 @using Chronos.Shared.Modals;
-<button class="@tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+
+<div class="@tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
         @ondrop="HandleDrop"
         @ondragenter="HandleDragEnter"
@@ -48,15 +49,21 @@
             <div class="ErrorSymbol">
                 @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
                 {
-                    <div class="red-square"></div>
+                <div class="WarningTip Tooltip">
+                    <span class="ToolTipText">Missing Assumed Knowledge: </span>
+                </div>
                 }
                 @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
                 {
-                    <div class="yellow-square"></div>
+                <div class="ErrorTip Tooltip">
+                    <span class="ToolTipText">Missing Pre-requisite: </span>
+                </div>
                 }
                 @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
                 {
-                    <div class="blue-square"></div>
+                <div class="SiblingTip Tooltip">
+                    <span class="ToolTipText">Missing sibling course: </span>
+                </div>
                 }
             </div>
         }
@@ -84,7 +91,7 @@
                     //This div is to show course code on top of the tile
                     //hr tag margin 0 to remove the white space in between the line
                     ---------------------------------------------*@
-                <h7> @Data.Course.CourseCode </h7>
+                <span> @Data.Course.CourseCode </span>
                 <hr style="margin-bottom:0px; margin-top:0px;" />
             </div>
         
@@ -133,7 +140,7 @@
         </div>
     }
 
-</button>
+</div>
 
 @code {
 
@@ -158,7 +165,7 @@
 
     private string tileClass = "Tile"; //CSS class based on TileType
     private string typeClass; //CSS class based on TileType
-    private string errorClass; //Css class based on Errors. 
+    private string errorClass = "none"; //Css class based on Errors. 
 
     protected override void OnParametersSet()
     {
@@ -174,7 +181,7 @@
 
         if (Data.Status == 0)
         {
-            errorClass = "none";
+            errorClass = "";
             switch (Data.TileType)
             {
                 case TileType.Core:
@@ -217,11 +224,11 @@
             }
             if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0)
             {
-                typeClass += " Error";
+                errorClass += " Error";
             }
             else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
             {
-                typeClass += " Warning";
+                errorClass += " Warning";
             }
         }
     }
