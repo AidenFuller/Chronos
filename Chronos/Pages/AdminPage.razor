@@ -81,6 +81,11 @@
             error = true;
             ToastService.ShowToast(ToastLevel.Error, "You did not select a degree");
         }
+        if(await DegreeCourseService.DoesCourseExistInDegree(SelectedCourse.CourseCode, SelectedDegree.DegreeID))
+        {
+            error = true;
+            ToastService.ShowToast(ToastLevel.Error, "This course is already in this degree.");
+        }
         if (!error)
         {
             await DegreeCourseService.AddCourseToDegreeAsync(SelectedDegree.DegreeID, SelectedCourse.CourseID);
