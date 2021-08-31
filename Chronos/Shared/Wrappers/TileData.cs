@@ -14,5 +14,14 @@ namespace Chronos.Shared.Wrappers
         public ErrorStatus Status { get; set; }
         public TileType TileType { get; set; }
         public CourseRuntime Runtime { get; set; }
+        public Dictionary<ErrorStatus, List<Course>> ErrorData { get; set; }
+
+        public TileData()
+        {
+            ErrorData = new();
+            ErrorData.Add(ErrorStatus.MissingAssumedKnowledge, new List<Course>());
+            ErrorData.Add(ErrorStatus.MissingPrerequisite, new List<Course>());
+            ErrorData.Add(ErrorStatus.MissingSiblingCourse, new List<Course>());
+        }
     }
 }
