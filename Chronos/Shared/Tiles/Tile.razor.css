@@ -75,7 +75,7 @@
 .courseCode {
     width: 100%;
     text-align: center;
-    position: relative;
+/*    position: relative;*/
 }
 
 
@@ -110,9 +110,18 @@
     background-color: #FFCC99
 }
 
+
+
+.AddDirected, .AddElective {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    
+}
 .AddElective > .plusSign {
     /*background-color: #ffffff;*/
-   /* border-color: #000000;*/
+    /* border-color: #000000;*/
     color: #F2DD60;
 }
 
@@ -120,18 +129,20 @@
     /*background-color: #ffffff;*/
     /*border-color: #000000;*/
     color: #458EE7;
+    
 }
 
 .plusSign {
     border-radius: 50%;
-    border:4px solid black;
-    margin-left:auto;
-    margin-right:auto;
-    width: 60px;
-    font-weight:900;
-    height: 60px;
-    position: center;
-    display:block;
+    border: 4px solid black;
+    font-weight: 900;
+    width: 100px;
+    height: 100px;
+
+    font-size: 50px;
+
+
+    margin: auto;
 }
 
 /*Trash Button*/
