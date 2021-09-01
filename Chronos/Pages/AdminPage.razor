@@ -49,7 +49,7 @@
     private DegreeCourseModel DCM = new DegreeCourseModel();
     protected IEnumerable<Degree> Degrees { get; set; }
     protected IEnumerable<Course> Courses { get; set; }
-    protected async override void OnInitialized()
+    protected async override void OnInitializedAsync()
     {
         course = NewCourse();
         Degrees = await DegreeService.GetAllDegreesAsync();
