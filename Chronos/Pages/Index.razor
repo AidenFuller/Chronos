@@ -25,7 +25,16 @@
                 <div class="degree-div">
                     <h4>Choose your Degree</h4>
                     <!--This is a razor component that will effectively search for different Degrees based on their Names.-->
-                    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for your degree..." EnableDropDown="true" ShowDropDownOnFocus="true">
+                    <BlazoredTypeahead SearchMethod="SearchDegrees"
+                                       TValue="Degree"
+                                       TItem="Degree"
+                                       Value="SelectedDegree"
+                                       ValueExpression="@(() => SelectedDegree)"
+                                       ValueChanged="SelectedDegreeChanged" 
+                                       placeholder="Please search for your degree..." 
+                                       EnableDropDown="true" 
+                                       ShowDropDownOnFocus="true"
+                                       >
                         <SelectedTemplate Context="degree">
                             <!--This is the search Template and what will be returned.-->
                             Bachelor Of @degree.Name
@@ -36,7 +45,12 @@
                         </ResultTemplate>
                     </BlazoredTypeahead>
 
-                    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="SelectedMajor" placeholder="Please search for your major..." EnableDropDown="true" ShowDropDownOnFocus="true">
+                    <BlazoredTypeahead SearchMethod="SearchMajors" 
+                                       @bind-Value="SelectedMajor" 
+                                       placeholder="Please search for your major..." 
+                                       EnableDropDown="true" 
+                                       ShowDropDownOnFocus="true"
+                                       Disabled="@IsDegreeSelectDisabled">
                         <SelectedTemplate Context="major">
                             <!--This is the search Template and what will be returned.-->
                             @major.Name
@@ -80,7 +94,9 @@
                                @bind-Values="SelectedCourses"
                                Disabled="IsItDisabled"
                                EnableDropDown="true"
-                               placeholder="Please enter a course...">
+                               placeholder="Please enter a course..."
+                               >
+                               
                 <SelectedTemplate Context="course">
                     <!--What the search will return when strings are inputted.-->
                     @course.CourseCode (@course.Name)
@@ -137,6 +153,17 @@
     }
 
 
+    private bool IsDegreeSelectDisabled = false;
+    private async Task SelectedDegreeChanged(Degree degree)
+    {
+        //Update the degree variable
+
+        SelectedDegree = degree;
+        SelectedMajor = new Major();
+    }
+
+
+
     //This function will find courses based on what string is passed into the function.
     private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
@@ -150,17 +177,16 @@
 
     private async Task<IEnumerable<Major>> SearchMajors(string search)
     {
-        Console.WriteLine("REACHED 1");
         if (SelectedDegree == null)
         {
             return new List<Major>();
         }
-        Console.WriteLine("REACHED 2");
+
         if ((Majors?.FirstOrDefault()?.DegreeID ?? -1) != SelectedDegree.DegreeID)
         {
             Majors = await majorService.GetMajorsFromDegreeAsync(SelectedDegree.DegreeID);
         }
-        Console.WriteLine("REACHED 3");
+
         Console.WriteLine(Majors.Count());
         return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower()) && x.DegreeID == SelectedDegree.DegreeID).ToList()); //It will return degrees that contain the string in its name.
     }
@@ -190,23 +216,28 @@
 
     private void SubmitParameters()
     {
+        bool error = false;
+
+
         if (SelectedDegree == null)
         {
             RenderFragment message = @<text>Degree has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
-        if (SelectedMajor == null)
+        if (SelectedMajor == null || SelectedMajor.Name == null)
         {
+            error = true;
             RenderFragment message = @<text>Major has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
         if (StartingBlock == 0)
-        { 
+        {
+            error = true;
             RenderFragment message = @<text>Starting Semester has not been selected</text>;
             ToastService.ShowToast(ToastLevel.Error, message);
         }
 
-        if (SelectedDegree != null && SelectedMajor != null && StartingBlock != 0)
+        if (error == false)
         {
             State.Degree = SelectedDegree;
             State.Major = SelectedMajor;

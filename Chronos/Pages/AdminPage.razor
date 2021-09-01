@@ -4,6 +4,11 @@
 
 @using System.Text.RegularExpressions
 
+@inject DegreeService DegreeService
+@inject IToastService ToastService
+
+@using System.Text.RegularExpressions  
+
 <h3>Administration</h3>
 <EditForm OnSubmit="SubmitCourse" Model="course">
     <h4>Course Name</h4>
@@ -16,6 +21,19 @@
     <InputNumber step="10" @bind-Value=course.RequiredCompletedUnits />
 
     <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+</EditForm>
+
+<EditForm OnSubmit="SubmitDegree" Model="degree">
+    <h4>Degree Name</h4>
+    <InputText @bind-Value="degree.Name" placeholder="Enter Degree Name" required />
+    <h4>Amount Of Units</h4>
+    <InputNumber step="20" @bind-Value="degree.UnitLength" />
+    <h4>Can it be completed internationally?</h4>
+    <InputCheckbox @bind-Value="degree.InternationalsAllowed" />
+    <h4>How many Elective Units?</h4>
+    <InputNumber step="10" @bind-Value="degree.ElectiveUnits" />
+
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
 </EditForm>
 
 
@@ -58,8 +76,12 @@
     <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
 </EditForm>
 
-@code {
 
+@code 
+{
+    private Degree degree;
+    private Degree NewDegree() => new Degree() { UnitLength = 240 };
+    private Course NewCourse() => new Course() { Units = 10 };
     private Course course;
 
     private IList<Course> RequiredCourses;
@@ -89,7 +111,33 @@
         RequiredCourses = new List<Course>();
         PCM = new PrerequisiteModel();
         Courses = await CourseService.GetAllCoursesAsync();
+        degree = NewDegree();
     }
+
+    private async Task SubmitDegree()
+    {
+        bool degreeError = false;
+        if(await DegreeService.DoesDegreeExist(degree.Name))
+        {
+            degreeError = true;
+
+            ToastService.ShowToast(ToastLevel.Error, "A degree with this name already exists in the Database.");
+        }
+        if (degree.UnitLength < 240)
+        {
+            degreeError = true;
+            ToastService.ShowToast(ToastLevel.Error, "A degree must be a minimum of 3 years.");
+        }
+
+        if(!degreeError)
+        {
+            await DegreeService.AddDegreeAsync(degree);
+            ToastService.ShowToast(ToastLevel.Success, "Added to the database!");
+            degree = new Degree();
+        }
+    }
+
+
 
     private async Task SubmitCourse()
     {
@@ -168,8 +216,6 @@
             return await Task.FromResult(Courses.Where(x => PCM.Course.CourseID != x.CourseID && x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());
         }
     }
-
-    private Course NewCourse() => new Course() { Units = 10 };
 
 
     private class PrerequisiteModel
