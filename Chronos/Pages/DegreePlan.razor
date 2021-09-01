@@ -160,13 +160,13 @@ else
             DragPayload.ErrorData[ErrorStatus.MissingPrerequisite].Clear();
             DragPayload.ErrorData[ErrorStatus.MissingSiblingCourse].Clear();
 
-            if(dragTo != State.CompletedTiles)
-            {
 
-                await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
-            }
             await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
+            if (dragTo != State.CompletedTiles)
+            {
+                await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
+            }
             State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
 
             StateHasChanged();
@@ -415,14 +415,14 @@ else
         DragFrom.Remove(DragPayload);
         DragPayload.Status = 0;
         FiftyUnitWarning(slot);
+
+        CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
+        UpdateReliants(DragFrom, slot, DragPayload, null);
         if (slot != State.CompletedTiles)
         {
 
             ShowSwapWarnings(DragFrom, slot, DragPayload, null);
         }
-        CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
-        UpdateReliants(DragFrom, slot, DragPayload, null);
-
         State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
     }
 
