@@ -22,28 +22,38 @@
 
 
 
-<EditForm OnSubmit="SubmitPrerequisite">
+<EditForm OnSubmit="SubmitPrerequisites" Model="PCM">
     <h4>Select Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="PCM.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
         <SelectedTemplate Context="course">
             <!--This is the search Template and what will be returned.-->
-            @course.Name
+            @course.CourseCode - @course.Name
         </SelectedTemplate>
         <ResultTemplate Context="course">
             <!--This is what is shown when it is selected.-->
-            @course.Name
+            @course.CourseCode - @course.Name
         </ResultTemplate>
     </BlazoredTypeahead>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Values="RequiredCourses" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+
+    <h4>Select the course which is required to be completed prior</h4>
+    <BlazoredTypeahead SearchMethod="SearchPrerequisites" @bind-Value="PCM.Prerequisite" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
         <SelectedTemplate Context="course">
             <!--This is the search Template and what will be returned.-->
-            @course.Name
+            @course.CourseCode - @course.Name
         </SelectedTemplate>
         <ResultTemplate Context="course">
             <!--This is what is shown when it is selected.-->
-            @course.Name
+            @course.CourseCode - @course.Name
         </ResultTemplate>
     </BlazoredTypeahead>
+
+    <h4>Select the constraint type</h4>
+    <select class="form-control selectpicker" @bind="PCM.Type">
+        <option value="-1">Please select ...</option>
+        <option value="@RequisiteType.AssumedKnowledge">Assumed Knowledge</option>
+        <option value="@RequisiteType.HardRequisite">Hard Requisite</option>
+        <option value="@RequisiteType.MustPreceed">Must Preceed (Sibling Course)</option>
+    </select>
 
     <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
 </EditForm>
@@ -52,7 +62,9 @@
 
     private Course course;
 
-    private List<Course> RequiredCourses;
+    private IList<Course> RequiredCourses;
+
+    private PrerequisiteModel PCM;
 
     private Course _selectedCourse;
     private Course SelectedCourse
@@ -62,8 +74,9 @@
             return _selectedCourse;
         }
         set
-        { 
-
+        {
+            _selectedCourse = value;
+            ExistingPrerequisites = CourseService.GetPrerequisiteCoursesAsync(_selectedCourse.CourseID).GetAwaiter().GetResult();
         }
     }
 
@@ -74,6 +87,7 @@
     {
         course = NewCourse();
         RequiredCourses = new List<Course>();
+        PCM = new PrerequisiteModel();
         Courses = await CourseService.GetAllCoursesAsync();
     }
 
@@ -120,6 +134,22 @@
 
     private async Task SubmitPrerequisites()
     {
+        if (PCM.Course == null || PCM.Course.CourseID == 0)
+        {
+            ToastService.ShowToast(ToastLevel.Error, "Please select a course");
+            return;
+        }
+
+        var prereqs = await CourseService.GetPrerequisiteCoursesAsync(PCM.Course.CourseID);
+        if (prereqs.Any(c => c.CourseID == PCM.Prerequisite.CourseID))
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{PCM.Prerequisite.CourseCode} is already a prerequisite for {PCM.Course.CourseCode}");
+        }
+        else
+        {
+            await CourseService.AddPrerequisiteAsync(PCM.Course.CourseID, PCM.Prerequisite.CourseID, PCM.Type);
+            ToastService.ShowToast(ToastLevel.Success, $"{PCM.Prerequisite.CourseCode} has been added as a prerequisite for {PCM.Course.CourseCode}");
+        }
     }
 
     private async Task<IEnumerable<Course>> SearchCourses(string search)
@@ -127,7 +157,25 @@
         return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
     }
 
+    private async Task<IEnumerable<Course>> SearchPrerequisites(string search)
+    {
+        if ((PCM.Course?.CourseID ?? 0) == 0)
+        {
+            return new List<Course>();
+        }
+        else
+        {
+            return await Task.FromResult(Courses.Where(x => PCM.Course.CourseID != x.CourseID && x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());
+        }
+    }
 
     private Course NewCourse() => new Course() { Units = 10 };
 
+
+    private class PrerequisiteModel
+    {
+        public Course Course { get; set; }
+        public Course Prerequisite { get; set; }
+        public RequisiteType Type { get; set; } = (RequisiteType) (-1);
+    }
 }
