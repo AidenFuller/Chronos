@@ -25,6 +25,19 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task AddPrerequisiteAsync(int courseID, int prerequisiteCourseID, RequisiteType type)
+        {
+            PrerequisiteCourse pc = new PrerequisiteCourse()
+            {
+                CourseID = courseID,
+                PrerequisiteCourseID = prerequisiteCourseID,
+                CourseRequisite = type
+            };
+
+            await db.PrerequisiteCourses.AddAsync(pc);
+            await db.SaveChangesAsync();
+        }
+
         public async Task<bool> DoesCourseExist(string courseCode)
         {
             return await Task.FromResult(db.Courses.Any(c => c.CourseCode == courseCode));
