@@ -6,16 +6,16 @@
 image: mcr.microsoft.com/dotnet/sdk:5.0
 
 pipelines:
-  default:
-    - parallel:
-        - step:
-            name: Build
-            caches:
-              - dotnetcore
-            script:
-              - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
-              - dotnet restore
-              - dotnet build --no-restore --configuration Release
+  custom:
+    Check Build:
+      - step:
+          name: Build
+          caches:
+            - dotnetcore
+          script:
+            - REPORTS_PATH=./test-reports/build_${BITBUCKET_BUILD_NUMBER}
+            - dotnet restore
+            - dotnet build --no-restore --configuration Release
         #- step:
         #    name: Quality Checks
         #    caches:
