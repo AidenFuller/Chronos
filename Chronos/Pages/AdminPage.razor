@@ -18,13 +18,63 @@
     <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
 </EditForm>
 
+
+
+
+
+<EditForm OnSubmit="SubmitPrerequisite">
+    <h4>Select Course</h4>
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="course">
+            <!--This is the search Template and what will be returned.-->
+            @course.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            <!--This is what is shown when it is selected.-->
+            @course.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Values="RequiredCourses" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="course">
+            <!--This is the search Template and what will be returned.-->
+            @course.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            <!--This is what is shown when it is selected.-->
+            @course.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+</EditForm>
+
 @code {
 
     private Course course;
 
-    protected override void OnInitialized()
+    private List<Course> RequiredCourses;
+
+    private Course _selectedCourse;
+    private Course SelectedCourse
+    {
+        get
+        {
+            return _selectedCourse;
+        }
+        set
+        { 
+
+        }
+    }
+
+    private IEnumerable<Course> Courses;
+    private IEnumerable<Course> ExistingPrerequisites;
+
+    protected override async Task OnInitializedAsync()
     {
         course = NewCourse();
+        RequiredCourses = new List<Course>();
+        Courses = await CourseService.GetAllCoursesAsync();
     }
 
     private async Task SubmitCourse()
@@ -65,6 +115,16 @@
             course = NewCourse();
         }
 
+    }
+
+
+    private async Task SubmitPrerequisites()
+    {
+    }
+
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
+    {
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
     }
 
 
