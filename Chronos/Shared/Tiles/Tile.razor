@@ -179,7 +179,7 @@
         if (Data.Status == 0)
         {
             errorClass = "";
-            switch (Data.TileType)
+            switch (Data.TileType) //Based on the tile type, it will set the typeClass accordingly. 
             {
                 case TileType.Core:
                     typeClass += "Core";
@@ -214,28 +214,26 @@
         {
             if (Data.Course is not null)
             {
-                if (Data.Course.Units == 20)
+                if (Data.Course.Units == 20) //Checks to see if it is a double course. 
                 {
                     typeClass += " DoubleUnits";
                 }
             }
-            if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0)
+            if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0) //Checks to see i fit has any errors. 
             {
                 errorClass += " Error";
             }
-            else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0)
+            else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0) //CHecks to see if it has any warnings. 
             {
                 errorClass += " Warning";
             }
         }
     }
 
-    //if ((10101 & ErrorStatus.WrongCampus) > 0) Use this for error checking
-
-
+    //This is what will run when a course is clicked on. 
     async void Clicked()
     {
-        if (Data.Course is not null)
+        if (Data.Course is not null) //If the course exists, it will show the University page for it. 
         {
             var parameters = new ModalParameters();
             var url = "https://www.newcastle.edu.au/course/" + Data.Course.CourseCode;
@@ -249,7 +247,7 @@
             };
             Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
         }
-        else
+        else //If the course does not, it will run a modal that will allow them to add either an elective or directed course. 
         {
             var parameters = new ModalParameters();
             parameters.Add("Plan", Plan);
@@ -339,13 +337,10 @@
         s = s.Replace("Semester1", "1");
         s = s.Replace("Semester2", "2");
 
-
-
-
-
         return s;
     }
 
+    //This will run when the button in the top right is clicked, deleting the data in the tile. 
     private void trashButton()
     {
         Data.Status = 0;

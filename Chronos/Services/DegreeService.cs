@@ -29,7 +29,7 @@ namespace Chronos.Services
             return true;
         }
 
-        public async Task<bool> DoesDegreeExist(string degreeName)
+        public async Task<bool> DoesDegreeExist(string degreeName) //Checks to see if degree exists in the database. 
         {
             return await Task.FromResult(db.Degrees.Any(d => d.Name == degreeName));
         }
@@ -38,7 +38,7 @@ namespace Chronos.Services
             return await db.Degrees.FindAsync(degreeID); //This will return a specific degree. 
         }
 
-        public async Task<int> GetElectiveUnitsAsync(int degreeID)
+        public async Task<int> GetElectiveUnitsAsync(int degreeID) //Returns the amount of elective units in that degree. 
         {
             Degree degree = await db.Degrees.FindAsync(degreeID);
             return degree.ElectiveUnits;
