@@ -21,10 +21,10 @@
 </EditForm>
 
 
-<EditForm OnSubmit="SubmitDegreeToCourse" Model="lol">
+<EditForm OnSubmit="SubmitDegreeToCourse" Model="DCM">
     <h4>Select a Degree to add a course to</h4>
     <h4>Select a Degree</h4>
-    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="DCM.Degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
         <SelectedTemplate Context="degree">
             Bachelor of @degree.Name
         </SelectedTemplate>
@@ -33,7 +33,7 @@
         </ResultTemplate>
     </BlazoredTypeahead>
     <h4>Select a Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="DCM.Course" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
         <SelectedTemplate Context="course">
             @course.Name (@course.CourseCode)
         </SelectedTemplate>
@@ -46,9 +46,7 @@
 @code {
 
     private Course course;
-    private Course SelectedCourse;
-    private Degree SelectedDegree;
-    private int lol;
+    private DegreeCourseModel DCM = new DegreeCourseModel();
     protected IEnumerable<Degree> Degrees { get; set; }
     protected IEnumerable<Course> Courses { get; set; }
     protected async override void OnInitialized()
@@ -71,25 +69,25 @@
     private async Task SubmitDegreeToCourse()
     {
         bool error = false;
-        if (SelectedCourse == null)
+        if (DCM.Course == null)
         {
             error = true;
             ToastService.ShowToast(ToastLevel.Error, "You did not select a Course");
         }
-        if (SelectedDegree == null)
+        if (DCM.Degree == null)
         {
             error = true;
             ToastService.ShowToast(ToastLevel.Error, "You did not select a degree");
         }
-        if(await DegreeCourseService.DoesCourseExistInDegree(SelectedCourse.CourseCode, SelectedDegree.DegreeID))
+        if (await DegreeCourseService.DoesCourseExistInDegree(DCM.Course.CourseCode, DCM.Degree.DegreeID))
         {
             error = true;
             ToastService.ShowToast(ToastLevel.Error, "This course is already in this degree.");
         }
         if (!error)
         {
-            await DegreeCourseService.AddCourseToDegreeAsync(SelectedDegree.DegreeID, SelectedCourse.CourseID);
-            ToastService.ShowToast(ToastLevel.Success, $"{SelectedCourse.CourseCode} has been added to the Bachelor of {SelectedDegree.Name}.");
+            await DegreeCourseService.AddCourseToDegreeAsync(DCM.Degree.DegreeID, DCM.Course.CourseID);
+            ToastService.ShowToast(ToastLevel.Success, $"{DCM.Course.CourseCode} has been added to the Bachelor of {DCM.Degree.Name}.");
         }
     }
     private async Task SubmitCourse()
@@ -134,5 +132,11 @@
 
 
     private Course NewCourse() => new Course() { Units = 10 };
+
+    private class DegreeCourseModel
+    {
+        public Degree Degree { get; set; }
+        public Course Course { get; set; }
+    }
 
 }
