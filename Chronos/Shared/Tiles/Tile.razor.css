@@ -2,7 +2,8 @@
 .Tile {
     display: inline-block;
     text-align: center;
-    align-content: center;
+    padding-left: 0px;
+    padding-right: 0px;
     height: 100%;
     transition: .2s;
     /*Makes it so items will each be given the same space*/
@@ -11,9 +12,9 @@
     min-width: 110px;
     flex: 1 1 0;
     margin: 5px 5px 5px 5px;
-    position: relative;
     border: 2px solid black;
     border-radius: 10px;
+    background-color: #ffffff;
     /*--x: 100%;
     --y: 100%;
     border: 3px solid transparent;
@@ -60,6 +61,7 @@
     text-align: center;
 
 
+    text-overflow: none;
     position: absolute;
     visibility: hidden;
 }
@@ -70,14 +72,10 @@
 }
 
 
-.courseCode{
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
+.courseCode {
+    width: 100%;
     text-align: center;
-    position: absolute;
-    top: 5px;
+/*    position: relative;*/
 }
 
 
@@ -112,9 +110,18 @@
     background-color: #FFCC99
 }
 
+
+
+.AddDirected, .AddElective {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    
+}
 .AddElective > .plusSign {
     /*background-color: #ffffff;*/
-   /* border-color: #000000;*/
+    /* border-color: #000000;*/
     color: #F2DD60;
 }
 
@@ -122,18 +129,20 @@
     /*background-color: #ffffff;*/
     /*border-color: #000000;*/
     color: #458EE7;
+    
 }
 
 .plusSign {
     border-radius: 50%;
-    border:4px solid black;
-    margin-left:auto;
-    margin-right:auto;
-    width: 60px;
-    font-weight:900;
-    height: 60px;
-    position: center;
-    display:block;
+    border: 4px solid black;
+    font-weight: 900;
+    width: 100px;
+    height: 100px;
+
+    font-size: 50px;
+
+
+    margin: auto;
 }
 
 /*Trash Button*/
@@ -152,6 +161,7 @@
     margin-right: 2px;
     text-align: center;
     vertical-align: middle;
+    cursor:pointer;
 }
 
     .TrashButton:hover {
@@ -162,30 +172,63 @@
     visibility: visible;
 }
 
-.ErrorSymbol
-{
-    position: absolute;
 
+
+/*Error Symbol Management*/
+
+.ErrorSymbol {
+    position: absolute;
     left: 0px;
     bottom: 0px;
+    z-index: 10;
+    
 }
-div.red-square
-{
-    height:25px;
-    width:25px;
+    .ErrorSymbol:hover {
+        cursor: pointer;
+    }
+.ErrorTip{
+    height: 25px;
+    width: 25px;
     background-color: red;
 }
 
-div.yellow-square
-{
+.WarningTip {
     height: 25px;
     width: 25px;
     background-color: yellow;
 }
 
-div.blue-square
-{
-    height:25px;
-    width:25px;
+.SiblingTip{
+    height: 25px;
+    width: 25px;
     background-color: blue;
 }
+
+.Tooltip {
+    /*position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;*/ /* If you want dots under the hoverable text */
+    z-index: 30;
+}
+.ToolTipText{
+    z-index:30;
+}
+
+    /* Tooltip text */
+    .Tooltip .ToolTipText {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+        /* Position the tooltip text - see examples below! */
+        position: absolute;
+        
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .Tooltip:hover .ToolTipText {
+        visibility: visible;
+    }

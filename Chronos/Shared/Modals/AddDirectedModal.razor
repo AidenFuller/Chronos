@@ -23,7 +23,7 @@
     </div>
 
 
-    <BlazoredTypeahead SearchMethod="SearchMajorCourses" @bind-Value="SelectedCourse" placeholder="Please search for your directected course..." EnableDropDown="true">
+    <BlazoredTypeahead SearchMethod="SearchMajorCourses" @bind-Value="selectedCourse" placeholder="Please search for your directected course..." EnableDropDown="true">
         <SelectedTemplate Context="course">
             <!--This is the search Template and what will be returned.-->
 
@@ -52,6 +52,11 @@
             }
         </ResultTemplate>
     </BlazoredTypeahead>
+
+    <div style="color: red;">
+        <p>@errorString</p>
+    </div>
+
     <div style="width:100%; text-align: center">
         <button class="btn btn-primary" type="submit" style="margin-top: 20px;" @onclick="SubmitForm">Submit</button>
     </div>
@@ -62,8 +67,8 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public DegreePlan Plan { get; set; }
     [Parameter] public CourseRuntime InputSem { get; set; }
-    private Course SelectedCourse;
-
+    private Course selectedCourse;
+    private String errorString = "";
     //========== CHECKBOX MANAGEMENT ==========
     //http://5.9.10.113/66851989/bind-each-value-of-an-enum-to-a-checkbox-blazor
     private class CheckableEnum
@@ -103,6 +108,10 @@
 
     private CourseRuntime GetRuntime(Course c)
     {
+        if (c == null)
+        {
+            return 0;
+        }
         return CourseService.GetCourseRuntimeAsync(c.CourseID, Plan.Campus).GetAwaiter().GetResult();
     }
 
@@ -142,13 +151,20 @@
     //========== FORM MANAGEMENT ==========
     void SubmitForm()
     {
-        @if ((GetRuntime(SelectedCourse) & InputSem) > 0)
+        errorString = "";
+        if (selectedCourse == null)
         {
-            ModalInstance.CloseAsync(ModalResult.Ok(SelectedCourse));
+            errorString = "You need to specify an input";
+        }
+
+        else if ((GetRuntime(selectedCourse) & InputSem) > 0)
+        {
+            ModalInstance.CloseAsync(ModalResult.Ok(selectedCourse));
         }
         else
         {
-            //Show toast error
+            //Wrong Semester
+            errorString = selectedCourse.CourseCode + " does not run in " + InputSem;
         }
     }
 

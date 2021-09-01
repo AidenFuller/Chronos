@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Chronos.Data;
 using Chronos.Models;
+
 
 namespace Chronos.Services
 {
@@ -27,6 +29,10 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task<bool> DoesDegreeExist(string degreeName)
+        {
+            return await Task.FromResult(db.Degrees.Any(d => d.Name == degreeName));
+        }
         public async Task<Degree> GetDegreeAsync(int degreeID)
         {
             return await db.Degrees.FindAsync(degreeID); //This will return a specific degree. 
