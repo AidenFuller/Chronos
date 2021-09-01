@@ -15,6 +15,8 @@
     border: 2px solid black;
     border-radius: 10px;
     background-color: #ffffff;
+    overflow: hidden;
+    position: relative; /*Can't have this due to it limiting z-index of hover.*/
     /*--x: 100%;
     --y: 100%;
     border: 3px solid transparent;
@@ -73,41 +75,48 @@
 
 
 .courseCode {
+    margin: -1px -1px -1px 0px;
+    padding-top: 2px;
     width: 100%;
     text-align: center;
+    z-index: 5;
+    
 /*    position: relative;*/
 }
 
 
 .droppable > .courseCode {
-    background-color: greenyellow;
+    background-color: greenyellow !important;
 }
 
 .Elective > .courseCode {
-    background-color: #BCE954;
+    background-color: #BCE954 !important;
 }
 
 .Directed > .courseCode {
-    background-color: #ADD8E6;
+    background-color: #ADD8E6 !important;
     /* color-before: #659EC7;*/
 }
 
 .Core > .courseCode {
-    background-color: #BEBEBE;
+    background-color: #BEBEBE !important;
     /*Color-before: #808080;*/
 }
 
-
 .Compulsory > .courseCode {
-    background-color: #659EC7;
+    background-color: #659EC7 !important;
 }
 
 
-.Error > .courseCode {
-    background-color: #FF9696
+.Error {
+    /*border-color: red;*/
+    /*background-color: #FF9696;*/
+    background-color: #ffcfcf
 }
-.Warning > .courseCode {
-    background-color: #FFCC99
+.Warning {
+    /*border-color: gold;*/
+    background-color: #ffdebd;
+    /*#FFCC99*/
 }
 
 
@@ -175,13 +184,15 @@
 
 
 /*Error Symbol Management*/
+/*https://www.w3schools.com/css/css_tooltip.asp */
+
 
 .ErrorSymbol {
     position: absolute;
     left: 0px;
     bottom: 0px;
     z-index: 10;
-    
+    display: flex;
 }
     .ErrorSymbol:hover {
         cursor: pointer;
@@ -205,16 +216,15 @@
 }
 
 .Tooltip {
-    /*position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;*/ /* If you want dots under the hoverable text */
+    border-bottom: 1px dotted black;
     z-index: 30;
 }
-.ToolTipText{
-    z-index:30;
-}
+.ToolTipText {
+    z-index: 30;
 
-    /* Tooltip text */
+}
+        /* Tooltip text */
     .Tooltip .ToolTipText {
         visibility: hidden;
         width: 120px;
