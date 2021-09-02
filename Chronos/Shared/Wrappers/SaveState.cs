@@ -13,7 +13,7 @@ namespace Chronos.Shared.Wrappers
         public Degree Degree;
         public Major Major;
         public int BlocksPerYear { get; set; } = 2;
-        public int UnitsPerBlock { get; set; } = 40;
+        public int UnitsPerBlock { get; set; }
         public List<Course> CompletedCourses { get; set; }
         public List<TileData> CompletedTiles { get; set; }
         public AvailableCampus Campus { get; set; }

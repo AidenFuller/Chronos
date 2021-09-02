@@ -30,11 +30,10 @@
                                        TItem="Degree"
                                        Value="SelectedDegree"
                                        ValueExpression="@(() => SelectedDegree)"
-                                       ValueChanged="SelectedDegreeChanged" 
-                                       placeholder="Please search for your degree..." 
-                                       EnableDropDown="true" 
-                                       ShowDropDownOnFocus="true"
-                                       >
+                                       ValueChanged="SelectedDegreeChanged"
+                                       placeholder="Please search for your degree..."
+                                       EnableDropDown="true"
+                                       ShowDropDownOnFocus="true">
                         <SelectedTemplate Context="degree">
                             <!--This is the search Template and what will be returned.-->
                             Bachelor Of @degree.Name
@@ -45,10 +44,10 @@
                         </ResultTemplate>
                     </BlazoredTypeahead>
 
-                    <BlazoredTypeahead SearchMethod="SearchMajors" 
-                                       @bind-Value="SelectedMajor" 
-                                       placeholder="Please search for your major..." 
-                                       EnableDropDown="true" 
+                    <BlazoredTypeahead SearchMethod="SearchMajors"
+                                       @bind-Value="SelectedMajor"
+                                       placeholder="Please search for your major..."
+                                       EnableDropDown="true"
                                        ShowDropDownOnFocus="true"
                                        Disabled="@IsDegreeSelectDisabled">
                         <SelectedTemplate Context="major">
@@ -75,15 +74,24 @@
                 <br />
                 <h4>What campuses are you able to attend?</h4>
                 <div>
-                <select name="campus" class="semester-selection" @bind="ChosenCampus">
-                    <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
-                    <option value="@AvailableCampus.Callaghan" selected>Callaghan Campus</option>
-                    <option value="@AvailableCampus.NewcastleCity">Newcastle Campus</option>
-                    <option value="@AvailableCampus.Ourimbah">Ourimbah Campus</option>
-                    <option value="@AvailableCampus.PortMacquarie">Port Macquarie Campus</option>
-                    <option value="@AvailableCampus.SingaporeBCA | @AvailableCampus.SingaporePSB">Signapore Campus</option>
-                    <option value="@AvailableCampus.Sydney">Sydney Campus</option>
-                </select>
+                    <select name="campus" class="semester-selection" @bind="ChosenCampus">
+                        <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
+                        <option value="@AvailableCampus.Callaghan" selected>Callaghan Campus</option>
+                        <option value="@AvailableCampus.NewcastleCity">Newcastle Campus</option>
+                        <option value="@AvailableCampus.Ourimbah">Ourimbah Campus</option>
+                        <option value="@AvailableCampus.PortMacquarie">Port Macquarie Campus</option>
+                        <option value="@AvailableCampus.SingaporeBCA | @AvailableCampus.SingaporePSB">Signapore Campus</option>
+                        <option value="@AvailableCampus.Sydney">Sydney Campus</option>
+                    </select>
+                </div>
+                <h4>Select your Semester length</h4>
+                <div>
+                    <select name="campus" class="semester-selection" @bind="SemesterLength">
+                        <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
+                        <option value="20">20 Units</option>
+                        <option value="30">30 Units</option>
+                        <option value="40" selected>40 Units</option>
+                    </select>
                 </div>
             </form> <!--Initial Form ends here.-->
             <br />
@@ -200,6 +208,7 @@
     private Major SelectedMajor;
     private CourseRuntime StartingBlock = CourseRuntime.Semester1;
     private AvailableCampus ChosenCampus = AvailableCampus.Callaghan;
+    private int SemesterLength = 40;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
@@ -244,6 +253,7 @@
             State.RuntimeStart = StartingBlock;
             State.CompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
             State.Campus = ChosenCampus;
+            State.UnitsPerBlock = SemesterLength;
             readyToRender = true;
 
             NavManager.NavigateTo("DegreePlan");
