@@ -163,9 +163,10 @@ else
 
             await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
-            await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
-
-
+            if (dragTo != State.CompletedTiles)
+            {
+                await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
+            }
             State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
 
             StateHasChanged();
@@ -417,7 +418,11 @@ else
 
         CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
         UpdateReliants(DragFrom, slot, DragPayload, null);
-        ShowSwapWarnings(DragFrom, slot, DragPayload, null);
+        if (slot != State.CompletedTiles)
+        {
+
+            ShowSwapWarnings(DragFrom, slot, DragPayload, null);
+        }
         State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
     }
 
