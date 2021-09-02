@@ -42,5 +42,18 @@ namespace Chronos.Services
                 join id in courseIDs on course.CourseID equals id
                 select course;
         }
+
+        public async Task<bool> DoesCourseExistInDegree(string courseCode, int degreeID)
+        {
+            IEnumerable<Course> courses = await GetCoreCoursesAsync(degreeID);
+            foreach(Course c in courses)
+            {
+                if(c.CourseCode == courseCode)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
