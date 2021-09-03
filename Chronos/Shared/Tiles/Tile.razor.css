@@ -19,6 +19,7 @@
     --y: 100%;
     border: 3px solid transparent;
     background: linear-gradient(white, white) padding-box, radial-gradient(farthest-corner at var(--x) var(--y), #00C9A7, #845EC2 ) border-box;*/
+    position: relative;
 }
 .DoubleUnits {
     flex-grow: 5;
@@ -157,7 +158,7 @@
     width: 22px;
     height: 22px;
     border-radius: 10px;
-    margin-top: 7px;
+    margin-top: 2px;
     margin-right: 2px;
     text-align: center;
     vertical-align: middle;
@@ -178,57 +179,42 @@
 
 .ErrorSymbol {
     position: absolute;
-    left: 0px;
-    bottom: 0px;
-    z-index: 10;
-    
+    left: 2px;
+    bottom: 2px;
+    z-index: 3;
 }
+
     .ErrorSymbol:hover {
         cursor: pointer;
     }
-.ErrorTip{
-    height: 25px;
-    width: 25px;
-    background-color: red;
-}
 
-.WarningTip {
-    height: 25px;
-    width: 25px;
-    background-color: yellow;
-}
-
-.SiblingTip{
-    height: 25px;
-    width: 25px;
-    background-color: blue;
-}
 
 .Tooltip {
-    /*position: relative;
-    display: inline-block;
+    position: relative;
+    /*display: inline-block;
     border-bottom: 1px dotted black;*/ /* If you want dots under the hoverable text */
     z-index: 30;
-}
-.ToolTipText{
-    z-index:30;
+    height: 25px;
+    width: 25px;
 }
 
-    /* Tooltip text */
-    .Tooltip .ToolTipText {
-        visibility: hidden;
-        width: 120px;
-        background-color: black;
-        color: #fff;
-        text-align: center;
-        padding: 5px 0;
-        border-radius: 6px;
-        /* Position the tooltip text - see examples below! */
-        position: absolute;
-        
-    }
+/* Tooltip text */
+.ToolTipText {
+    display: none;
+    width: 120px;
+    background-color: slategray;
+    color: #fff;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    bottom: 100%;
+    left: 0%;
+    z-index: 1;
+}
 
-    /* Show the tooltip text when you mouse over the tooltip container */
-    .Tooltip:hover .ToolTipText {
-        visibility: visible;
-    }
+/* Show the tooltip text when you mouse over the tooltip container */
+.Tooltip:hover .ToolTipText {
+    display: inherit;
+}
