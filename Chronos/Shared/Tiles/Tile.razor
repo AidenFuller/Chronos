@@ -168,39 +168,37 @@
     public void UpdateTileType()
     {
         typeClass = "";
+        errorClass = "";
 
-        if (Data.Status == 0)
+
+        switch (Data.TileType)
         {
-            errorClass = "";
-            switch (Data.TileType)
-            {
-                case TileType.Core:
-                    typeClass += "Core";
-                    break;
-                case TileType.Compulsory:
-                    typeClass += "Compulsory";
-                    break;
-                case TileType.Directed:
-                    if (Data.Course is null)
-                    {
-                        typeClass += "AddDirected";
-                    }
-                    else
-                    {
-                        typeClass += "Directed";
-                    }
-                    break;
-                case TileType.Elective:
-                    if (Data.Course is null)
-                    {
-                        typeClass += "AddElective";
-                    }
-                    else
-                    {
-                        typeClass += "Elective";
-                    }
-                    break;
-            }
+            case TileType.Core:
+                typeClass += "Core";
+                break;
+            case TileType.Compulsory:
+                typeClass += "Compulsory";
+                break;
+            case TileType.Directed:
+                if (Data.Course is null)
+                {
+                    typeClass += "AddDirected";
+                }
+                else
+                {
+                    typeClass += "Directed";
+                }
+                break;
+            case TileType.Elective:
+                if (Data.Course is null)
+                {
+                    typeClass += "AddElective";
+                }
+                else
+                {
+                    typeClass += "Elective";
+                }
+                break;
         }
 
         if (CompletedFlag == false)
