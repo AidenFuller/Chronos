@@ -1011,11 +1011,12 @@ else
 
     public String GetAllSiblingErrors()
     {
+        errors = "";
         foreach(var semester in State.CourseData)
         {
             foreach(var tileData in semester)
             {
-                tileData.GetSiblingErrors();
+                errors += tileData.GetSiblingErrors();
             }
         }
         return errors;
@@ -1023,11 +1024,12 @@ else
 
     public String GetAllPrereqErrors()
     {
+        errors = "";
         foreach (var semester in State.CourseData)
         {
             foreach (var tileData in semester)
             {
-                tileData.GetPreReqErrors();
+                errors += tileData.GetPreReqErrors();
             }
         }
         return errors;
@@ -1035,11 +1037,12 @@ else
 
     public String GetAllPrereqWarnings()
     {
+        errors = ""; 
         foreach (var semester in State.CourseData)
         {
             foreach (var tileData in semester)
             {
-                tileData.GetPreReqWarnings();
+                errors += tileData.GetPreReqWarnings();
             }
         }
         return warnings;
