@@ -105,9 +105,10 @@
     <h4>Errors in List</h4>
     <div>
         <h4>Errors:</h4>
-        <p>@GetErrors()</p>
+        <p>@GetAllPrereqErrors()</p>
+        <p>@GetAllSiblingErrors()</p>
         <h4>Warnings:</h4>
-        <p>@GetWarnings()</p>
+        <p>@GetAllPrereqWarnings()</p>
     </div>
     <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
         Save
@@ -1010,47 +1011,37 @@ else
         }
     }
 
-    public String GetErrors()
+    public String GetAllSiblingErrors()
     {
-        errors = "";
         foreach(var semester in State.CourseData)
         {
-            foreach(var tile in semester)
+            foreach(var tileData in semester)
             {
-                if(tile.ErrorData[ErrorStatus.MissingSiblingCourse].Count != 0)
-                {
-                    foreach(var course in tile.ErrorData[ErrorStatus.MissingSiblingCourse])
-                    {
-                        errors += course.CourseCode + " must be completed the semester before " + tile.Course.CourseCode + "\n";
-                    }
-
-                }
-                if(tile.ErrorData[ErrorStatus.MissingPrerequisite].Count != 0)
-                {
-                    foreach(var course in tile.ErrorData[ErrorStatus.MissingPrerequisite])
-                    {
-                        warnings += course.CourseCode + " must be completed before " + tile.Course.CourseCode + "\n";
-                    }
-                }
+                tileData.GetSiblingErrors();
             }
         }
         return errors;
     }
 
-    public String GetWarnings()
+    public String GetAllPrereqErrors()
     {
-        warnings = "";
         foreach (var semester in State.CourseData)
         {
-            foreach (var tile in semester)
+            foreach (var tileData in semester)
             {
-                if (tile.ErrorData[ErrorStatus.MissingAssumedKnowledge].Count != 0)
-                {
-                    foreach(var course in tile.ErrorData[ErrorStatus.MissingAssumedKnowledge])
-                    {
-                        warnings += course.CourseCode + " should be completed before " + tile.Course.CourseCode + "\n";
-                    }
-                }
+                tileData.GetPreReqErrors();
+            }
+        }
+        return errors;
+    }
+
+    public String GetAllPrereqWarnings()
+    {
+        foreach (var semester in State.CourseData)
+        {
+            foreach (var tileData in semester)
+            {
+                tileData.GetPreReqWarnings();
             }
         }
         return warnings;

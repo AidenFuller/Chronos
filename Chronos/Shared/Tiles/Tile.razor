@@ -39,21 +39,21 @@
             {
                 <div class="Tooltip">
                     <span class="oi oi-question-mark"></span>
-                    <span class="ToolTipText">Missing Assumed Knowledge: </span>
+                    <span class="ToolTipText">Missing Assumed Knowledge: @Data.GetPreReqErrors()</span>
                 </div>
             }
             @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
             {
                 <div class="Tooltip">
                     <span class="oi oi-warning"></span>
-                    <span class="ToolTipText">Missing Pre-requisite: </span>
+                    <span class="ToolTipText">Missing Pre-requisite: @Data.GetPreReqWarnings() </span>
                 </div>
             }
             @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
             {
                 <div class="Tooltip">
                     <span class="oi oi-link-broken"></span>
-                    <span class="ToolTipText">Missing sibling course: </span>
+                    <span class="ToolTipText">Missing sibling course: @Data.GetSiblingErrors() </span>
                 </div>
             }
         </div>
@@ -343,6 +343,9 @@
         Data.Course = null;
         UpdateTileType();
     }
+
+
+
 
 
 

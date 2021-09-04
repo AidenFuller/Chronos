@@ -23,5 +23,43 @@ namespace Chronos.Shared.Wrappers
             ErrorData.Add(ErrorStatus.MissingPrerequisite, new List<Course>());
             ErrorData.Add(ErrorStatus.MissingSiblingCourse, new List<Course>());
         }
+
+        public string GetPreReqErrors()
+        {
+            String errors = "";
+            if (ErrorData[ErrorStatus.MissingPrerequisite].Count != 0)
+            {
+                foreach (var course in ErrorData[ErrorStatus.MissingPrerequisite])
+                {
+                    errors += course.CourseCode + " must be completed before " + Course.CourseCode + "\n";
+                }
+            }
+            return errors;
+        }
+        public string GetPreReqWarnings()
+        {
+            String errors = "";
+            if (ErrorData[ErrorStatus.MissingAssumedKnowledge].Count != 0)
+            {
+                foreach (var course in ErrorData[ErrorStatus.MissingAssumedKnowledge])
+                {
+                    errors += course.CourseCode + " should be completed before " + Course.CourseCode + "\n";
+                }
+            }
+            return errors;
+        }
+        public string GetSiblingErrors()
+        {
+            String errors = "";
+            if (ErrorData[ErrorStatus.MissingSiblingCourse].Count != 0)
+            {
+                foreach (var course in ErrorData[ErrorStatus.MissingSiblingCourse])
+                {
+                    errors += course.CourseCode + " must be completed the semester before " + Course.CourseCode + "\n";
+                }
+
+            }
+            return errors;
+        }
     }
 }
