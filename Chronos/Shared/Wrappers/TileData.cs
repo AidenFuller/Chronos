@@ -14,7 +14,7 @@ namespace Chronos.Shared.Wrappers
         public ErrorStatus Status { get; set; }
         public TileType TileType { get; set; }
         public CourseRuntime Runtime { get; set; }
-        public Dictionary<ErrorStatus, List<Course>> ErrorData { get; set; }
+        
 
         public TileData()
         {
@@ -24,6 +24,13 @@ namespace Chronos.Shared.Wrappers
             ErrorData.Add(ErrorStatus.MissingSiblingCourse, new List<Course>());
         }
 
+
+
+
+        //========== ERROR MANAGEMENT ==========
+        public Dictionary<ErrorStatus, List<Course>> ErrorData { get; set; }
+        
+        //Return string of all pre requisite errors
         public string GetPreReqErrors()
         {
             String errors = "";
@@ -36,6 +43,8 @@ namespace Chronos.Shared.Wrappers
             }
             return errors;
         }
+
+        //Return string of all pre-requisite warnings
         public string GetPreReqWarnings()
         {
             String errors = "";
@@ -48,6 +57,8 @@ namespace Chronos.Shared.Wrappers
             }
             return errors;
         }
+
+        //Return string of all sibling warnings
         public string GetSiblingErrors()
         {
             String errors = "";
@@ -57,9 +68,17 @@ namespace Chronos.Shared.Wrappers
                 {
                     errors += course.CourseCode + " must be completed the semester before " + Course.CourseCode + "\n";
                 }
-
             }
             return errors;
         }
+
+        public void clearAllWarnings()
+        {
+            Status = 0;
+            ErrorData[ErrorStatus.MissingAssumedKnowledge].Clear();
+            ErrorData[ErrorStatus.MissingPrerequisite].Clear();
+            ErrorData[ErrorStatus.MissingSiblingCourse].Clear();
+        }
+
     }
 }

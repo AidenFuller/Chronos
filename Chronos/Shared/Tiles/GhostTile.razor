@@ -67,14 +67,14 @@
 
 
     // Handling Dropping
-    private void HandleDrop()
+    private async Task HandleDrop()
     {
         //FastHide works by toggling so the div gets unrendered. When OnParameter retriggered and it is set to false again.
         fastHide = true;
         hide = "Hidden";
         Show = false;
         Plan.MovePayloadTo(Slot.Tiles);
-        StateHasChanged();
+        //StateHasChanged();
     }
 
 
