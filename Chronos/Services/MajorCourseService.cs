@@ -34,6 +34,19 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task RemoveCourseFromMajorAsync(int majorID, int courseID)
+        {
+            var course = db.MajorCourses.First(c => c.MajorID == majorID && c.CourseID == courseID);
+            db.MajorCourses.Remove(course);
+
+            await db.SaveChangesAsync();
+        }
+
+        public async Task<bool> DoesMajorContainCourse(int majorID, int courseID)
+        {
+            return await Task.FromResult(db.MajorCourses.Any(c => c.MajorID == majorID && c.CourseID == courseID));
+        }
+
         public async Task<IEnumerable<Course>> GetAllDirectedCoursesAsync(int MajorID)
         {
             //Select all courses where the MajorID is the given ID and return their course IDs
