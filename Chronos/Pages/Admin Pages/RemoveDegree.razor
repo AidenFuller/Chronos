@@ -1,0 +1,50 @@
+﻿@page "/Admin/RemoveDegree"
+
+@inject DegreeService DegreeService
+@inject IToastService ToastService
+
+
+<h4>Select a Degree</h4>
+<BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the degree you want to remove..." EnableDropDown="true" ShowDropDownOnFocus="true">
+    <SelectedTemplate Context="degree">
+        Bachelor of @degree.Name
+    </SelectedTemplate>
+    <ResultTemplate Context="degree">
+        Bachelor of @degree.Name
+    </ResultTemplate>
+</BlazoredTypeahead>
+
+<button @onclick="SubmitDegree" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
+
+
+
+
+@code {
+
+    private IEnumerable<Degree> Degrees;
+    private Degree SelectedDegree;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Degrees = await DegreeService.GetAllDegreesAsync();
+    }
+
+    private async Task SubmitDegree()
+    {
+        if (await DegreeService.DoesDegreeExist(SelectedDegree.Name))
+        {
+            await DegreeService.RemoveDegreeAsync(SelectedDegree);
+            ToastService.ShowToast(ToastLevel.Success, $"{SelectedDegree.Name} was removed from the database");
+        }
+        else
+        {
+            ToastService.ShowToast(ToastLevel.Warning, "Something went wrong");
+        }
+    }
+
+    private async Task<IEnumerable<Degree>> SearchDegrees(string search)
+    {
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+}
