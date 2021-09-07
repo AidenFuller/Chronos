@@ -1,0 +1,66 @@
+﻿@page "/Admin/AddMajorToDegree"
+@inject DegreeService degreeService
+@inject IToastService toastService
+@inject MajorService majorService 
+
+<h3> Add Major to Degree</h3>
+<EditForm OnSubmit="SubmitMajor" Model="major">
+    <h4>Major Name</h4>
+    <InputText @bind-Value="major.Name" placeholder="Enter Degree Name" required />
+    <h4>Degree you want to add it to.</h4>
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
+</EditForm>
+
+@code
+{
+    private Major major;
+    private Major NewMajor() => new Major() { Name = ""};
+    private Degree degree;
+    private IEnumerable<Degree> Degrees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Degrees = await degreeService.GetAllDegreesAsync();
+        major = new Major();
+    }
+
+    //This function will find degrees based on the string that is passed in.
+    private async Task<IEnumerable<Degree>> SearchDegrees(string search)
+    {
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+    private async Task SubmitMajor()
+    {
+        bool degreeMajorError = false;
+        if (degree == null)
+        {
+            degreeMajorError = true;
+            toastService.ShowToast(ToastLevel.Error, "No degree was chosen.");
+        }
+        else
+        {
+            if (await majorService.DoesMajorExist(degree.DegreeID, major.Name))
+            {
+                degreeMajorError = true;
+                toastService.ShowToast(ToastLevel.Error, "That major already exists in the database.");
+            }
+            if (!degreeMajorError)
+            {
+                major.DegreeID = degree.DegreeID;
+                await majorService.AddMajorAsync(major);
+                toastService.ShowToast(ToastLevel.Success, "Added to the database!");
+                major = new Major();
+            }
+        }
+    }
+}

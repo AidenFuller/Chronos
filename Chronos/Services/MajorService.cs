@@ -39,5 +39,11 @@ namespace Chronos.Services
               join id in MajorIDs on Major.MajorID equals id
               select Major;
         }
+
+        public async Task<bool> DoesMajorExist(int degreeID, string name)
+        {
+            IEnumerable<Major> majors = await GetMajorsFromDegreeAsync(degreeID);
+            return majors.Any(c => c.Name == name);
+        }
     }
 }
