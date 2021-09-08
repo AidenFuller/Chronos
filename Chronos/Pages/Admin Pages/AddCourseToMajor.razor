@@ -1,0 +1,120 @@
+﻿@page "/Admin/AddCourseToMajor" 
+
+@inject DegreeService DegreeService
+@inject MajorCourseService MCService
+@inject MajorService MajorService
+@inject CourseService CourseService 
+@inject IToastService ToastService  
+
+<EditForm OnSubmit="SubmitCourseToMajor" Model="MCM">
+    <h4>Select a Degree to add a course to</h4>
+    <h4>Select a Degree</h4>
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="selectedDegree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+    <h4>Select a Major</h4>
+    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="MCM.Major" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="major">
+            @major.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="major">
+            @major.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+    <h4>Select a Course</h4>
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="MCM.Course" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </ResultTemplate>
+    </BlazoredTypeahead>
+
+    <h4>Compulsory?</h4>
+    <input type="checkbox" @bind-value="isCompulsory" />
+
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+</EditForm>
+
+@code {
+
+    private IEnumerable<Degree> Degrees;
+    private IEnumerable<Major> Majors;
+    private IEnumerable<Course> Courses;
+
+    private MCModel MCM;
+
+    private Degree selectedDegree;
+    private Major selectedMajor;
+
+    private bool isCompulsory;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Degrees = await DegreeService.GetAllDegreesAsync();
+        Majors = null;
+        Courses = null;
+
+        MCM = new MCModel();
+        selectedMajor = new Major();
+    }
+
+
+    private async Task SubmitCourseToMajor()
+    {
+        if (!await MCService.DoesMajorContainCourse(MCM.Major.MajorID, MCM.Course.CourseID))
+        {
+            await MCService.AddCourseToMajorAsync(MCM.Course.CourseID, MCM.Major.MajorID, isCompulsory);
+            ToastService.ShowToast(ToastLevel.Success, $"{MCM.Course.CourseCode} was added to {MCM.Major.Name}");
+        }
+        else
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{MCM.Course.CourseCode} is already in {MCM.Major.Name}");
+        }
+
+    }
+
+
+    private async Task<IEnumerable<Degree>> SearchDegrees(string search)
+    {
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+    private async Task<IEnumerable<Major>> SearchMajors(string search)
+    {
+        if (selectedDegree != null)
+        {
+            Majors = await MajorService.GetMajorsFromDegreeAsync(selectedDegree.DegreeID);
+            return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList());
+        }
+        else
+        {
+            return new List<Major>();
+        }
+    }
+
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
+    {
+        if (Courses == null || selectedMajor != MCM.Major)
+        {
+            Courses = await CourseService.GetAllCoursesAsync();
+        }
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
+    }
+
+
+
+
+
+    private class MCModel
+    {
+        public Major Major { get; set; }
+        public Course Course { get; set; }
+    }
+}

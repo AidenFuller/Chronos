@@ -1,0 +1,78 @@
+﻿@page "/Admin/RemoveCourseAvailability"
+
+@inject CourseService CourseService
+@inject IToastService ToastService
+
+<EditForm OnSubmit="SubmitAvailability" Model="CA">
+
+    <h4>Select the Campus</h4>
+    <select class="form-control selectpicker" @bind="CA.Campus">
+        <option value="@AvailableCampus.Callaghan">Callaghan</option>
+        <option value="@AvailableCampus.Ourimbah">Ourimbah</option>
+        <option value="@AvailableCampus.NewcastleCity">NUSpace</option>
+        <option value="@AvailableCampus.PortMacquarie">Port Macquarie</option>
+    </select>
+
+    <h4>Select Course</h4>
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="CA.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="course">
+            <!--This is the search Template and what will be returned.-->
+            @course.CourseCode - @course.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            <!--This is what is shown when it is selected.-->
+            @course.CourseCode - @course.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+
+
+
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+</EditForm>
+
+
+@code {
+
+    private CAModel CA;
+    private IEnumerable<Course> Courses;
+    private AvailableCampus selectedCampus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        CA = new CAModel();
+        Courses = null;
+        selectedCampus = 0;
+    }
+
+    private async Task SubmitAvailability()
+    {
+        if (await CourseService.GetCourseRuntimeAsync(CA.Course.CourseID, CA.Campus) > 0)
+        {
+            await CourseService.RemoveCourseAvailability(CA.Course.CourseID, CA.Campus);
+            ToastService.ShowToast(ToastLevel.Success, $"{CA.Course.CourseCode} has been removed from the {CA.Campus} campus");
+        }
+        else
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{CA.Course.CourseCode} is not allocated at the {CA.Campus}");
+        }
+    }
+
+
+
+
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
+    {
+        if (Courses == null || selectedCampus != CA.Campus)
+        {
+            Courses = await CourseService.GetCoursesByCampusAsync(CA.Campus);
+            selectedCampus = CA.Campus;
+        }
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
+    }
+
+    private class CAModel
+    {
+        public Course Course { get; set; }
+        public AvailableCampus Campus { get; set; }
+    }
+}
