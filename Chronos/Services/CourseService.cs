@@ -57,6 +57,14 @@ namespace Chronos.Services
             await db.SaveChangesAsync();
         }
 
+        public async Task RemovePrerequisiteAsync(int courseID, int prerequisiteCourseID)
+        {
+            var pc = db.PrerequisiteCourses.First(c => c.CourseID == courseID && c.PrerequisiteCourseID == prerequisiteCourseID);
+            db.PrerequisiteCourses.Remove(pc);
+
+            await db.SaveChangesAsync();
+        }
+
         public async Task<bool> DoesCourseExist(string courseCode)
         {
             return await Task.FromResult(db.Courses.Any(c => c.CourseCode == courseCode));
