@@ -796,6 +796,8 @@ else
             flag = false;
         else if (!await CheckPrerequisites(td, n))
             flag = false;
+        else if (output.Sum(s => s.Sum(c => c.Course?.Units ?? 10)) + State.CompletedCourses.Sum(c => c.Units) < td.Course.RequiredCompletedUnits)
+            flag = false;
 
         return flag;
     }
