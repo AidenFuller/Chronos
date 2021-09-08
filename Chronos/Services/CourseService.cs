@@ -25,6 +25,12 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task RemoveCourseAsync(Course c)
+        {
+            db.Courses.Remove(c);
+            await db.SaveChangesAsync();
+        }
+
         public async Task AddPrerequisiteAsync(int courseID, int prerequisiteCourseID, RequisiteType type)
         {
             PrerequisiteCourse pc = new PrerequisiteCourse()
