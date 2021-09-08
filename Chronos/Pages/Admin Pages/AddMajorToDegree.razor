@@ -1,7 +1,7 @@
 ﻿@page "/Admin/AddMajorToDegree"
-@inject DegreeService degreeService
-@inject IToastService toastService
-@inject MajorService majorService 
+@inject DegreeService DegreeService
+@inject IToastService ToastService
+@inject MajorService MajorService 
 
 <h3> Add Major to Degree</h3>
 <EditForm OnSubmit="SubmitMajor" Model="major">
@@ -23,13 +23,12 @@
 @code
 {
     private Major major;
-    private Major NewMajor() => new Major() { Name = ""};
     private Degree degree;
     private IEnumerable<Degree> Degrees;
 
     protected override async Task OnInitializedAsync()
     {
-        Degrees = await degreeService.GetAllDegreesAsync();
+        Degrees = await DegreeService.GetAllDegreesAsync();
         major = new Major();
     }
 
@@ -45,20 +44,20 @@
         if (degree == null)
         {
             degreeMajorError = true;
-            toastService.ShowToast(ToastLevel.Error, "No degree was chosen.");
+            ToastService.ShowToast(ToastLevel.Error, "No degree was chosen.");
         }
         else
         {
-            if (await majorService.DoesMajorExist(degree.DegreeID, major.Name))
+            if (await MajorService.DoesMajorExist(degree.DegreeID, major.Name))
             {
                 degreeMajorError = true;
-                toastService.ShowToast(ToastLevel.Error, "That major already exists in the database.");
+                ToastService.ShowToast(ToastLevel.Error, "That major already exists in the database.");
             }
             if (!degreeMajorError)
             {
                 major.DegreeID = degree.DegreeID;
-                await majorService.AddMajorAsync(major);
-                toastService.ShowToast(ToastLevel.Success, "Added to the database!");
+                await MajorService.AddMajorAsync(major);
+                ToastService.ShowToast(ToastLevel.Success, "Added to the database!");
                 major = new Major();
             }
         }
