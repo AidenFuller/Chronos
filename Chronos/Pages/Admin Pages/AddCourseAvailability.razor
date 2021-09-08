@@ -1,6 +1,7 @@
 ﻿@page "/Admin/AddCourseAvailability"
 
 @inject CourseService CourseService 
+@inject IToastService ToastService
 
 <EditForm OnSubmit="SubmitAvailability" Model="CA">
     <h4>Select Course</h4>
@@ -22,7 +23,7 @@
         <option value="@CourseRuntime.Semester2">Semester 2</option>
         <option value="@(CourseRuntime.Semester1 | CourseRuntime.Semester2)">Semesters 1 and 2</option>
     </select>
-
+    
     <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
 </EditForm>
 
@@ -40,14 +41,21 @@
 
     private async Task SubmitAvailability()
     {
-        CourseAvailability courseAvailability = new CourseAvailability()
+        if (await CourseService.GetCourseRuntimeAsync(CA.Course.CourseID, CA.Campus) == 0)
         {
-            Campus = CA.Campus,
-            CourseID = CA.Course.CourseID,
-            Runtime = CA.Runtime
-        };
-
-        await CourseService.AddCourseAvailability(courseAvailability);
+            CourseAvailability courseAvailability = new CourseAvailability()
+            {
+                Campus = CA.Campus,
+                CourseID = CA.Course.CourseID,
+                Runtime = CA.Runtime
+            };
+            await CourseService.AddCourseAvailability(courseAvailability);
+            ToastService.ShowToast(ToastLevel.Success, $"{CA.Course.CourseCode} has been allocated at the {CA.Campus} for {CA.Runtime}");
+        }
+        else
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{CA.Course.CourseCode} has already been allocated at the {CA.Campus}");
+        }
     }
 
     private async Task<IEnumerable<Course>> SearchCourses(string search)
