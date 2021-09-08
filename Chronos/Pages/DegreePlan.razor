@@ -20,6 +20,18 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 
+<ul class="ColorCodelegend">
+    <h5>Course Color Codes:</h5>
+    <li><span class="Core"></span> Core</li>
+    <li><span class="Compulsory"></span> Compulsory</li>
+    <li><span class="Directed"></span> Directed</li>
+    <li><span class="Elective"></span> Elective</li>
+    <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+    <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
+    <li><span class="Warning"></span> Warning</li>
+    <li><span class="Error"></span> Error</li>
+</ul>
+
 @if (isReady)
 {
     <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
@@ -163,9 +175,10 @@ else
             //These check the relating courses and checks them for any possible errors. 
             await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
-            await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
-
-
+            if (dragTo != State.CompletedTiles)
+            {
+                await ShowSwapWarnings(DragFrom, dragTo, DragPayload, draggedOn);
+            }
             State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
 
             StateHasChanged();
@@ -420,7 +433,11 @@ else
 
         CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
         UpdateReliants(DragFrom, slot, DragPayload, null);
-        ShowSwapWarnings(DragFrom, slot, DragPayload, null);
+        if (slot != State.CompletedTiles)
+        {
+
+            ShowSwapWarnings(DragFrom, slot, DragPayload, null);
+        }
         State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
     }
 
@@ -780,6 +797,8 @@ else
         else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber + 1)
             flag = false;
         else if (!await CheckPrerequisites(td, n))
+            flag = false;
+        else if (output.Sum(s => s.Sum(c => c.Course?.Units ?? 10)) + State.CompletedCourses.Sum(c => c.Units) < td.Course.RequiredCompletedUnits)
             flag = false;
 
         return flag;

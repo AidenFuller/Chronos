@@ -1,120 +1,101 @@
 ﻿@page "/Admin"
 @inject CourseService CourseService
 @inject IToastService ToastService
-@inject DegreeService DegreeService
-@using System.Text.RegularExpressions
+@inject NavigationManager UriHelper
 
-<h3>Administration</h3>
-<!--This is the form that will add a course to the database. -->
-<EditForm OnSubmit="SubmitCourse" Model="course">
-    <h4>Course Name</h4>
-    <InputText @bind-Value=course.Name placeholder="Enter Course Name" required />
-    <h4>Course Code</h4>
-    <InputText @bind-Value=course.CourseCode placeholder="Enter Course Code" required />
-    <h4>Units</h4>
-    <InputNumber step="10" @bind-Value=course.Units />
-    <h4>Required Units for Enrolment</h4>
-    <InputNumber step="10" @bind-Value=course.RequiredCompletedUnits />
+<h3 style="text-align:center">
+    Administration
+</h3>
+<p style="text-align:center">
+    Welcome to the Admin Panel
+</p>
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
+<br />
+<br />
 
-<!--This is the form that will add a degree to the database. -->
-<EditForm OnSubmit="SubmitDegree" Model="degree">
-    <h4>Degree Name</h4>
-    <InputText @bind-Value="degree.Name" placeholder="Enter Degree Name" required />
-    <h4>Amount Of Units</h4>
-    <InputNumber step="20" @bind-Value="degree.UnitLength" />
-    <h4>Can it be completed internationally?</h4>
-    <InputCheckbox @bind-Value="degree.InternationalsAllowed" />
-    <h4>How many Elective Units?</h4>
-    <InputNumber step="10" @bind-Value="degree.ElectiveUnits" />
+<h3 style="text-align:center"> Please select from the following</h3>
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
-</EditForm>
+<div style="text-align: center; font-size: 270px; width: 100%;">
+    <div class="dropdown" style="display: inline-block; vertical-align: top; font-size:15px;">
+        <button class="dropbtn">Add to System</button>
+        <div class="dropdown-content">
+            <a href="Admin/AddCourse">Add Course</a>
+            <a href="Admin/AddDegree">Add Degree</a>
+            <a href="Admin/AddPrerequisite">Add Prerequisite</a>
+            <a href="Admin/AddCourseToDegree">Add Course to Degree</a>
+            <a href="#">Add Course to Major </a>
+            <a href="#">Add Major to Degree</a>
+            <a href="#">Add Course Availability</a>
+        </div>
+    </div>
+    <div class="dropdown" style="display: inline-block; vertical-align: top; font-size:15px;">
+        <button class="dropbtn">Remove from System</button>
+        <div class="dropdown-content">
+            <a href="Admin/AddCourse">Remove Course</a>
+            <a href="Admin/AddDegree">Remove Degree</a>
+            <a href="Admin/AddPrerequisite">Remove Prerequisite</a>
+            <a href="Admin/AddCourseToDegree">Remove Course to Degree</a>
+            <a href="#">Remove Course to Major </a>
+            <a href="#">Remove Major to Degree</a>
+            <a href="#">Remove Course Availability</a>
+        </div>
+    </div>
+</div>
 
-
+          
+@*<div style=" display: inline-block; align-items: center; justify-content: center;">
+    <button class="active" @onclick="@Navigate1">Add Course</button>
+</div>
+<div style="display: inline-block; align-items: center; justify-content: center; ">
+    <button class="active" @onclick="@Navigate2">Add Degree</button>
+</div>
+<div style="display: inline-block; align-items: center; justify-content: center; ">
+    <button class="active" @onclick="@Navigate3">Add Prerequisite</button>
+</div>
+<div style="display: inline-block; align-items: center; justify-content: center; ">
+    <button class="active" @onclick="@Navigate4">Add Course to Degree</button>
+</div>
+<div style="display: inline-block; align-items: center; justify-content: center; ">
+    <button class="active" @onclick="@Navigate5">Add Course to Major</button>
+</div>
+<div style="display: inline-block; align-items: center; justify-content: center; ">
+    <button class="active" @onclick="@Navigate6">Add Major to Degree</button>
+</div>
+<div style="display: inline-block; align-items: center; justify-content: center; ">
+    <button class="active" @onclick="@Navigate7">Add Course Availability</button>
+</div>*@
 
 @code
 {
-    private Degree degree;
-    private Degree NewDegree() => new Degree() { UnitLength = 240 };
-    private Course NewCourse() => new Course() { Units = 10 };
-    private Course course;
-
-    //This code will ensure that there is a new class for each variable that is important.
-    protected override void OnInitialized()
-    {
-        course = NewCourse();
-        degree = NewDegree();
-    }
-
-
-    private async Task SubmitDegree()
-    {
-        bool degreeError = false;
-        if (await DegreeService.DoesDegreeExist(degree.Name)) //Checks to see if the degree exists within the database already.
         {
-            degreeError = true;
+    //void Navigate1()
+    //{
+    //    UriHelper.NavigateTo("Admin/AddCourse");
+    //}
 
-            ToastService.ShowToast(ToastLevel.Error, "A degree with this name already exists in the Database.");
-        }
-        if (degree.UnitLength < 240) //Checks to see if the degree is under the minimum of 3 years.
-        {
-            degreeError = true;
-            ToastService.ShowToast(ToastLevel.Error, "A degree must be a minimum of 3 years.");
-        }
-
-        if (!degreeError)
-        {
-            await DegreeService.AddDegreeAsync(degree); //Adds the degree to the database.
-            ToastService.ShowToast(ToastLevel.Success, "Added to the database!");
-            degree = new Degree(); //Deletes the previous data in the degree.
-        }
-    }
-
-
-
-    private async Task SubmitCourse()
-    {
-        bool error = false;
-        Regex regex = new Regex(@"[A-Za-z]{4}\d{4}[ABab]?");
-        if (!regex.IsMatch(course.CourseCode)) //Checks to see if the course code matches the format of the regex.
-        {
-            error = true;
-            //error
-            ToastService.ShowToast(ToastLevel.Error, "Course Code must match the format ABCD1234(A)");
-        }
-        if (course.Units <= 0)
-        {
-            error = true;
-            //error
-            ToastService.ShowToast(ToastLevel.Error, "Units must be greater than 0");
-        }
-        if (course.RequiredCompletedUnits < 0)
-        {
-            error = true;
-            //stuff
-            ToastService.ShowToast(ToastLevel.Error, "Required Units must be greater than or equal to 0");
-        }
-        if (await CourseService.DoesCourseExist(course.CourseCode.ToUpper())) //Checks to see if the course exists within the database.
-        {
-            error = true;
-            //stuff
-            ToastService.ShowToast(ToastLevel.Error, "A course with this course code already exists in the database");
-        }
-
-
-        if (!error)
-        {
-            course.CourseCode = course.CourseCode.ToUpper();
-            await CourseService.AddCourseAsync(course); //Adds the course to the database.
-            ToastService.ShowToast(ToastLevel.Success, $"{course.CourseCode} has been added to the database!");
-            course = NewCourse(); //Creates a new object to the database.
-        }
-
-    }
-
-
+    //void Navigate2()
+    //{
+    //    UriHelper.NavigateTo("Admin/AddDegree");
+    //}
+    //void Navigate3()
+    //{
+    //    UriHelper.NavigateTo("Admin/AddPrerequisite");
+    //}
+    //void Navigate4()
+    //{
+    //    UriHelper.NavigateTo("Admin/AddCourseToDegree");
+    //}
+    //void Navigate5()
+    //{
+    //    UriHelper.NavigateTo("#");
+    //}
+    //void Navigate6()
+    //{
+    //    UriHelper.NavigateTo("#");
+    //}
+    //void Navigate7()
+    //{
+    //    UriHelper.NavigateTo("#");
+    //}
 
 }

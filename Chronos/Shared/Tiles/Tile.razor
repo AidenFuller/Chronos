@@ -34,34 +34,27 @@
     }
     else
     {
-
-
-        //Non Compulsory
-        @if (!Data.TileType.Equals(TileType.Compulsory) && !Data.TileType.Equals(TileType.Core))
-        {
-
-            <div class="TrashButton" @onclick="trashButton" @onclick:stopPropagation="true">
-                <p>X</p>
-            </div>
-        }
         <div class="ErrorSymbol">
             @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
             {
-            <div class="WarningTip Tooltip">
-                <span class="ToolTipText">Missing Assumed Knowledge: </span>
-            </div>
+                <div class="Tooltip">
+                    <span class="oi oi-question-mark"></span>
+                    <span class="ToolTipText">Missing Assumed Knowledge: </span>
+                </div>
             }
             @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
             {
-            <div class="ErrorTip Tooltip">
-                <span class="ToolTipText">Missing Pre-requisite: </span>
-            </div>
+                <div class="Tooltip">
+                    <span class="oi oi-warning"></span>
+                    <span class="ToolTipText">Missing Pre-requisite: </span>
+                </div>
             }
             @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
             {
-            <div class="SiblingTip Tooltip">
-                <span class="ToolTipText">Missing sibling course: </span>
-            </div>
+                <div class="Tooltip">
+                    <span class="oi oi-link-broken"></span>
+                    <span class="ToolTipText">Missing sibling course: </span>
+                </div>
             }
         </div>
 
@@ -175,39 +168,37 @@
     public void UpdateTileType()
     {
         typeClass = "";
+        errorClass = "";
 
-        if (Data.Status == 0)
+
+        switch (Data.TileType)
         {
-            errorClass = "";
-            switch (Data.TileType) //Based on the tile type, it will set the typeClass accordingly. 
-            {
-                case TileType.Core:
-                    typeClass += "Core";
-                    break;
-                case TileType.Compulsory:
-                    typeClass += "Compulsory";
-                    break;
-                case TileType.Directed:
-                    if (Data.Course is null)
-                    {
-                        typeClass += "AddDirected";
-                    }
-                    else
-                    {
-                        typeClass += "Directed";
-                    }
-                    break;
-                case TileType.Elective:
-                    if (Data.Course is null)
-                    {
-                        typeClass += "AddElective";
-                    }
-                    else
-                    {
-                        typeClass += "Elective";
-                    }
-                    break;
-            }
+            case TileType.Core:
+                typeClass += "Core";
+                break;
+            case TileType.Compulsory:
+                typeClass += "Compulsory";
+                break;
+            case TileType.Directed:
+                if (Data.Course is null)
+                {
+                    typeClass += "AddDirected";
+                }
+                else
+                {
+                    typeClass += "Directed";
+                }
+                break;
+            case TileType.Elective:
+                if (Data.Course is null)
+                {
+                    typeClass += "AddElective";
+                }
+                else
+                {
+                    typeClass += "Elective";
+                }
+                break;
         }
 
         if (CompletedFlag == false)

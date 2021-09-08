@@ -8,7 +8,7 @@ namespace Chronos.Models
         public int DegreeID { get; set; }
         public string Name { get; set; }
         public int UnitLength { get; set; }
-        public bool InternationalsAllowed { get; set; }
+        public bool InternationalsAllowed { get; set; } // unused
         public int ElectiveUnits { get; set; }
     }
 }
