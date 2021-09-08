@@ -72,7 +72,7 @@ namespace Chronos.Shared.Wrappers
             return errors;
         }
 
-        public void clearAllWarnings()
+        public void ClearAllWarnings()
         {
             Status = 0;
             ErrorData[ErrorStatus.MissingAssumedKnowledge].Clear();

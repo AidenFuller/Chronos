@@ -164,8 +164,8 @@ else
         if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
         {
             Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
-            draggedOn.clearAllWarnings();
-            DragPayload.clearAllWarnings();
+            draggedOn.ClearAllWarnings();
+            DragPayload.ClearAllWarnings();
 
 
             await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
@@ -421,7 +421,7 @@ else
         slot.Add(DragPayload);
         DragFrom.Remove(DragPayload);
 
-        DragPayload.clearAllWarnings();
+        DragPayload.ClearAllWarnings();
 
 
 
