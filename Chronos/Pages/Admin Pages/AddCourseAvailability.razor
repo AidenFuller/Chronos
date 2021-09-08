@@ -16,6 +16,14 @@
         </ResultTemplate>
     </BlazoredTypeahead>
 
+    <h4>Select the Campus</h4>
+    <select class="form-control selectpicker" @bind="CA.Campus">
+        <option value="@AvailableCampus.Callaghan">Callaghan</option>
+        <option value="@AvailableCampus.Ourimbah">Ourimbah</option>
+        <option value="@AvailableCampus.NewcastleCity">NUSpace</option>
+        <option value="@AvailableCampus.PortMacquarie">Port Macquarie</option>
+    </select>
+
     <h4>Select the constraint type</h4>
     <select class="form-control selectpicker" @bind="CA.Runtime">
         <option value="-1">Please select ...</option>
@@ -23,7 +31,7 @@
         <option value="@CourseRuntime.Semester2">Semester 2</option>
         <option value="@(CourseRuntime.Semester1 | CourseRuntime.Semester2)">Semesters 1 and 2</option>
     </select>
-    
+
     <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
 </EditForm>
 
@@ -36,6 +44,7 @@
     protected override async Task OnInitializedAsync()
     {
         CA = new CAModel();
+        CA.Runtime = (CourseRuntime) (-1);
         Courses = await CourseService.GetAllCoursesAsync();
     }
 
@@ -50,11 +59,11 @@
                 Runtime = CA.Runtime
             };
             await CourseService.AddCourseAvailability(courseAvailability);
-            ToastService.ShowToast(ToastLevel.Success, $"{CA.Course.CourseCode} has been allocated at the {CA.Campus} for {CA.Runtime}");
+            ToastService.ShowToast(ToastLevel.Success, $"{CA.Course.CourseCode} has been allocated at the {CA.Campus} campus for {CA.Runtime}");
         }
         else
         {
-            ToastService.ShowToast(ToastLevel.Error, $"{CA.Course.CourseCode} has already been allocated at the {CA.Campus}");
+            ToastService.ShowToast(ToastLevel.Error, $"{CA.Course.CourseCode} has already been allocated at the {CA.Campus} campus");
         }
     }
 
