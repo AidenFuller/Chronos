@@ -1,0 +1,88 @@
+﻿@page "/Admin/RemoveMajorFromDegree"
+
+@inject DegreeService DegreeService
+@inject IToastService ToastService
+@inject MajorService MajorService
+
+
+<EditForm OnSubmit="SubmitMajor" Model="MDM">
+    <h4>Degree you want to add it to.</h4>
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="MDM.Degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+
+    <h4>Major you want to remove</h4>
+    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="MDM.Major" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
+</EditForm>
+
+@code
+{
+    private IEnumerable<Degree> Degrees;
+    private IEnumerable<Major> Majors;
+    private MDModel MDM;
+    private Degree selectedDegree;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Degrees = await DegreeService.GetAllDegreesAsync();
+        MDM = new MDModel();
+    }
+
+    //This function will find degrees based on the string that is passed in.
+    private async Task<IEnumerable<Degree>> SearchDegrees(string search)
+    {
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+    private async Task<IEnumerable<Major>> SearchMajors(string search)
+    {
+        if (Majors == null || selectedDegree != MDM.Degree)
+        {
+            Majors = await MajorService.GetMajorsFromDegreeAsync(MDM.Degree.DegreeID);
+            selectedDegree = MDM.Degree;
+        }
+        return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+    private async Task SubmitMajor()
+    {
+        if (MDM.Degree == null)
+        {
+            ToastService.ShowToast(ToastLevel.Error, "No degree was chosen.");
+        }
+        else if (MDM.Major == null)
+        {
+            ToastService.ShowToast(ToastLevel.Error, "No major was chosen.");
+        }
+        else if (await MajorService.DoesMajorExist(MDM.Degree.DegreeID, MDM.Major.Name))
+        {
+            await MajorService.RemoveMajorAsync(MDM.Major);
+            ToastService.ShowToast(ToastLevel.Success, $"{MDM.Major.Name} was removed");
+        }
+        else
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"{MDM.Major.Name} does not exist in the database");
+        }
+    }
+
+    private class MDModel
+    {
+        public Major Major { get; set; }
+        public Degree Degree { get; set; }
+    }
+}
+
