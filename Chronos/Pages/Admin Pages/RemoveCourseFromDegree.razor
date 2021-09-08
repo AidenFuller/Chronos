@@ -1,0 +1,84 @@
+﻿@page "/Admin/RemoveCourseFromDegree"
+
+@inject DegreeService DegreeService
+@inject CourseService CourseService  
+@inject DegreeCourseService DCService
+@inject IToastService ToastService
+
+<EditForm OnSubmit="SubmitDegreeCourse" Model="DCM">
+    <h4>Select a Degree to add a course to</h4>
+    <h4>Select a Degree</h4>
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="DCM.Degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
+    <h4>Select a Course</h4>
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="DCM.Course" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </ResultTemplate>
+    </BlazoredTypeahead>
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+</EditForm>
+
+
+@code {
+
+    private DegreeCourseModel DCM;
+    private IEnumerable<Degree> Degrees;
+    private IEnumerable<Course> Courses;
+    private Degree currentlySelected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        DCM = new DegreeCourseModel();
+        Degrees = await DegreeService.GetAllDegreesAsync();
+        Courses = null;
+        currentlySelected = new Degree();
+    }
+
+
+    private async Task SubmitDegreeCourse()
+    {
+        if (await DCService.DoesCourseExistInDegree(DCM.Course.CourseCode, DCM.Degree.DegreeID))
+        {
+            await DCService.RemoveCourseFromDegreeAsync(DCM.Degree.DegreeID, DCM.Course.CourseID);
+            ToastService.ShowToast(ToastLevel.Success, $"{DCM.Course.CourseCode} has been removed from {DCM.Degree.Name}");
+        }
+        else
+        {
+            ToastService.ShowToast(ToastLevel.Success, "Something went wrong");
+        }
+    }
+
+
+
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
+    {
+        if (Courses == null || DCM.Degree != currentlySelected)
+        {
+            currentlySelected = DCM.Degree;
+            Courses = await DCService.GetCoreCoursesAsync(DCM.Degree.DegreeID);
+        }
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
+    }
+    //This function will find degrees based on the string that is passed in.
+    private async Task<IEnumerable<Degree>> SearchDegrees(string search)
+    {
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+
+    private class DegreeCourseModel
+    {
+        public Degree Degree { get; set; }
+        public Course Course { get; set; }
+    }
+}

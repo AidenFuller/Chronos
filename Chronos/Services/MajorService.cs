@@ -30,6 +30,12 @@ namespace Chronos.Services
             return await db.Majors.FindAsync(majorID); //This will find the specific MajorID in the Database. 
         }
 
+        public async Task RemoveMajorAsync(Major m)
+        {
+            db.Majors.Remove(m);
+            await db.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Major>> GetMajorsFromDegreeAsync(int degreeID)
         {
             IEnumerable<int> MajorIDs = db.Majors.Where(i => i.DegreeID == degreeID).Select(i => i.MajorID); //Create an IEnumerable of all of the Majors in the Database of Degrees.
@@ -38,6 +44,12 @@ namespace Chronos.Services
               from Major in db.Majors
               join id in MajorIDs on Major.MajorID equals id
               select Major;
+        }
+
+        public async Task<bool> DoesMajorExist(int degreeID, string name)
+        {
+            IEnumerable<Major> majors = await GetMajorsFromDegreeAsync(degreeID);
+            return majors.Any(c => c.Name == name);
         }
     }
 }

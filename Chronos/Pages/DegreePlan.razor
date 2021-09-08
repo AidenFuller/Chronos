@@ -26,11 +26,13 @@
     <li><span class="Compulsory"></span> Compulsory</li>
     <li><span class="Directed"></span> Directed</li>
     <li><span class="Elective"></span> Elective</li>
-    <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
     <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
-    <li><span class="Warning"></span> Warning</li>
-    <li><span class="Error"></span> Error</li>
+    <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+    <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
+    <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
+    <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
 </ul>
+<hr />
 
 @if (isReady)
 {
@@ -793,6 +795,8 @@ else
         else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber + 1)
             flag = false;
         else if (!await CheckPrerequisites(td, n))
+            flag = false;
+        else if (output.Sum(s => s.Sum(c => c.Course?.Units ?? 10)) + State.CompletedCourses.Sum(c => c.Units) < td.Course.RequiredCompletedUnits)
             flag = false;
 
         return flag;

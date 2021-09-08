@@ -44,6 +44,19 @@ namespace Chronos.Services
             await db.SaveChangesAsync();
         }
 
+        public async Task AddCourseAvailability(CourseAvailability c)
+        {
+            await db.CourseAvailabilities.AddAsync(c);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task RemoveCourseAvailability(int courseID, AvailableCampus campus)
+        {
+            var availability = db.CourseAvailabilities.First(c => c.CourseID == courseID && c.Campus == campus);
+            db.CourseAvailabilities.Remove(availability);
+            await db.SaveChangesAsync();
+        }
+
         public async Task<bool> DoesCourseExist(string courseCode)
         {
             return await Task.FromResult(db.Courses.Any(c => c.CourseCode == courseCode));
