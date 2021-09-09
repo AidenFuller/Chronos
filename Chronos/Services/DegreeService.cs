@@ -29,7 +29,13 @@ namespace Chronos.Services
             return true;
         }
 
-        public async Task<bool> DoesDegreeExist(string degreeName) //Checks to see if degree exists in the database. 
+        public async Task RemoveDegreeAsync(Degree degree)
+        {
+            db.Degrees.Remove(degree);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task<bool> DoesDegreeExist(string degreeName)
         {
             return await Task.FromResult(db.Degrees.Any(d => d.Name == degreeName));
         }

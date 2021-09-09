@@ -33,6 +33,14 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task RemoveCourseFromDegreeAsync(int degreeID, int courseID)
+        {
+            var coreCourse = db.CoreCourses.First(c => c.CourseID == courseID);
+            db.CoreCourses.Remove(coreCourse);
+
+            await db.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Course>> GetCoreCoursesAsync(int degreeID)
         {
             IEnumerable<int> courseIDs = db.CoreCourses.Where(i => i.DegreeID == degreeID).Select(i => i.CourseID); //This will make an IEnumerable of CourseIDs that are based on Core Courses from the DB. 
