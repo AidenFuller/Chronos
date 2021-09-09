@@ -91,7 +91,7 @@
 }
 
 .Elective > .courseCode {
-    background-color: #BCE954 !important;
+    background-color: #F2DD60 !important;
 }
 
 .Directed > .courseCode {
@@ -138,7 +138,7 @@
 .AddDirected > .plusSign {
     /*background-color: #ffffff;*/
     /*border-color: #000000;*/
-    color: #458EE7;
+    color: #ADD8E6;
     
 }
 
@@ -153,6 +153,7 @@
 
 
     margin: auto;
+    padding-top: 2.1%;
 }
 
 /*Trash Button*/
