@@ -105,7 +105,7 @@
     <br />
     <br />
     <h4>Errors in List</h4>
-    <div>
+    <div> <!--Shows the list of errors that is currently occurring with the plan.-->
         <h4>Errors:</h4>
         <p>@GetAllPrereqErrors()</p>
         <p>@GetAllSiblingErrors()</p>
@@ -151,15 +151,15 @@ else
     //Updates the degree plan after a drag
     public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
     {
-        if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
+        if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0) //Checks if the course being dragged runs in the semester it is being dragged to. 
         {
             ToastService.ShowToast(ToastLevel.Error, $"{DragPayload.Course.CourseCode} does not run in {blockTypeTo}");
         }
-        if (draggedOn.Course is not null && (BlockTypeFrom & draggedOn.Runtime) == 0)
+        if (draggedOn.Course is not null && (BlockTypeFrom & draggedOn.Runtime) == 0) //Checks if the course being swapped runs in the semester it is being changed to. 
         {
             ToastService.ShowToast(ToastLevel.Error, $"{draggedOn.Course.CourseCode} does not run in {BlockTypeFrom}");
         }
-        if (State.CompletedTiles.Contains(DragPayload) && draggedOn.Course == null)
+        if (State.CompletedTiles.Contains(DragPayload) && draggedOn.Course == null) //Checks to see if the completed course is being swapped with a blank tile. 
         {
             ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course with a blank course.");
         }
@@ -169,7 +169,7 @@ else
             draggedOn.ClearAllWarnings();
             DragPayload.ClearAllWarnings();
 
-
+            //These check the relating courses and checks them for any possible errors. 
             await CheckPreceedingCourse(DragFrom, dragTo, DragPayload, draggedOn);
             await UpdateReliants(DragFrom, dragTo, DragPayload, draggedOn);
             if (dragTo != State.CompletedTiles)
@@ -182,6 +182,7 @@ else
         }
     }
 
+    //This function will check the class that has been swapped and the dragged class for errors of any requisite type. 
     private async Task UpdateReliants(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)
     {
         foreach (Course course in await GetCorrectReliants(payload, State.CourseData.IndexOf(listTo), RequisiteType.AssumedKnowledge))
@@ -221,6 +222,7 @@ else
         }
     }
 
+    //This function will ensure that it shows warnings on the tiles as well as make a Toast notification in the bottom right. 
     private async Task ShowSwapWarnings(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)
     {
         List<(int, int)> pairs = new List<(int, int)>();
@@ -280,7 +282,7 @@ else
             SetStatus(course, ErrorStatus.MissingSiblingCourse);
         }
 
-
+        //This will check all the pairs classes and check if any classes relating to them have errors. 
         if (swapped != null)
         {
             foreach (Course course in await GetMissingPrerequisites(swapped, State.CourseData.IndexOf(listFrom), RequisiteType.AssumedKnowledge))
@@ -353,6 +355,7 @@ else
         }
     }
 
+    //This updates the tiles based on the errors that are associated with the tiles. 
     public async Task UpdateTileErrors(TileData td, List<TileData> slot)
     {
         foreach (Course course in await GetMissingPrerequisites(td, State.CourseData.IndexOf(slot), RequisiteType.AssumedKnowledge))
@@ -672,6 +675,7 @@ else
         return allC;
     }
 
+    //This error will show a warning about 50 units in a semester. 
     public void FiftyUnitWarning(List<TileData> slot)
     {
         if (slot.Sum(c => c.Course?.Units ?? 10) == 50 && !fiftyUnitsWarningBool) //Change 50 to readonly total in later branch.
@@ -849,6 +853,7 @@ else
         return hashStr.GetHashCode();
     }
 
+    //This function will check the Prerequisites relating to a tile. 
     private async Task<bool> CheckPrerequisites(TileData tile, int n)
     {
         if (tile.Course == null)
@@ -869,6 +874,7 @@ else
         return tally == courseIDList.Count();
     }
 
+    //This function will check the Sibling courses based on a tile. 
     private async Task<bool> CheckSiblingCourse(TileData tile, int n)
     {
         if (n == 0)
@@ -886,6 +892,7 @@ else
         return true;
     }
 
+    //This function will return a list of courses based on the missing prerequisites based on a tile and requisite type. 
     private async Task<List<Course>> GetMissingPrerequisites(TileData tile, int n, RequisiteType requisite)
     {
         if (tile.Course == null)
@@ -910,6 +917,7 @@ else
         return courseList;
     }
 
+    //This function will get the Reliants for a tile based on a requisite type. 
     private async Task<List<Course>> GetReliants(TileData tile, int n, RequisiteType requisite)
     {
         if (tile.Course == null)
