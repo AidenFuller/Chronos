@@ -25,6 +25,12 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task RemoveCourseAsync(Course c)
+        {
+            db.Courses.Remove(c);
+            await db.SaveChangesAsync();
+        }
+
         public async Task AddPrerequisiteAsync(int courseID, int prerequisiteCourseID, RequisiteType type)
         {
             PrerequisiteCourse pc = new PrerequisiteCourse()
@@ -35,6 +41,27 @@ namespace Chronos.Services
             };
 
             await db.PrerequisiteCourses.AddAsync(pc);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task AddCourseAvailability(CourseAvailability c)
+        {
+            await db.CourseAvailabilities.AddAsync(c);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task RemoveCourseAvailability(int courseID, AvailableCampus campus)
+        {
+            var availability = db.CourseAvailabilities.First(c => c.CourseID == courseID && c.Campus == campus);
+            db.CourseAvailabilities.Remove(availability);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task RemovePrerequisiteAsync(int courseID, int prerequisiteCourseID)
+        {
+            var pc = db.PrerequisiteCourses.First(c => c.CourseID == courseID && c.PrerequisiteCourseID == prerequisiteCourseID);
+            db.PrerequisiteCourses.Remove(pc);
+
             await db.SaveChangesAsync();
         }
 

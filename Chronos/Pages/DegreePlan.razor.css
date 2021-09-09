@@ -63,7 +63,7 @@
 
 .ColorCodelegend li {
         float: left;
-        margin-right: 84px;
+        margin-right: 50px;
         font-size: 17px;
 }
 
@@ -100,9 +100,9 @@
     }
 
     .ColorCodelegend .AddElective {
-        background-color: #F2DD60;
+        background-color: #BCE954;
     }
 
     .ColorCodelegend .AddDirected {
-        background-color: #458EE7;
+        background-color: #ADD8E6;
     }

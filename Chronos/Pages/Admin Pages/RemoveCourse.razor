@@ -1,0 +1,47 @@
+﻿@page "/Admin/RemoveCourse"
+
+@inject CourseService CourseService
+@inject IToastService ToastService
+
+<EditForm OnSubmit="SubmitCourse" Model="SelectedCourse">
+    <h4>Select a Course</h4>
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </ResultTemplate>
+    </BlazoredTypeahead>
+    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+</EditForm>
+
+@code {
+
+    private Course SelectedCourse;
+    private IEnumerable<Course> Courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = await CourseService.GetAllCoursesAsync();
+    }
+
+    private async Task SubmitCourse()
+    {
+        if (await CourseService.DoesCourseExist(SelectedCourse.CourseCode))
+        {
+            await CourseService.RemoveCourseAsync(SelectedCourse);
+            ToastService.ShowToast(ToastLevel.Success, $"{SelectedCourse.CourseCode} has been removed from the database");
+        }
+        else
+        {
+            ToastService.ShowToast(ToastLevel.Error, "Something went wrong");
+        }
+
+    }
+
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
+    {
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
+    }
+}
