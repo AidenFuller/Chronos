@@ -44,7 +44,7 @@ namespace Chronos.Services
             return await db.Degrees.FindAsync(degreeID); //This will return a specific degree. 
         }
 
-        public async Task<int> GetElectiveUnitsAsync(int degreeID)
+        public async Task<int> GetElectiveUnitsAsync(int degreeID) //Returns the amount of elective units in that degree. 
         {
             Degree degree = await db.Degrees.FindAsync(degreeID);
             return degree.ElectiveUnits;

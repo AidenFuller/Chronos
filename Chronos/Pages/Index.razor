@@ -30,11 +30,10 @@
                                        TItem="Degree"
                                        Value="SelectedDegree"
                                        ValueExpression="@(() => SelectedDegree)"
-                                       ValueChanged="SelectedDegreeChanged" 
-                                       placeholder="Please search for your degree..." 
-                                       EnableDropDown="true" 
-                                       ShowDropDownOnFocus="true"
-                                       >
+                                       ValueChanged="SelectedDegreeChanged"
+                                       placeholder="Please search for your degree..."
+                                       EnableDropDown="true"
+                                       ShowDropDownOnFocus="true">
                         <SelectedTemplate Context="degree">
                             <!--This is the search Template and what will be returned.-->
                             Bachelor Of @degree.Name
@@ -45,10 +44,10 @@
                         </ResultTemplate>
                     </BlazoredTypeahead>
 
-                    <BlazoredTypeahead SearchMethod="SearchMajors" 
-                                       @bind-Value="SelectedMajor" 
-                                       placeholder="Please search for your major..." 
-                                       EnableDropDown="true" 
+                    <BlazoredTypeahead SearchMethod="SearchMajors"
+                                       @bind-Value="SelectedMajor"
+                                       placeholder="Please search for your major..."
+                                       EnableDropDown="true"
                                        ShowDropDownOnFocus="true"
                                        Disabled="@IsDegreeSelectDisabled">
                         <SelectedTemplate Context="major">
@@ -75,15 +74,24 @@
                 <br />
                 <h4>What campuses are you able to attend?</h4>
                 <div>
-                <select name="campus" class="semester-selection" @bind="ChosenCampus">
-                    <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
-                    <option value="@AvailableCampus.Callaghan" selected>Callaghan Campus</option>
-                    <option value="@AvailableCampus.NewcastleCity">Newcastle Campus</option>
-                    <option value="@AvailableCampus.Ourimbah">Ourimbah Campus</option>
-                    <option value="@AvailableCampus.PortMacquarie">Port Macquarie Campus</option>
-                    <option value="@AvailableCampus.SingaporeBCA | @AvailableCampus.SingaporePSB">Signapore Campus</option>
-                    <option value="@AvailableCampus.Sydney">Sydney Campus</option>
-                </select>
+                    <select name="campus" class="semester-selection" @bind="ChosenCampus">
+                        <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
+                        <option value="@AvailableCampus.Callaghan" selected>Callaghan Campus</option>
+                        <option value="@AvailableCampus.NewcastleCity">Newcastle Campus</option>
+                        <option value="@AvailableCampus.Ourimbah">Ourimbah Campus</option>
+                        <option value="@AvailableCampus.PortMacquarie">Port Macquarie Campus</option>
+                        <option value="@AvailableCampus.SingaporeBCA | @AvailableCampus.SingaporePSB">Signapore Campus</option>
+                        <option value="@AvailableCampus.Sydney">Sydney Campus</option>
+                    </select>
+                </div>
+                <h4>Select your Semester length</h4>
+                <div>
+                    <select name="campus" class="semester-selection" @bind="SemesterLength">
+                        <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
+                        <option value="20">20 Units</option>
+                        <option value="30">30 Units</option>
+                        <option value="40" selected>40 Units</option>
+                    </select>
                 </div>
             </form> <!--Initial Form ends here.-->
             <br />
@@ -175,6 +183,7 @@
         return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
     }
 
+    //This function will find all the majors based on the courses that have been chosen. 
     private async Task<IEnumerable<Major>> SearchMajors(string search)
     {
         if (SelectedDegree == null)
@@ -200,6 +209,7 @@
     private Major SelectedMajor;
     private CourseRuntime StartingBlock = CourseRuntime.Semester1;
     private AvailableCampus ChosenCampus = AvailableCampus.Callaghan;
+    private int SemesterLength = 40;
 
     private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
     private String Username;
@@ -214,6 +224,7 @@
         IsAdminLoginThere = !IsAdminLoginThere;
     }
 
+    //This function will run in order to submit the data to a state that can be used on another page. 
     private void SubmitParameters()
     {
         bool error = false;
@@ -239,11 +250,13 @@
 
         if (error == false)
         {
+            //The data is set here to the respective slots in the states. 
             State.Degree = SelectedDegree;
             State.Major = SelectedMajor;
             State.RuntimeStart = StartingBlock;
             State.CompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
             State.Campus = ChosenCampus;
+            State.UnitsPerBlock = SemesterLength;
             readyToRender = true;
 
             NavManager.NavigateTo("DegreePlan");
@@ -253,6 +266,7 @@
     private bool isLoading = false;
     private long maxFileSize = 1024 * 15;
 
+    //This will load the data from a json file. 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         isLoading = true;
