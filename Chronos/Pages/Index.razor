@@ -183,6 +183,7 @@
         return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
     }
 
+    //This function will find all the majors based on the courses that have been chosen. 
     private async Task<IEnumerable<Major>> SearchMajors(string search)
     {
         if (SelectedDegree == null)
@@ -223,6 +224,7 @@
         IsAdminLoginThere = !IsAdminLoginThere;
     }
 
+    //This function will run in order to submit the data to a state that can be used on another page. 
     private void SubmitParameters()
     {
         bool error = false;
@@ -248,6 +250,7 @@
 
         if (error == false)
         {
+            //The data is set here to the respective slots in the states. 
             State.Degree = SelectedDegree;
             State.Major = SelectedMajor;
             State.RuntimeStart = StartingBlock;
@@ -263,6 +266,7 @@
     private bool isLoading = false;
     private long maxFileSize = 1024 * 15;
 
+    //This will load the data from a json file. 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         isLoading = true;

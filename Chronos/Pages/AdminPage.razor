@@ -1,4 +1,6 @@
 ﻿@page "/Admin"
+@inject CourseService CourseService
+@inject IToastService ToastService
 @inject NavigationManager UriHelper
 
 <h3 style="text-align:center">
@@ -38,6 +40,14 @@
             <a href="Admin/RemoveCourseAvailability">Remove Course Availability</a>
         </div>
     </div>
+    <div class="dropdown" style="display: inline-block; vertical-align: top; font-size:15px;">
+        <button class="dropbtn">Edit System</button>
+        <div class="dropdown-content">
+            <a href="#">Edit Course</a>
+            <a href="#">Edit Degree</a>
+            <a href="#">Edit Major</a>
+        </div>
+    </div>
 </div>
 
           
@@ -63,11 +73,8 @@
     <button class="active" @onclick="@Navigate7">Add Course Availability</button>
 </div>*@
 
-
-
-
 @code
-        {
+{
     //void Navigate1()
     //{
     //    UriHelper.NavigateTo("Admin/AddCourse");
