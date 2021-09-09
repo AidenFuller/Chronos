@@ -1,5 +1,8 @@
 ﻿@page "/Admin"
 @inject NavigationManager UriHelper
+@inject DBResetService DBService
+@inject IToastService ToastService
+
 
 <h3 style="text-align:center">
     Administration
@@ -40,6 +43,9 @@
     </div>
 </div>
 
+
+<button @onclick="ResetTestData">Reset Test Data</button>
+<button @onclick="ClearDB">Clear Database</button>
           
 @*<div style=" display: inline-block; align-items: center; justify-content: center;">
     <button class="active" @onclick="@Navigate1">Add Course</button>
@@ -67,7 +73,19 @@
 
 
 @code
-        {
+{
+
+    private void ResetTestData()
+    {
+        DBService.ResetDB();
+        ToastService.ShowToast(ToastLevel.Success, "Database has been reloaded with test data");
+    }
+
+    private void ClearDB()
+    {
+        DBService.ClearDB();
+        ToastService.ShowToast(ToastLevel.Success, "Database has been cleared");
+    }
     //void Navigate1()
     //{
     //    UriHelper.NavigateTo("Admin/AddCourse");

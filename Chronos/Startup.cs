@@ -55,8 +55,7 @@ namespace Chronos
             services.AddBlazoredToast();
             services.AddBlazorDownloadFile();
 
-
-            TestDataGenerator.Setup(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value);
+            services.AddScoped(s => new DBResetService(Configuration.GetSection("ConnectionStrings").GetSection("ChronosConnection").Value));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
