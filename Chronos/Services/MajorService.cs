@@ -33,6 +33,10 @@ namespace Chronos.Services
         public async Task RemoveMajorAsync(Major m)
         {
             db.Majors.Remove(m);
+
+            var removeCourses = db.MajorCourses.Where(c => c.MajorID == m.MajorID);
+            db.MajorCourses.RemoveRange(removeCourses);
+
             await db.SaveChangesAsync();
         }
 

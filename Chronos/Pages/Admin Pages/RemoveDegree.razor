@@ -3,7 +3,6 @@
 @inject DegreeService DegreeService
 @inject IToastService ToastService
 
-
 <h4>Select a Degree</h4>
 <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the degree you want to remove..." EnableDropDown="true" ShowDropDownOnFocus="true">
     <SelectedTemplate Context="degree">
@@ -14,23 +13,31 @@
     </ResultTemplate>
 </BlazoredTypeahead>
 
-<button @onclick="SubmitDegree" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
-
-
+@if (processing)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <button @onclick="SubmitDegree" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Degree</button>
+}
 
 
 @code {
 
     private IEnumerable<Degree> Degrees;
     private Degree SelectedDegree;
+    private bool processing;
 
     protected override async Task OnInitializedAsync()
     {
+        processing = false;
         Degrees = await DegreeService.GetAllDegreesAsync();
     }
 
     private async Task SubmitDegree()
     {
+        processing = true;
         if (await DegreeService.DoesDegreeExist(SelectedDegree.Name))
         {
             await DegreeService.RemoveDegreeAsync(SelectedDegree);
@@ -40,6 +47,7 @@
         {
             ToastService.ShowToast(ToastLevel.Warning, "Something went wrong");
         }
+        processing = false;
     }
 
     private async Task<IEnumerable<Degree>> SearchDegrees(string search)
