@@ -48,6 +48,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        PCM = new PrerequisiteModel();
         Courses = await CourseService.GetAllCoursesAsync();
     }
 
