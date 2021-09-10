@@ -107,27 +107,100 @@
     <h4>Errors:</h4>
     <div> <!--Shows the list of errors that is currently occurring with the plan.-->
         <table class="ErrorTable">
-            @foreach (String str in @GetAllPrereqErrors())
+            @* Pre Req Errors *@
+            @foreach (var semester in State.CourseData)
             {
-                <tr class="PreReqError">
-                    <td>PRE REQ ERROR</td>
-                    <td>@str</td>
-                </tr>
+                @foreach (var tileData in semester)
+                {
+                    @foreach (var error in tileData.GetPreReqErrors())
+                    {
+                        <tr class="PreReqError"
+                            @onmouseover="() => HighlightTile(error, tileData.Course)"
+                            @onmouseout="() => UnHighlightTile(error, tileData.Course)">
+                            <td>PREREQ ERROR</td>
+                            <td>
+                                <span style="font-weight:bold;">@error.CourseCode</span>
+                                must be completed the before
+                                <span style="font-weight:bold;">
+
+                                    @tileData.Course.CourseCode
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
             }
-            @foreach (String str in @GetAllSiblingErrors())
+
+            @* Sibling Errors *@
+            @foreach (var semester in State.CourseData)
             {
-                <tr class="SiblingError">
-                    <td>MISSING SIBLING</td>
-                    <td>@str</td>
-                </tr>
+                @foreach (var tileData in semester)
+                {
+                    @foreach (var error in tileData.GetSiblingErrors())
+                    {
+                        <tr class="SiblingError"
+                            @onmouseover="() => HighlightTile(error, tileData.Course)"
+                            @onmouseout="() => UnHighlightTile(error, tileData.Course)">
+                            <td>SIBLING ERROR</td>
+                            <td>
+                                <span style="font-weight:bold;">@error.CourseCode</span>
+                                must be completed the semester before
+                                <span style="font-weight:bold;">
+
+                                    @tileData.Course.CourseCode
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
             }
-            @foreach (String str in @GetAllPrereqWarnings())
+
+            @* Warnings *@
+
+            @foreach (var semester in State.CourseData)
             {
-                <tr class="PreReqWarning">
-                    <td>ERROR</td>
-                    <td>@str</td>
-                </tr>
+                @foreach (var tileData in semester)
+                {
+                    @foreach (var error in tileData.GetPreReqWarnings())
+                    {
+                        <tr class="PreReqWarning"
+                            @onmouseover="() => HighlightTile(tileData.Course, error )"
+                            @onmouseout="() => UnHighlightTile(error, tileData.Course)">
+                            <td>PREREQ ERROR</td>
+                            <td>
+                                <span style="font-weight:bold;">@error.CourseCode</span>
+                                should be completed before
+                                <span style="font-weight:bold;">
+
+                                    @tileData.Course.CourseCode
+                                </span>
+                            </td>
+                        </tr>
+
+                    }
+                }
             }
+            @*@foreach (String str in @GetAllPrereqErrors())
+        {
+            <tr class="PreReqError">
+                <td>PRE REQ ERROR</td>
+                <td>@str</td>
+            </tr>
+        }
+        @foreach (String str in @GetAllSiblingErrors())
+        {
+            <tr class="SiblingError">
+                <td>MISSING SIBLING</td>
+                <td>@str</td>
+            </tr>
+        }
+        @foreach (String str in @GetAllPrereqWarnings())
+        {
+            <tr class="PreReqWarning">
+                <td>ERROR</td>
+                <td>@str</td>
+            </tr>
+        }*@
 
         </table>
         <p></p>
