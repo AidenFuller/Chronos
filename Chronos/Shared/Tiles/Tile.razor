@@ -39,10 +39,11 @@
         <div class="ErrorSymbol">
             @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
             {
-                <div class="Tooltip">
-                    <span class="oi oi-question-mark"
-                     @onmouseover="() => Plan.HighlightTile(Data.GetPreReqWarnings())"
-                     @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqWarnings())"></span>
+                <div class="Tooltip"
+                    @onmouseover="() => Plan.HighlightTile(Data.GetPreReqWarnings())"
+                     @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqWarnings())"
+                     >
+                    <span class="oi oi-question-mark"></span>
                     <span class="ToolTipText">
                         Missing Assumed Knowledge:
                         @String.Join(", ", @Data.GetPreReqWarnings().Select(course => course.CourseCode))
@@ -51,10 +52,10 @@
             }
             @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
             {
-                <div class="Tooltip">
-                    <span class="oi oi-warning"
+                <div class="Tooltip"
                     @onmouseover="() => Plan.HighlightTile(Data.GetPreReqErrors())"
                     @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqErrors())">
+                    <span class="oi oi-warning">
 
                     </span>
                     <span class="ToolTipText">
@@ -66,10 +67,12 @@
             }
             @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
             {
-                <div class="Tooltip">
-                    <span class="oi oi-link-broken"
+                <div class="Tooltip"
                         @onmouseover="() => Plan.HighlightTile(Data.GetSiblingErrors())"
                         @onmouseout="() => Plan.UnhighlightTile(Data.GetSiblingErrors())"
+                     >
+                    <span class="oi oi-link-broken"
+
                           ></span>
                     <span class="ToolTipText">
                         Missing sibling course:
