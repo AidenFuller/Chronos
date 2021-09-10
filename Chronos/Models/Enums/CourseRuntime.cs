@@ -8,14 +8,7 @@ namespace Chronos.Models.Enums
     [Flags]
     public enum CourseRuntime
     {
-        
         Semester1   = 1 << 0,
-        Semester2   = 1 << 1,
-        SummerCS    = 1 << 2,
-        SummerLS    = 1 << 3,
-        Winter      = 1 << 4,
-        Trimester1  = 1 << 5,  
-        Trimester2  = 1 << 6,
-        Trimester3  = 1 << 7
+        Semester2   = 1 << 1
     }
 }
