@@ -904,10 +904,19 @@ namespace Chronos.Pages
 
         public List<Course> Highlights = new List<Course>();
 
+
         public void HighlightTile(Course c1, Course c2)
         {
             HighlightTile(c1);
             HighlightTile(c2);
+        }
+        public void HighlightTile(List<Course> c)
+        {
+            foreach (Course course in c)
+            {
+                Console.WriteLine("Highlight " + course.CourseCode);
+                HighlightTile(course);
+            }
         }
         public void HighlightTile(Course c)
         {
@@ -920,7 +929,16 @@ namespace Chronos.Pages
             StateHasChanged();
         }
 
-        public void UnHighlightTile(Course c1, Course c2)
+
+        public void UnhighlightTile(List<Course> c)
+        {
+            foreach (Course course in c)
+            {
+                Console.WriteLine("Unhighlight " + course.CourseCode);
+                UnhighlightTile(course);
+            }
+        }
+        public void UnhighlightTile(Course c1, Course c2)
         {
             UnhighlightTile(c1);
             UnhighlightTile(c2);
@@ -931,6 +949,7 @@ namespace Chronos.Pages
             {
                 Highlights.Remove(c);
             }
+            StateHasChanged();
         }
 
         //public List<String> GetAllSiblingErrors()

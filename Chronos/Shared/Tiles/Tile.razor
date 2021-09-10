@@ -40,22 +40,43 @@
             @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
             {
                 <div class="Tooltip">
-                    <span class="oi oi-question-mark"></span>
-                    <span class="ToolTipText">Missing Assumed Knowledge: @Data.GetPreReqErrors()</span>
+                    <span class="oi oi-question-mark"
+                     @onmouseover="() => Plan.HighlightTile(Data.GetPreReqWarnings())"
+                     @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqWarnings())"></span>
+                    <span class="ToolTipText">
+                        Missing Assumed Knowledge:
+                        @String.Join(", ", @Data.GetPreReqWarnings().Select(course => course.CourseCode))
+                    </span>
                 </div>
             }
             @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
             {
                 <div class="Tooltip">
-                    <span class="oi oi-warning"></span>
-                    <span class="ToolTipText">Missing Pre-requisite: @Data.GetPreReqWarnings() </span>
+                    <span class="oi oi-warning"
+                    @onmouseover="() => Plan.HighlightTile(Data.GetPreReqErrors())"
+                    @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqErrors())">
+
+                    </span>
+                    <span class="ToolTipText">
+                        Missing Pre-requisite:
+                        @String.Join(", ", @Data.GetPreReqErrors().Select(course => course.CourseCode))
+
+                    </span>
                 </div>
             }
             @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
             {
                 <div class="Tooltip">
-                    <span class="oi oi-link-broken"></span>
-                    <span class="ToolTipText">Missing sibling course: @Data.GetSiblingErrors() </span>
+                    <span class="oi oi-link-broken"
+                        @onmouseover="() => Plan.HighlightTile(Data.GetSiblingErrors())"
+                        @onmouseout="() => Plan.UnhighlightTile(Data.GetSiblingErrors())"
+                          ></span>
+                    <span class="ToolTipText">
+                        Missing sibling course:
+
+                        @String.Join(", ", @Data.GetSiblingErrors().Select(course => course.CourseCode))
+
+                    </span>
                 </div>
             }
         </div>
@@ -182,7 +203,6 @@
         errorClass = "";
         if (Plan.Highlights.Exists(c => c.CourseCode == Data.Course?.CourseCode))
         {
-            Console.WriteLine("Adding CSS to highlight " + Data.Course.CourseCode);
             highlightClass = "Highlight";
         }
         else
