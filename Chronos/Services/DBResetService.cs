@@ -1,20 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-
 using Chronos.Models.Enums;
-namespace Chronos.Data
+using Chronos.Data;
+
+namespace Chronos.Services
 {
-    public class TestDataGenerator
+    public class DBResetService
     {
-        private static AppDbContext db;
-        public static void Setup(string connectionString)
+        private AppDbContext db;
+
+        public DBResetService(string connectionString)
         {
             db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(connectionString).Options);
+        }
 
+        ~DBResetService()
+        {
+            db.Dispose();
+        }
+               
+        public void ClearDB()
+        {
             db.Database.Migrate();
 
             db.Database.ExecuteSqlRaw("TRUNCATE TABLE [CoreCourses]");
@@ -26,6 +32,11 @@ namespace Chronos.Data
             db.Database.ExecuteSqlRaw("TRUNCATE TABLE [PrerequisiteCourses]");
 
             db.SaveChanges();
+        }
+
+        public void ResetDB()
+        {
+            ClearDB();
 
 
             #region Degrees
@@ -430,10 +441,10 @@ namespace Chronos.Data
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG4430"), PrerequisiteCourseID = CourseID("SENG2130"), CourseRequisite = RequisiteType.AssumedKnowledge });
             #endregion
 
-            foreach (Models.Course c in db.Courses)
-            {
-                Console.WriteLine($"{c.CourseCode}, {c.CourseID}");
-            }
+            //foreach (Models.Course c in db.Courses)
+            //{
+            //    Console.WriteLine($"{c.CourseCode}, {c.CourseID}");
+            //}
 
 
             var degree = "Computer Science";
@@ -597,11 +608,8 @@ namespace Chronos.Data
 
 
             db.SaveChanges();
-            db.Dispose();
-
-            
         }
 
-        private static int CourseID(string courseCode) => db.Courses.FirstOrDefault(c => c.CourseCode == courseCode)?.CourseID ?? -1;
+        private int CourseID(string courseCode) => db.Courses.FirstOrDefault(c => c.CourseCode == courseCode)?.CourseID ?? -1;
     }
 }

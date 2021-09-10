@@ -21,10 +21,8 @@
     private Degree degree;
     private Degree NewDegree() => new Degree() { UnitLength = 240 };
 
-
     protected override void OnInitialized()
     {
-
         degree = NewDegree();
     }
 
@@ -47,7 +45,7 @@
         {
             await DegreeService.AddDegreeAsync(degree);
             ToastService.ShowToast(ToastLevel.Success, "Added to the database!");
-            degree = new Degree();
+            degree = NewDegree();
         }
     }
 }

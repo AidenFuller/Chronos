@@ -9,7 +9,7 @@
     /*Makes it so items will each be given the same space*/
     width: 0;
     max-width: 25%;
-    min-width: 110px;
+    min-width: 130px;
     flex: 1 1 0;
     margin: 5px 5px 5px 5px;
     border: 2px solid black;
@@ -91,7 +91,7 @@
 }
 
 .Elective > .courseCode {
-    background-color: #BCE954 !important;
+    background-color: #F2DD60 !important;
 }
 
 .Directed > .courseCode {
@@ -138,7 +138,7 @@
 .AddDirected > .plusSign {
     /*background-color: #ffffff;*/
     /*border-color: #000000;*/
-    color: #458EE7;
+    color: #ADD8E6;
     
 }
 
@@ -153,6 +153,7 @@
 
 
     margin: auto;
+    padding-top: 2.1%;
 }
 
 /*Trash Button*/
@@ -194,6 +195,7 @@
     bottom: 2px;
     z-index: 3;
     display: flex;
+
 }
 
     .ErrorSymbol:hover {
@@ -208,12 +210,12 @@
     z-index: 30;
     height: 25px;
     width: 25px;
+    
 }
 
 /* Tooltip text */
 .ToolTipText {
     display: none;
-    width: 120px;
     background-color: slategray;
     color: #fff;
     text-align: center;
@@ -224,6 +226,8 @@
     bottom: 100%;
     left: 0%;
     z-index: 1;
+    width: 150px;
+    font-size: 12px;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */

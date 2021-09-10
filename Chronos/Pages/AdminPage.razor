@@ -1,5 +1,10 @@
 ﻿@page "/Admin"
+@inject CourseService CourseService
+@inject IToastService ToastService
 @inject NavigationManager UriHelper
+@inject DBResetService DBService
+@inject IToastService ToastService
+
 
 <h3 style="text-align:center">
     Administration
@@ -22,7 +27,7 @@
             <a href="Admin/AddPrerequisite">Add Prerequisite</a>
             <a href="Admin/AddCourseToDegree">Add Course to Degree</a>
             <a href="Admin/AddCourseToMajor">Add Course to Major </a>
-            <a href="#">Add Major to Degree</a>
+            <a href="Admin/AddMajorToDegree">Add Major to Degree</a>
             <a href="Admin/AddCourseAvailability">Add Course Availability</a>
         </div>
     </div>
@@ -38,8 +43,19 @@
             <a href="Admin/RemoveCourseAvailability">Remove Course Availability</a>
         </div>
     </div>
+    <div class="dropdown" style="display: inline-block; vertical-align: top; font-size:15px;">
+        <button class="dropbtn">Edit System</button>
+        <div class="dropdown-content">
+            <a href="#">Edit Course</a>
+            <a href="#">Edit Degree</a>
+            <a href="#">Edit Major</a>
+        </div>
+    </div>
 </div>
 
+
+<button @onclick="ResetTestData">Reset Test Data</button>
+<button @onclick="ClearDB">Clear Database</button>
           
 @*<div style=" display: inline-block; align-items: center; justify-content: center;">
     <button class="active" @onclick="@Navigate1">Add Course</button>
@@ -63,11 +79,20 @@
     <button class="active" @onclick="@Navigate7">Add Course Availability</button>
 </div>*@
 
-
-
-
 @code
-        {
+{
+
+    private void ResetTestData()
+    {
+        DBService.ResetDB();
+        ToastService.ShowToast(ToastLevel.Success, "Database has been reloaded with test data");
+    }
+
+    private void ClearDB()
+    {
+        DBService.ClearDB();
+        ToastService.ShowToast(ToastLevel.Success, "Database has been cleared");
+    }
     //void Navigate1()
     //{
     //    UriHelper.NavigateTo("Admin/AddCourse");

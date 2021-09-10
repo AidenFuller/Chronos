@@ -80,7 +80,7 @@ namespace Chronos.Services
 
         public async Task<bool> DoesCourseExist(string courseCode)
         {
-            return await Task.FromResult(db.Courses.Any(c => c.CourseCode == courseCode));
+            return await Task.FromResult(db.Courses.Any(c => c.CourseCode == courseCode)); //This will check if any courses of that courseCode exists in the database. 
         }
 
         public async Task<Course> GetCourseAsync(int courseID)
@@ -102,7 +102,7 @@ namespace Chronos.Services
         {
             IEnumerable<int> courseIDs = db.CourseAvailabilities.Where(i => i.Campus == campus).Select(i => i.CourseID);
 
-            return db.Courses.Where(i => courseIDs.Contains(i.CourseID));
+            return db.Courses.Where(i => courseIDs.Contains(i.CourseID)); //Checks to see if the course exists at the specific Campus. 
         }
 
         public async Task<IEnumerable<Course>> GetPrerequisiteCoursesAsync(int CourseID)
@@ -114,15 +114,15 @@ namespace Chronos.Services
 
         public async Task<IEnumerable<Course>> GetPrerequisiteCoursesAsync(int CourseID, RequisiteType type)
         {
-            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.CourseID == CourseID && i.CourseRequisite == type).Select(i => i.PrerequisiteCourseID);
+            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.CourseID == CourseID && i.CourseRequisite == type).Select(i => i.PrerequisiteCourseID); //Returns the courses that have prerequisites to a course. 
 
-            return db.Courses.Where(i => courseIDs.Contains(i.CourseID));
+            return db.Courses.Where(i => courseIDs.Contains(i.CourseID)); //Returns the specific courses with that requisite and are prerequisite to the chosen course. 
         }
 
         public async Task<IEnumerable<Course>> GetReliantCoursesAsync(int CourseID, RequisiteType type)
         {
-            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.PrerequisiteCourseID == CourseID && i.CourseRequisite == type).Select(i => i.CourseID);
-            return db.Courses.Where(i => courseIDs.Contains(i.CourseID));
+            IEnumerable<int> courseIDs = db.PrerequisiteCourses.Where(i => i.PrerequisiteCourseID == CourseID && i.CourseRequisite == type).Select(i => i.CourseID); //Grabs the ids of the reliant courses to that course and requisite type.
+            return db.Courses.Where(i => courseIDs.Contains(i.CourseID)); //Returns the reliant courses. 
         }
 
         public async Task<CourseRuntime> GetCourseRuntimeAsync(int CourseID, AvailableCampus Campus)
