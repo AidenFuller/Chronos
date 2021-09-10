@@ -952,57 +952,7 @@ namespace Chronos.Pages
             StateHasChanged();
         }
 
-        //public List<String> GetAllSiblingErrors()
-        //{
-        //    List<String> errors = new List<string>();
-        //    foreach (var semester in State.CourseData)
-        //    {
-        //        foreach (var tileData in semester)
-        //        {
-        //            String str = tileData.GetSiblingErrors();
-        //            if (str != null && str != String.Empty)
-        //            {
-        //                errors.Add(str);
-        //            }
-                    
-        //        }
-        //    }
-        //    return errors;
-        //}
-
-        //public List<String> GetAllPrereqErrors()
-        //{
-        //    List<String> errors = new List<string>();
-        //    foreach (var semester in State.CourseData)
-        //    {
-        //        foreach (var tileData in semester)
-        //        {
-        //            String str = tileData.GetPreReqErrors();
-        //            if (str != null && str != String.Empty)
-        //            {
-        //                errors.Add(str);
-        //            }
-        //        }
-        //    }
-        //    return errors;
-        //}
-
-        //public List<String> GetAllPrereqWarnings()
-        //{
-        //    List<String> errors = new List<string>();
-        //    foreach (var semester in State.CourseData)
-        //    {
-        //        foreach (var tileData in semester)
-        //        {
-        //            String str = tileData.GetPreReqWarnings();
-        //            if (str != null && str != String.Empty)
-        //            {
-        //                errors.Add(str);
-        //            }
-        //        }
-        //    }
-        //    return errors;
-        //}
+       
 
         private void AddYear()
         {
