@@ -44,22 +44,28 @@
                         </ResultTemplate>
                     </BlazoredTypeahead>
 
-                    <BlazoredTypeahead SearchMethod="SearchMajors"
-                                       @bind-Value="SelectedMajor"
-                                       placeholder="Please search for your major..."
-                                       EnableDropDown="true"
-                                       ShowDropDownOnFocus="true"
-                                       Disabled="@IsDegreeSelectDisabled">
-                        <SelectedTemplate Context="major">
-                            <!--This is the search Template and what will be returned.-->
-                            @major.Name
-                        </SelectedTemplate>
-                        <ResultTemplate Context="major">
-                            <!--This is what is shown when it is selected.-->
-                            @major.Name
-                        </ResultTemplate>
-                    </BlazoredTypeahead>
-
+                    @if (SelectedDegree != null && multipleMajors)
+                    {
+                        <p>
+                            <h4>Choose a Major</h4>
+                        </p>
+                        <BlazoredTypeahead SearchMethod="SearchMajors"
+                                            @bind-Value="SelectedMajor"
+                                            placeholder="Please search for your major..."
+                                            EnableDropDown="true"
+                                            ShowDropDownOnFocus="true"
+                                            Disabled="@IsDegreeSelectDisabled">
+                            <SelectedTemplate Context="major">
+                                <!--This is the search Template and what will be returned.-->
+                                @major.Name
+                            </SelectedTemplate>
+                            <ResultTemplate Context="major">
+                                <!--This is what is shown when it is selected.-->
+                                @major.Name
+                            </ResultTemplate>
+                        </BlazoredTypeahead>
+                        
+                    }   
                 </div>
                 <div class="semester-div">
                     <!--Another Div to break up spacing on the page, this is for the Semester type.-->
@@ -162,12 +168,20 @@
 
 
     private bool IsDegreeSelectDisabled = false;
+    private bool multipleMajors;
+
     private async Task SelectedDegreeChanged(Degree degree)
     {
         //Update the degree variable
 
         SelectedDegree = degree;
-        SelectedMajor = new Major();
+        Majors = await majorService.GetMajorsFromDegreeAsync(degree.DegreeID);
+        multipleMajors = Majors.Count() > 1;
+
+        if (!multipleMajors)
+        {
+            SelectedMajor = Majors.First();
+        }
     }
 
 
