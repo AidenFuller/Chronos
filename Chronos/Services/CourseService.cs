@@ -25,6 +25,12 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task ReplaceCourseAsync(Course c)
+        {
+            db.Courses.Update(c);
+            await db.SaveChangesAsync();
+        }
+
         public async Task RemoveCourseAsync(Course c)
         {
             db.Courses.Remove(c);
