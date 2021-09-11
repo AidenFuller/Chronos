@@ -29,6 +29,12 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task ReplaceDegreeAsync(Degree degree)
+        {
+            db.Degrees.Update(degree);
+            await db.SaveChangesAsync();
+        }
+
         public async Task RemoveDegreeAsync(Degree degree)
         {
             db.Degrees.Remove(degree);

@@ -25,6 +25,12 @@ namespace Chronos.Services
             return true;
         }
 
+        public async Task ReplaceMajorAsync(Major m)
+        {
+            db.Majors.Update(m);
+            await db.SaveChangesAsync();
+        }
+
         public async Task<Major> GetMajorAsync(int majorID)
         {
             return await db.Majors.FindAsync(majorID); //This will find the specific MajorID in the Database. 

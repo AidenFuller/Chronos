@@ -1,0 +1,51 @@
+﻿@page "/Admin/EditCourse"
+
+@inject CourseService CourseService
+@inject IToastService ToastService
+
+<BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
+    <SelectedTemplate Context="course">
+        @course.Name (@course.CourseCode)
+    </SelectedTemplate>
+    <ResultTemplate Context="course">
+        @course.Name (@course.CourseCode)
+    </ResultTemplate>
+</BlazoredTypeahead>
+
+@if (SelectedCourse != null)
+{
+    <EditForm OnSubmit="ReplaceCourse" Model="SelectedCourse">
+        <h4>Course Name</h4>
+        <InputText @bind-Value=SelectedCourse.Name placeholder="Enter Course Name" required />
+        <h4>Course Code</h4>
+        <InputText @bind-Value=SelectedCourse.CourseCode placeholder="Enter Course Code" required />
+        <h4>Units</h4>
+        <InputNumber step="10" @bind-Value=SelectedCourse.Units />
+        <h4>Required Units for Enrolment</h4>
+        <InputNumber step="10" @bind-Value=SelectedCourse.RequiredCompletedUnits />
+
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Course</button>
+    </EditForm>
+}
+
+
+@code {
+    private Course SelectedCourse;
+    private IEnumerable<Course> Courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = await CourseService.GetAllCoursesAsync();
+    }
+
+    private async Task ReplaceCourse()
+    {
+        await CourseService.ReplaceCourseAsync(SelectedCourse);
+        ToastService.ShowToast(ToastLevel.Success, $"The course has been updated");
+    }
+
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
+    {
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
+    }
+}

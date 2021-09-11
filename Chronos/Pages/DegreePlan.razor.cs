@@ -901,43 +901,56 @@ namespace Chronos.Pages
             }
         }
 
-        public String GetAllSiblingErrors()
+        public List<String> GetAllSiblingErrors()
         {
-            errors = "";
+            List<String> errors = new List<string>();
             foreach (var semester in State.CourseData)
             {
                 foreach (var tileData in semester)
                 {
-                    errors += tileData.GetSiblingErrors();
+                    String str = tileData.GetSiblingErrors();
+                    if (str != null && str != String.Empty)
+                    {
+                        errors.Add(str);
+                    }
+                    
                 }
             }
             return errors;
         }
 
-        public String GetAllPrereqErrors()
+        public List<String> GetAllPrereqErrors()
         {
-            errors = "";
+            List<String> errors = new List<string>();
             foreach (var semester in State.CourseData)
             {
                 foreach (var tileData in semester)
                 {
-                    errors += tileData.GetPreReqErrors();
+                    String str = tileData.GetPreReqErrors();
+                    if (str != null && str != String.Empty)
+                    {
+                        errors.Add(str);
+                    }
                 }
             }
             return errors;
         }
 
-        public String GetAllPrereqWarnings()
+        public List<String> GetAllPrereqWarnings()
         {
-            errors = "";
+            List<String> errors = new List<string>();
             foreach (var semester in State.CourseData)
             {
                 foreach (var tileData in semester)
                 {
-                    errors += tileData.GetPreReqWarnings();
+                    String str = tileData.GetPreReqWarnings();
+                    if (str != null && str != String.Empty)
+                    {
+                        errors.Add(str);
+                    }
                 }
             }
-            return warnings;
+            return errors;
         }
 
         private void AddYear()
