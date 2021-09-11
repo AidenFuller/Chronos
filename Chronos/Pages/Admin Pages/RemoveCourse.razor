@@ -13,21 +13,33 @@
         @course.Name (@course.CourseCode)
     </ResultTemplate>
 </BlazoredTypeahead>
-<button @onclick="SubmitCourse" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Course</button>
+
+@if (processing)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <button @onclick="SubmitCourse" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Course</button>
+}
 
 
 @code {
 
     private Course SelectedCourse;
     private IEnumerable<Course> Courses;
+    private bool processing;
 
     protected override async Task OnInitializedAsync()
     {
+        SelectedCourse = new Course();
         Courses = await CourseService.GetAllCoursesAsync();
+        processing = false;
     }
 
     private async Task SubmitCourse()
     {
+        processing = true;
         if (await CourseService.DoesCourseExist(SelectedCourse.CourseCode))
         {
             await CourseService.RemoveCourseAsync(SelectedCourse);
@@ -37,7 +49,7 @@
         {
             ToastService.ShowToast(ToastLevel.Error, "Something went wrong");
         }
-
+        processing = false;
     }
 
     private async Task<IEnumerable<Course>> SearchCourses(string search)

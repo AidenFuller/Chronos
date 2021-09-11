@@ -26,7 +26,14 @@
         </ResultTemplate>
     </BlazoredTypeahead>
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
+    @if (processing)
+    {
+        <div class="spinner"></div>
+    }
+    else
+    {
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Major</button>
+    }
 </EditForm>
 
 @code
@@ -35,9 +42,11 @@
     private IEnumerable<Major> Majors;
     private MDModel MDM;
     private Degree selectedDegree;
+    private bool processing;
 
     protected override async Task OnInitializedAsync()
     {
+        processing = false;
         Degrees = await DegreeService.GetAllDegreesAsync();
         MDM = new MDModel();
     }
@@ -60,6 +69,7 @@
 
     private async Task SubmitMajor()
     {
+        processing = true;
         if (MDM.Degree == null)
         {
             ToastService.ShowToast(ToastLevel.Error, "No degree was chosen.");
@@ -77,6 +87,7 @@
         {
             ToastService.ShowToast(ToastLevel.Error, $"{MDM.Major.Name} does not exist in the database");
         }
+        processing = false;
     }
 
     private class MDModel

@@ -38,6 +38,16 @@ namespace Chronos.Services
         public async Task RemoveDegreeAsync(Degree degree)
         {
             db.Degrees.Remove(degree);
+
+            var removeCoreCourses = db.CoreCourses.Where(d => d.DegreeID == degree.DegreeID);
+            db.CoreCourses.RemoveRange(removeCoreCourses);
+
+            var removeMajors = db.Majors.Where(d => d.DegreeID == degree.DegreeID);
+            db.Majors.RemoveRange(removeMajors);
+
+            var removeMajorCourses = db.MajorCourses.Where(d => removeMajors.Any(m => m.MajorID == d.MajorID));
+            db.MajorCourses.RemoveRange(removeMajorCourses);
+
             await db.SaveChangesAsync();
         }
 

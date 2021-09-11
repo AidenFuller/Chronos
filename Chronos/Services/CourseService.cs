@@ -31,9 +31,22 @@ namespace Chronos.Services
             await db.SaveChangesAsync();
         }
 
-        public async Task RemoveCourseAsync(Course c)
+        public async Task RemoveCourseAsync(Course course)
         {
-            db.Courses.Remove(c);
+            db.Courses.Remove(course);
+
+            var removeAvailabilities = db.CourseAvailabilities.Where(c => c.CourseID == course.CourseID);
+            db.CourseAvailabilities.RemoveRange(removeAvailabilities);
+
+            var removeMajorCourses = db.MajorCourses.Where(c => c.CourseID == course.CourseID);
+            db.MajorCourses.RemoveRange(removeMajorCourses);
+
+            var removeCoreCourses = db.CoreCourses.Where(c => c.CourseID == course.CourseID);
+            db.CoreCourses.RemoveRange(removeCoreCourses);
+
+            var removePrereqs = db.PrerequisiteCourses.Where(c => c.CourseID == course.CourseID || c.PrerequisiteCourseID == course.CourseID);
+            db.PrerequisiteCourses.RemoveRange(removePrereqs);
+
             await db.SaveChangesAsync();
         }
 
