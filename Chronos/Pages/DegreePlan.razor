@@ -37,6 +37,13 @@
 @if (isReady)
 {
     <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
+    <div>
+        <h4>Degree: @State.Degree.Name</h4>
+        @if(State.Major != null)
+        {
+            <h4>Major: @State.Major.Name</h4>
+        }
+    </div>
     <CascadingValue Value="this">
         <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
             <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
