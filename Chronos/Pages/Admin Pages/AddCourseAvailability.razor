@@ -3,40 +3,41 @@
 @inject CourseService CourseService
 @inject IToastService ToastService
 
-<EditForm class="formfile" OnSubmit="SubmitAvailability" Model="CA">
-    <h4>Select Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="CA.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            <!--This is the search Template and what will be returned.-->
-            @course.CourseCode - @course.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            <!--This is what is shown when it is selected.-->
-            @course.CourseCode - @course.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
+<div class="adminform">
+    <EditForm OnSubmit="SubmitAvailability" Model="CA">
+        <h4>Select Course</h4>
+        <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="CA.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                <!--This is the search Template and what will be returned.-->
+                @course.CourseCode - @course.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                <!--This is what is shown when it is selected.-->
+                @course.CourseCode - @course.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-    <h4>Select the Campus</h4>
-    <select class="form-control selectpicker" @bind="CA.Campus">
-        <option value="@AvailableCampus.Callaghan">Callaghan</option>
-        <option value="@AvailableCampus.Ourimbah">Ourimbah</option>
-        <option value="@AvailableCampus.NewcastleCity">NUSpace</option>
-        <option value="@AvailableCampus.PortMacquarie">Port Macquarie</option>
-    </select>
+        <h4>Select the Campus</h4>
+        <select class="form-control selectpicker" @bind="CA.Campus">
+            <option value="@AvailableCampus.Callaghan">Callaghan</option>
+            <option value="@AvailableCampus.Ourimbah">Ourimbah</option>
+            <option value="@AvailableCampus.NewcastleCity">NUSpace</option>
+            <option value="@AvailableCampus.PortMacquarie">Port Macquarie</option>
+        </select>
 
-    <h4>Select the Runtimes</h4>
-    <div class="inputGroup">
-        <input type="checkbox" id="sem1" name="sem1" @bind="s1" />
-        <label for="sem1">Semester 1</label>
-    </div>
-    <div class="inputGroup">
-        <input type="checkbox" id="sem2" name="sem2" @bind="s2" />
-        <label for="sem2">Semester 2</label>
-    </div>
+        <h4>Select the Runtimes</h4>
+        <div class="inputGroup">
+            <input type="checkbox" id="sem1" name="sem1" @bind="s1" />
+            <label for="sem1">Semester 1</label>
+        </div>
+        <div class="inputGroup">
+            <input type="checkbox" id="sem2" name="sem2" @bind="s2" />
+            <label for="sem2">Semester 2</label>
+        </div>
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
-
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+    </EditForm>
+</div>
 
 @code
 {
