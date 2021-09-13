@@ -334,7 +334,7 @@
     //This will run when the button in the top right is clicked, deleting the data in the tile. 
     private void trashButton()
     {
-        Data.Status = 0;
+        Data.ClearAllWarnings();
         Data.Course = null;
         UpdateTileType();
     }
