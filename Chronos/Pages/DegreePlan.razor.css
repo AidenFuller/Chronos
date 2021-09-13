@@ -111,6 +111,7 @@
 .ErrorTable {
     border: 1px double black;
     width: 50%;
+    cursor:pointer;
 }
 /*.ErrorTable > td{
     padding: 1px;

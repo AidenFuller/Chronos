@@ -30,46 +30,22 @@ namespace Chronos.Shared.Wrappers
         //========== ERROR MANAGEMENT ==========
         public Dictionary<ErrorStatus, List<Course>> ErrorData { get; set; }
         
-        //Return string of all pre requisite errors
-        public string GetPreReqErrors()
+        //Returns a list of courses from this tile data
+        public List<Course> GetPreReqErrors()
         {
-            String errors = "";
-            if (ErrorData[ErrorStatus.MissingPrerequisite].Count != 0)
-            {
-                foreach (var course in ErrorData[ErrorStatus.MissingPrerequisite])
-                {
-                    errors += course.CourseCode + " must be completed before " + Course.CourseCode + "\n";
-                }
-            }
-            return errors;
+            return ErrorData[ErrorStatus.MissingPrerequisite];
         }
 
         //Return string of all pre-requisite warnings
-        public string GetPreReqWarnings()
+        public List<Course> GetPreReqWarnings()
         {
-            String errors = "";
-            if (ErrorData[ErrorStatus.MissingAssumedKnowledge].Count != 0)
-            {
-                foreach (var course in ErrorData[ErrorStatus.MissingAssumedKnowledge])
-                {
-                    errors += course.CourseCode + " should be completed before " + Course.CourseCode + "\n";
-                }
-            }
-            return errors;
+            return ErrorData[ErrorStatus.MissingAssumedKnowledge];
         }
 
         //Return string of all sibling warnings
-        public string GetSiblingErrors()
+        public List<Course> GetSiblingErrors()
         {
-            String errors = "";
-            if (ErrorData[ErrorStatus.MissingSiblingCourse].Count != 0)
-            {
-                foreach (var course in ErrorData[ErrorStatus.MissingSiblingCourse])
-                {
-                    errors += course.CourseCode + " must be completed the semester before " + Course.CourseCode + "\n";
-                }
-            }
-            return errors;
+            return ErrorData[ErrorStatus.MissingSiblingCourse];
         }
 
         public void ClearAllWarnings()
