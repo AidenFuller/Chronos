@@ -80,8 +80,7 @@
     padding-top: 2px;
     width: 100%;
     text-align: center;
-    z-index: 5;
-    
+    z-index: 5;   
 /*    position: relative;*/
 }
 
@@ -96,12 +95,10 @@
 
 .Directed > .courseCode {
     background-color: #ADD8E6 !important;
-    /* color-before: #659EC7;*/
 }
 
 .Core > .courseCode {
     background-color: #BEBEBE !important;
-    /*Color-before: #808080;*/
 }
 
 .Compulsory > .courseCode {
@@ -110,14 +107,10 @@
 
 
 .Error {
-    /*border-color: red;*/
-    /*background-color: #FF9696;*/
     background-color: #ffcfcf
 }
 .Warning {
-    /*border-color: gold;*/
     background-color: #ffdebd;
-    /*#FFCC99*/
 }
 
 
@@ -129,18 +122,13 @@
     
     
 }
-.AddElective > .plusSign {
-    /*background-color: #ffffff;*/
-    /* border-color: #000000;*/
-    color: #F2DD60;
-}
+    .AddElective > .plusSign {
+        color: #F2DD60;
+    }
 
-.AddDirected > .plusSign {
-    /*background-color: #ffffff;*/
-    /*border-color: #000000;*/
-    color: #ADD8E6;
-    
-}
+    .AddDirected > .plusSign {
+        color: #ADD8E6;
+    }
 
 .plusSign {
     border-radius: 50%;
