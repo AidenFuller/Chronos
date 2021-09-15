@@ -20,87 +20,90 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 
-<ul class="ColorCodelegend">
-    <h5>Course Color Codes:</h5>
-    <li><span class="Core"></span> Core</li>
-    <li><span class="Compulsory"></span> Compulsory</li>
-    <li><span class="Directed"></span> Directed</li>
-    <li><span class="Elective"></span> Elective</li>
-    <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
-    <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
-    <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
-    <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
-    <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
-</ul>
+    <button class="dropbtn"><b>Looking for color codes?</b></button>
+    <div class="show">
+        <ul class="ColorCodelegend">
+            <h5>Course Color Codes:</h5>
+            <li><span class="Core"></span> Core</li>
+            <li><span class="Compulsory"></span> Compulsory</li>
+            <li><span class="Directed"></span> Directed</li>
+            <li><span class="Elective"></span> Elective</li>
+            <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
+            <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+            <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
+            <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
+            <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
+        </ul>
+    </div>     
 <hr />
 
-@if (isReady)
-{
-    <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
-    <CascadingValue Value="this">
-        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
-            <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
-        </div>
-
-        <div class="degreePlan">
-
-
-        @*Pass boolean to determine if ghosts are showing to all children*@
-        @if (State.CourseData == null)
+        @if (isReady)
         {
-            <p>Loading...</p>
-        }
-        else
-        {
-            bool EOF = false;
-            for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
-            {
-                <div class="year-row">
-                    @for (int i = 0; i < State.BlocksPerYear; i++)
+            <button class="btn-info" onclick="location.href='/'"> Back to home page </button>
+            <CascadingValue Value="this">
+                <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
+                    <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
+                </div>
+
+                <div class="degreePlan">
+
+
+                    @*Pass boolean to determine if ghosts are showing to all children*@
+                    @if (State.CourseData == null)
                     {
-                        if (EOF = !enumerator.MoveNext())
+                        <p>Loading...</p>
+                    }
+                    else
+                    {
+                        bool EOF = false;
+                        for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
                         {
-                            break;
-                        }
-                        <p class="semester-label">Semester @(i + 1)</p>
-                        <div class="semester">
-                            @* Assuming Semesters *@
+                            <div class="year-row">
+                                @for (int i = 0; i < State.BlocksPerYear; i++)
+                                {
+                                    if (EOF = !enumerator.MoveNext())
+                                    {
+                                        break;
+                                    }
+                                    <p class="semester-label">Semester @(i + 1)</p>
+                                    <div class="semester">
+                                        @* Assuming Semesters *@
 
-                                @if (i == 0)
-                                {
-                                    //Semester 1
-                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                                }
-                                else
-                                {
-                                    //Semester 2
-                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                        @if (i == 0)
+                                        {
+                                            //Semester 1
+                                            <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                        }
+                                        else
+                                        {
+                                            //Semester 2
+                                            <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                        }
+                                    </div>
                                 }
                             </div>
                         }
-                    </div>
-                }
 
-                <br />
+                        <br />
 
-                <div>
-                    <div style="float:left">
-                        <button @onclick="AddYear" class="btn-info">Add Year</button>
-                    </div>
+                        <div>
+                            <div style="float:left">
+                                <button @onclick="AddYear" class="btn-info">Add Year</button>
+                            </div>
 
 
-                    @*//-----------------------------------------------
-                        //This button will remove the empty year
-                        //----------------------------------------------*@
+                            @*//-----------------------------------------------
+                                //This button will remove the empty year
+                                //----------------------------------------------*@
 
-                    <div style="float:right;">
-                        <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
-                    </div>
+                            <div style="float:right;">
+                                <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+                            </div>
+                        </div>
+
+                    }
                 </div>
-
-            }
-        </div>
-    </CascadingValue>
+            </CascadingValue>
 
     <br />
     <br />
