@@ -1,10 +1,8 @@
-﻿@page "/Admin/RemoveCourse"
+﻿@page "/Admin/EditCourse"
 
 @inject CourseService CourseService
 @inject IToastService ToastService
 
-
-<h4>Select a Course</h4>
 <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
     <SelectedTemplate Context="course">
         @course.Name (@course.CourseCode)
@@ -14,42 +12,36 @@
     </ResultTemplate>
 </BlazoredTypeahead>
 
-@if (processing)
+@if (SelectedCourse != null)
 {
-    <div class="spinner"></div>
-}
-else
-{
-    <button @onclick="SubmitCourse" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Course</button>
+    <EditForm OnSubmit="ReplaceCourse" Model="SelectedCourse">
+        <h4>Course Name</h4>
+        <InputText @bind-Value=SelectedCourse.Name placeholder="Enter Course Name" required />
+        <h4>Course Code</h4>
+        <InputText @bind-Value=SelectedCourse.CourseCode placeholder="Enter Course Code" required />
+        <h4>Units</h4>
+        <InputNumber step="10" @bind-Value=SelectedCourse.Units />
+        <h4>Required Units for Enrolment</h4>
+        <InputNumber step="10" @bind-Value=SelectedCourse.RequiredCompletedUnits />
+
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Course</button>
+    </EditForm>
 }
 
 
 @code {
-
     private Course SelectedCourse;
     private IEnumerable<Course> Courses;
-    private bool processing;
 
     protected override async Task OnInitializedAsync()
     {
-        SelectedCourse = new Course();
         Courses = await CourseService.GetAllCoursesAsync();
-        processing = false;
     }
 
-    private async Task SubmitCourse()
+    private async Task ReplaceCourse()
     {
-        processing = true;
-        if (await CourseService.DoesCourseExist(SelectedCourse.CourseCode))
-        {
-            await CourseService.RemoveCourseAsync(SelectedCourse);
-            ToastService.ShowToast(ToastLevel.Success, $"{SelectedCourse.CourseCode} has been removed from the database");
-        }
-        else
-        {
-            ToastService.ShowToast(ToastLevel.Error, "Something went wrong");
-        }
-        processing = false;
+        await CourseService.ReplaceCourseAsync(SelectedCourse);
+        ToastService.ShowToast(ToastLevel.Success, $"The course has been updated");
     }
 
     private async Task<IEnumerable<Course>> SearchCourses(string search)

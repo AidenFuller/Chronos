@@ -210,10 +210,8 @@ namespace Chronos.Services
             #region COMP CourseAvailability
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP1010"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP1010"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP1010"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP1140"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP1140"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP1140"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP2230"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP2240"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP2270"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
@@ -224,16 +222,13 @@ namespace Chronos.Services
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3340"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3350"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3350"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3350"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3500"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3600"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3850"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3851A"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1  | CourseRuntime.Semester2});
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3851A"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3851A"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 | CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3851B"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2});
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3851B"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP3851B"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 | CourseRuntime.Trimester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP4110"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP4120"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP4251"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
@@ -257,18 +252,15 @@ namespace Chronos.Services
             #region SENG CourseAvailability
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG1050"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG1050"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG1050"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG1110"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG1120"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2});
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2050"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2130"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2130"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2130"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2200"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2250"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2260"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2260"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG2260"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG3150"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG3160"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("SENG3320"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
@@ -292,22 +284,17 @@ namespace Chronos.Services
 
             #region ENGG CourseAvailability
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG1003"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG1003"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 | CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG1500"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG1500"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2100"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2100"), Campus = AvailableCampus.SingaporeBCA, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2200"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2300"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2440"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2440"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2500"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2500"), Campus = AvailableCampus.SingaporeBCA, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG2500"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG3200"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG3300"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG3500"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG3500"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG4200"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG4440"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ENGG4500"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
@@ -327,51 +314,30 @@ namespace Chronos.Services
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT1201"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2012"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2012"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2012"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2031"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2031"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2031"), Campus = AvailableCampus.Online, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2});
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2031"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2051"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2051"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2051"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2150"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2150"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT2150"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3050"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3050"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3050"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3100"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3100"), Campus = AvailableCampus.Ourimbah, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3100"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3800"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3800"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3950"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT3960"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT4000"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT4010"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6009"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6009"), Campus = AvailableCampus.Online, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6201"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Trimester3 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6201"), Campus = AvailableCampus.Sydney, Runtime = CourseRuntime.Trimester3 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6201"), Campus = AvailableCampus.Online, Runtime = CourseRuntime.Trimester3 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6304"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Trimester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6304"), Campus = AvailableCampus.Online, Runtime = CourseRuntime.Trimester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6304"), Campus = AvailableCampus.Sydney, Runtime = CourseRuntime.Trimester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6800"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Trimester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6800"), Campus = AvailableCampus.Online, Runtime = CourseRuntime.Trimester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6800"), Campus = AvailableCampus.Sydney, Runtime = CourseRuntime.Trimester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6900"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Trimester3 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6900"), Campus = AvailableCampus.Online, Runtime = CourseRuntime.Trimester3 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("INFT6900"), Campus = AvailableCampus.Sydney, Runtime = CourseRuntime.Trimester3 });
             #endregion
 
             #region ELEC CourseAvailability
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ELEC3500"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ELEC1710"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ELEC1710"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 | CourseRuntime.Trimester3 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ELEC2720"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("ELEC2720"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester2 });
             #endregion
 
             #region MATH CourseAvailability
@@ -379,9 +345,7 @@ namespace Chronos.Services
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH2340"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1110"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester2 | CourseRuntime.Semester1 });
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1110"), Campus = AvailableCampus.SingaporeBCA, Runtime = CourseRuntime.Semester2 | CourseRuntime.Semester1 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1110"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester3 });
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1120"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 | CourseRuntime.SummerLS});
-            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1120"), Campus = AvailableCampus.SingaporePSB, Runtime = CourseRuntime.Trimester1 | CourseRuntime.Trimester3});
+            db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("MATH1120"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 | CourseRuntime.Semester2 });
             #endregion
 
             #region Other CourseAvailability
