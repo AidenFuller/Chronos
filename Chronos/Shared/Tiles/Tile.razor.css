@@ -234,3 +234,8 @@
 .Tooltip:hover .ToolTipText {
     display: inherit;
 }
+.Highlight {
+    border-color: red;
+    border-style: solid;
+    border-width: 5px;
+}

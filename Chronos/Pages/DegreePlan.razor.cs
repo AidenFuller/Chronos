@@ -868,7 +868,6 @@ namespace Chronos.Pages
                 }
             }
         }
-
         private TileData FindTileData(Course course)
         {
             foreach (var slot in State.CourseData)
@@ -901,57 +900,59 @@ namespace Chronos.Pages
             }
         }
 
-        public List<String> GetAllSiblingErrors()
+
+
+        public List<Course> Highlights = new List<Course>();
+
+
+        public void HighlightTile(Course c1, Course c2)
         {
-            List<String> errors = new List<string>();
-            foreach (var semester in State.CourseData)
+            HighlightTile(c1);
+            HighlightTile(c2);
+        }
+        public void HighlightTile(List<Course> c)
+        {
+            foreach (Course course in c)
             {
-                foreach (var tileData in semester)
-                {
-                    String str = tileData.GetSiblingErrors();
-                    if (str != null && str != String.Empty)
-                    {
-                        errors.Add(str);
-                    }
-                    
-                }
+                Console.WriteLine("Highlight " + course.CourseCode);
+                HighlightTile(course);
             }
-            return errors;
+        }
+        public void HighlightTile(Course c)
+        {
+            //Console.WriteLine(c.CourseCode);
+            if (!Highlights.Contains(c))
+            {
+                //Console.WriteLine("Adding to highlight list " + c.CourseCode);
+                Highlights.Add(c);
+            }
+            StateHasChanged();
         }
 
-        public List<String> GetAllPrereqErrors()
+
+        public void UnhighlightTile(List<Course> c)
         {
-            List<String> errors = new List<string>();
-            foreach (var semester in State.CourseData)
+            foreach (Course course in c)
             {
-                foreach (var tileData in semester)
-                {
-                    String str = tileData.GetPreReqErrors();
-                    if (str != null && str != String.Empty)
-                    {
-                        errors.Add(str);
-                    }
-                }
+                Console.WriteLine("Unhighlight " + course.CourseCode);
+                UnhighlightTile(course);
             }
-            return errors;
+        }
+        public void UnhighlightTile(Course c1, Course c2)
+        {
+            UnhighlightTile(c1);
+            UnhighlightTile(c2);
+        }
+        public void UnhighlightTile(Course c)
+        {
+            if (Highlights.Contains(c))
+            {
+                Highlights.Remove(c);
+            }
+            StateHasChanged();
         }
 
-        public List<String> GetAllPrereqWarnings()
-        {
-            List<String> errors = new List<string>();
-            foreach (var semester in State.CourseData)
-            {
-                foreach (var tileData in semester)
-                {
-                    String str = tileData.GetPreReqWarnings();
-                    if (str != null && str != String.Empty)
-                    {
-                        errors.Add(str);
-                    }
-                }
-            }
-            return errors;
-        }
+       
 
         private void AddYear()
         {
