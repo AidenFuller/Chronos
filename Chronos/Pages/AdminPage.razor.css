@@ -50,7 +50,7 @@
 .dropdown-content {
     display: none;
     list-style:none;
-   /* position: absolute;*/
+    position: absolute;
     background-color: white;
     color:purple;
     min-width: 160px;
