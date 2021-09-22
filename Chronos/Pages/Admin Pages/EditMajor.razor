@@ -4,36 +4,37 @@
 @inject DegreeService DegreeService
 @inject IToastService ToastService
 
-<BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
-    <SelectedTemplate Context="degree">
-        Bachelor of @degree.Name
-    </SelectedTemplate>
-    <ResultTemplate Context="degree">
-        Bachelor of @degree.Name
-    </ResultTemplate>
-</BlazoredTypeahead>
-
-@if (SelectedDegree != null)
-{
-    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="SelectedMajor" placeholder="Please search for a major..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="major">
-            @major.Name
+<div class="adminform">
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
         </SelectedTemplate>
-        <ResultTemplate Context="major">
-            @major.Name
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
         </ResultTemplate>
     </BlazoredTypeahead>
-}
 
-@if (SelectedMajor != null)
-{
-    <EditForm OnSubmit="ReplaceMajor" Model="SelectedMajor">
-        <h4>Major Name</h4>
-        <InputText @bind-Value="SelectedMajor.Name" placeholder="Enter Major Name" required />
-        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Major</button>
-    </EditForm>
-}
+    @if (SelectedDegree != null)
+    {
+        <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="SelectedMajor" placeholder="Please search for a major..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="major">
+                @major.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="major">
+                @major.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
+    }
 
+    @if (SelectedMajor != null)
+    {
+        <EditForm OnSubmit="ReplaceMajor" Model="SelectedMajor">
+            <h4>Major Name</h4>
+            <InputText @bind-Value="SelectedMajor.Name" placeholder="Enter Major Name" required />
+            <button type="submit" class="submit-button submit-button-colour submit-button-animation">Edit Major</button>
+        </EditForm>
+    }
+</div>
 
 @code {
     private Major SelectedMajor;

@@ -3,25 +3,26 @@
 @inject DegreeService DegreeService
 @inject IToastService ToastService
 
-<h4>Select a Degree</h4>
-<BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the degree you want to remove..." EnableDropDown="true" ShowDropDownOnFocus="true">
-    <SelectedTemplate Context="degree">
-        Bachelor of @degree.Name
-    </SelectedTemplate>
-    <ResultTemplate Context="degree">
-        Bachelor of @degree.Name
-    </ResultTemplate>
-</BlazoredTypeahead>
+<div class="adminform">
+    <h4>Select a Degree</h4>
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the degree you want to remove..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
 
-@if (processing)
-{
-    <div class="spinner"></div>
-}
-else
-{
-    <button @onclick="SubmitDegree" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Degree</button>
-}
-
+    @if (processing)
+    {
+        <div class="spinner"></div>
+    }
+    else
+    {
+        <button @onclick="SubmitDegree" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Degree</button>
+    }
+</div>
 
 @code {
 

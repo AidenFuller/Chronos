@@ -3,19 +3,25 @@
 @inject DegreeService DegreeService
 @inject IToastService ToastService
 
-<EditForm OnSubmit="SubmitDegree" Model="degree">
-    <h4>Degree Name</h4>
-    <InputText @bind-Value="degree.Name" placeholder="Enter Degree Name" required />
-    <h4>Amount Of Units</h4>
-    <InputNumber step="20" @bind-Value="degree.UnitLength" />
-    <h4>Can it be completed internationally?</h4>
-    <InputCheckbox @bind-Value="degree.InternationalsAllowed" />
-    <h4>How many Elective Units?</h4>
-    <InputNumber step="10" @bind-Value="degree.ElectiveUnits" />
+<div class="adminform">
+    <EditForm OnSubmit="SubmitDegree" Model="degree">
+        <h4>Degree Name</h4>
+        <InputText @bind-Value="degree.Name" placeholder="Enter Degree Name" required />
+        <h4>Amount Of Units</h4>
+        <InputNumber step="20" @bind-Value="degree.UnitLength" />
+        <h4>Domesticality</h4>
+        <ul class="inputGroup">
+            <li>
+                <input id="r1" type="checkbox" name="checkbox" @bind="degree.InternationalsAllowed">
+                <label for="r1">International Students Accepted</label>
+            </li>
+        </ul>
+        <h4>How many Elective Units?</h4>
+        <InputNumber step="10" @bind-Value="degree.ElectiveUnits" />
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
-</EditForm> 
-
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Add Degree</button>
+    </EditForm> 
+</div>
 @code 
 {
     private Degree degree;

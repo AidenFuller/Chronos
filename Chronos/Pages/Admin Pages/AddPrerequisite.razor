@@ -3,43 +3,52 @@
 @inject CourseService CourseService
 @inject IToastService ToastService
 
+<div class="adminform">
+    <EditForm OnSubmit="SubmitPrerequisites" Model="PCM">
+        <h4>Select Course</h4>
+        <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="PCM.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                <!--This is the search Template and what will be returned.-->
+                @course.CourseCode - @course.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                <!--This is what is shown when it is selected.-->
+                @course.CourseCode - @course.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-<EditForm OnSubmit="SubmitPrerequisites" Model="PCM">
-    <h4>Select Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="PCM.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            <!--This is the search Template and what will be returned.-->
-            @course.CourseCode - @course.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            <!--This is what is shown when it is selected.-->
-            @course.CourseCode - @course.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
+        <h4>Select the course which is required to be completed prior</h4>
+        <BlazoredTypeahead SearchMethod="SearchPrerequisites" @bind-Value="PCM.Prerequisite" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                <!--This is the search Template and what will be returned.-->
+                @course.CourseCode - @course.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                <!--This is what is shown when it is selected.-->
+                @course.CourseCode - @course.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-    <h4>Select the course which is required to be completed prior</h4>
-    <BlazoredTypeahead SearchMethod="SearchPrerequisites" @bind-Value="PCM.Prerequisite" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            <!--This is the search Template and what will be returned.-->
-            @course.CourseCode - @course.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            <!--This is what is shown when it is selected.-->
-            @course.CourseCode - @course.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
-
-    <h4>Select the constraint type</h4>
-    <select class="form-control selectpicker" @bind="PCM.Type">
-        <option value="-1">Please select ...</option>
-        <option value="@RequisiteType.AssumedKnowledge">Assumed Knowledge</option>
-        <option value="@RequisiteType.HardRequisite">Hard Requisite</option>
-        <option value="@RequisiteType.MustPreceed">Must Preceed (Sibling Course)</option>
-    </select>
-
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
-
+        <h4>Select the constraint type</h4>
+        <ul class="inputGroup">
+            <InputRadioGroup Name="reqtype" @bind-Value="PCM.Type">
+                <li>
+                    <InputRadio Value="@RequisiteType.AssumedKnowledge" id="ak" Name="reqtype" />
+                    <label for="ak">Assumed Knowledge</label>
+                </li>
+                <li>
+                    <InputRadio Value="@RequisiteType.HardRequisite" id="hr" Name="reqtype" />
+                    <label for="hr">Hard Prerequisite</label>
+                </li>
+                <li>
+                    <InputRadio Value="@RequisiteType.MustPreceed" id="mp" Name="reqtype" />
+                    <label for="mp">Must Preceed (Sibling Course)</label>
+                </li>
+            </InputRadioGroup>
+        </ul>
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Add Prerequisite</button>
+    </EditForm>
+</div>
 
 @code 
 {
@@ -50,6 +59,11 @@
     {
         PCM = new PrerequisiteModel();
         Courses = await CourseService.GetAllCoursesAsync();
+    }
+
+    private void Changed(ChangeEventArgs e)
+    {
+        PCM.Type = (RequisiteType) e.Value;
     }
 
     private async Task<IEnumerable<Course>> SearchPrerequisites(string search)

@@ -5,18 +5,20 @@
 
 @using System.Text.RegularExpressions 
 
-<EditForm OnSubmit="SubmitCourse" Model="course">
-    <h4>Course Name</h4>
-    <InputText @bind-Value=course.Name placeholder="Enter Course Name" required />
-    <h4>Course Code</h4>
-    <InputText @bind-Value=course.CourseCode placeholder="Enter Course Code" required />
-    <h4>Units</h4>
-    <InputNumber step="10" @bind-Value=course.Units />
-    <h4>Required Units for Enrolment</h4>
-    <InputNumber step="10" @bind-Value=course.RequiredCompletedUnits />
+<div class="adminform">
+    <EditForm OnSubmit="SubmitCourse" Model="course">
+        <h4>Course Name</h4>
+        <InputText @bind-Value=course.Name placeholder="Enter Course Name" required />
+        <h4>Course Code</h4>
+        <InputText @bind-Value=course.CourseCode placeholder="Enter Course Code" required />
+        <h4>Units</h4>
+        <InputNumber step="10" @bind-Value=course.Units />
+        <h4>Required Units for Enrolment</h4>
+        <InputNumber step="10" @bind-Value=course.RequiredCompletedUnits />
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Add Course</button>
+    </EditForm>
+</div>
 
 @code {
     private Course NewCourse() => new Course() { Units = 10 };

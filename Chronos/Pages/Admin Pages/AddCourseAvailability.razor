@@ -26,16 +26,18 @@
         </select>
 
         <h4>Select the Runtimes</h4>
-        <div class="inputGroup">
-            <input type="checkbox" id="sem1" name="sem1" @bind="s1" />
-            <label for="sem1">Semester 1</label>
-        </div>
-        <div class="inputGroup">
-            <input type="checkbox" id="sem2" name="sem2" @bind="s2" />
-            <label for="sem2">Semester 2</label>
-        </div>
+        <ul class="inputGroup">
+            <li>
+                <input id="r1" type="checkbox" name="checkbox" @bind="s1">
+                <label for="r1">Semester 1</label>
+            </li>
+            <li>
+                <input id="r2" type="checkbox" name="checkbox" @bind="s2">
+                <label for="r2">Semester 2</label>
+            </li>
+        </ul>
 
-        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Add Availability</button>
     </EditForm>
 </div>
 
