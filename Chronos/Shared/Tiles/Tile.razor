@@ -68,8 +68,8 @@
             @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
             {
                 <div class="Tooltip"
-                        @onmouseover="() => Plan.HighlightTile(Data.GetSiblingErrors())"
-                        @onmouseout="() => Plan.UnhighlightTile(Data.GetSiblingErrors())"
+                        @onmouseover="() => Plan.HighlightTile(Plan.GetPreSiblingErrorsCombined(Data).Result)"
+                        @onmouseout="() => Plan.UnhighlightTile(Plan.GetPreSiblingErrorsCombined(Data).Result)"
                      >
                     <span class="oi oi-link-broken"
 
@@ -77,7 +77,7 @@
                     <span class="ToolTipText">
                         Missing sibling course:
 
-                        @String.Join(", ", @Data.GetSiblingErrors().Select(course => course.CourseCode))
+                        @String.Join(", ", Plan.GetPreSiblingErrorsCombined(Data).Result.Select(course => course.CourseCode))
 
                     </span>
                 </div>

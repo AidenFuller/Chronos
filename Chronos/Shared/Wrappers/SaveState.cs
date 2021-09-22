@@ -31,5 +31,18 @@ namespace Chronos.Shared.Wrappers
             Campus = state.Campus;
             RuntimeStart = state.RuntimeStart;
         }
+
+        public List<TileData> GetParentBlock(TileData d)
+        {
+
+            foreach (List<TileData> block in CourseData)
+            {
+                if (block.Contains(d))
+                {
+                    return block;
+                }
+            }
+            return new List<TileData>();
+        }
     }
 }

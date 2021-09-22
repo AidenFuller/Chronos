@@ -823,6 +823,18 @@ namespace Chronos.Pages
         }
 
 
+        //Proof of concept to get parent block
+
+        public async Task<List<Course>> GetPreSiblingErrorsCombined(TileData data)
+        {
+            List<Course> errors = new List<Course>(data.GetSiblingErrors());
+            foreach (Course course in await GetReliants(data, State.CourseData.IndexOf(State.GetParentBlock(data)), RequisiteType.MustPreceed))
+            {
+                errors.Add(course);
+            }
+            return errors;
+        }
+
         private async Task<List<Course>> GetCorrectReliants(TileData tile, int n, RequisiteType requisite)
         {
             if (tile?.Course == null || n == State.CourseData.Count - 1)
