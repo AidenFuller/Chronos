@@ -313,14 +313,16 @@ namespace Chronos.Pages
             DragPayload.ClearAllWarnings();
 
 
-
-            FiftyUnitWarning(slot);
+            if (slot != State.CompletedTiles)
+            {
+                FiftyUnitWarning(slot);
+            }
 
             await CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
             await UpdateReliants(DragFrom, slot, DragPayload, null);
+
             if (slot != State.CompletedTiles)
             {
-
                 await ShowSwapWarnings(DragFrom, slot, DragPayload, null);
             }
             State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
