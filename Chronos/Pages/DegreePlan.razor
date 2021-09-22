@@ -20,113 +20,174 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 
-<ul class="ColorCodelegend">
-    <h5>Course Color Codes:</h5>
-    <li><span class="Core"></span> Core</li>
-    <li><span class="Compulsory"></span> Compulsory</li>
-    <li><span class="Directed"></span> Directed</li>
-    <li><span class="Elective"></span> Elective</li>
-    <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
-    <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
-    <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
-    <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
-    <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
-</ul>
+    <button class="dropbtn"><b>Looking for color codes?</b></button>
+    <div class="show">
+        <ul class="ColorCodelegend">
+            <h5>Course Color Codes:</h5>
+            <li><span class="Core"></span> Core</li>
+            <li><span class="Compulsory"></span> Compulsory</li>
+            <li><span class="Directed"></span> Directed</li>
+            <li><span class="Elective"></span> Elective</li>
+            <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
+            <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+            <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
+            <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
+            <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
+        </ul>
+    </div>     
 <hr />
 
 @if (isReady)
 {
     <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
+    <div>
+        <h4>Degree: @State.Degree.Name</h4>
+        @if(!(State.Major.Name.Equals("Default")))
+        {
+            <h4>Major: @State.Major.Name</h4>
+        }
+    </div>
     <CascadingValue Value="this">
         <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
             <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
         </div>
+            <div class="degreePlan">
 
-        <div class="degreePlan">
 
-
-        @*Pass boolean to determine if ghosts are showing to all children*@
-        @if (State.CourseData == null)
-        {
-            <p>Loading...</p>
-        }
-        else
-        {
-            bool EOF = false;
-            for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
-            {
-                <div class="year-row">
-                    @for (int i = 0; i < State.BlocksPerYear; i++)
-                    {
-                        if (EOF = !enumerator.MoveNext())
-                        {
-                            break;
-                        }
-                        <p class="semester-label">Semester @(i + 1)</p>
-                        <div class="semester">
-                            @* Assuming Semesters *@
-
-                                @if (i == 0)
-                                {
-                                    //Semester 1
-                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                                }
-                                else
-                                {
-                                    //Semester 2
-                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                                }
-                            </div>
-                        }
-                    </div>
+                @*Pass boolean to determine if ghosts are showing to all children*@
+                @if (State.CourseData == null)
+                {
+                    <p>Loading...</p>
                 }
+                else
+                {
+                    bool EOF = false;
+                    for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
+                    {
+                        <div class="year-row">
+                            @for (int i = 0; i < State.BlocksPerYear; i++)
+                            {
+                                if (EOF = !enumerator.MoveNext())
+                                {
+                                    break;
+                                }
+                                <p class="semester-label">Semester @(i + 1)</p>
+                                <div class="semester">
+                                    @* Assuming Semesters *@
 
-                <br />
+                                    @if (i == 0)
+                                    {
+                                        //Semester 1
+                                        <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                    }
+                                    else
+                                    {
+                                        //Semester 2
+                                        <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
 
-                <div>
-                    <div style="float:left">
-                        <button @onclick="AddYear" class="btn-info">Add Year</button>
+                    <br />
+
+                    <div>
+                        <div style="float:left">
+                            <button @onclick="AddYear" class="btn-info">Add Year</button>
+                        </div>
+
+
+                        @*//-----------------------------------------------
+                            //This button will remove the empty year
+                            //----------------------------------------------*@
+
+                        <div style="float:right;">
+                            <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+                        </div>
                     </div>
 
-
-                    @*//-----------------------------------------------
-                        //This button will remove the empty year
-                        //----------------------------------------------*@
-
-                    <div style="float:right;">
-                        <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
-                    </div>
-                </div>
-
-            }
-        </div>
-    </CascadingValue>
+                }
+            </div>
+        </CascadingValue>
 
     <br />
     <br />
     <h4>Errors:</h4>
     <div> <!--Shows the list of errors that is currently occurring with the plan.-->
         <table class="ErrorTable">
-            @foreach (String str in @GetAllPrereqErrors())
+            @* Pre Req Errors *@
+            @foreach (var semester in State.CourseData)
             {
-                <tr class="PreReqError">
-                    <td>PRE REQ ERROR</td>
-                    <td>@str</td>
-                </tr>
+                @foreach (var tileData in semester)
+                {
+                    @foreach (var error in tileData.GetPreReqErrors())
+                    {
+                        <tr class="PreReqError"
+                            @onmouseover="() => HighlightTile(error, tileData.Course)"
+                            @onmouseout="() => UnhighlightTile(error, tileData.Course)">
+                            <td>PREREQ ERROR</td>
+                            <td>
+                                <span style="font-weight:bold;">@error.CourseCode</span>
+                                must be completed the before
+                                <span style="font-weight:bold;">
+
+                                    @tileData.Course.CourseCode
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
             }
-            @foreach (String str in @GetAllSiblingErrors())
+
+            @* Sibling Errors *@
+            @foreach (var semester in State.CourseData)
             {
-                <tr class="SiblingError">
-                    <td>MISSING SIBLING</td>
-                    <td>@str</td>
-                </tr>
+                @foreach (var tileData in semester)
+                {
+                    @foreach (var error in tileData.GetSiblingErrors())
+                    {
+                        <tr class="SiblingError"
+                            @onmouseover="() => HighlightTile(error, tileData.Course)"
+                            @onmouseout="() => UnhighlightTile(error, tileData.Course)">
+                            <td>SIBLING ERROR</td>
+                            <td>
+                                <span style="font-weight:bold;">@error.CourseCode</span>
+                                must be completed the semester before
+                                <span style="font-weight:bold;">
+
+                                    @tileData.Course.CourseCode
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
             }
-            @foreach (String str in @GetAllPrereqWarnings())
+
+            @* Warnings *@
+
+            @foreach (var semester in State.CourseData)
             {
-                <tr class="PreReqWarning">
-                    <td>ERROR</td>
-                    <td>@str</td>
-                </tr>
+                @foreach (var tileData in semester)
+                {
+                    @foreach (var error in tileData.GetPreReqWarnings())
+                    {
+                        <tr class="PreReqWarning"
+                            @onmouseover="() => HighlightTile(error, tileData.Course)"
+                            @onmouseout="() => UnhighlightTile(error, tileData.Course)">
+                            <td>PREREQ ERROR</td>
+                            <td>
+                                <span style="font-weight:bold;">@error.CourseCode</span>
+                                should be completed before
+                                <span style="font-weight:bold;">
+
+                                    @tileData.Course.CourseCode
+                                </span>
+                            </td>
+                        </tr>
+
+                    }
+                }
             }
 
         </table>

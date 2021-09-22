@@ -2,12 +2,14 @@
 @using Chronos.Shared.Enums;
 @using Chronos.Shared.Modals;
 
-<div class="@tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+<div class="@highlightClass @tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
         @ondrop="HandleDrop"
         @ondragenter="HandleDragEnter"
         @ondragleave="HandleDragLeave"
         @ondragend="HandleDragEnd">
+
+
 
     @if (CompletedFlag)
     {
@@ -37,23 +39,47 @@
         <div class="ErrorSymbol">
             @if ((ErrorStatus.MissingAssumedKnowledge & Data.Status) > 0)
             {
-                <div class="Tooltip">
+                <div class="Tooltip"
+                    @onmouseover="() => Plan.HighlightTile(Data.GetPreReqWarnings())"
+                     @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqWarnings())"
+                     >
                     <span class="oi oi-question-mark"></span>
-                    <span class="ToolTipText">Missing Assumed Knowledge: @Data.GetPreReqErrors()</span>
+                    <span class="ToolTipText">
+                        Missing Assumed Knowledge:
+                        @String.Join(", ", @Data.GetPreReqWarnings().Select(course => course.CourseCode))
+                    </span>
                 </div>
             }
             @if ((ErrorStatus.MissingPrerequisite & Data.Status) > 0)
             {
-                <div class="Tooltip">
-                    <span class="oi oi-warning"></span>
-                    <span class="ToolTipText">Missing Pre-requisite: @Data.GetPreReqWarnings() </span>
+                <div class="Tooltip"
+                    @onmouseover="() => Plan.HighlightTile(Data.GetPreReqErrors())"
+                    @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqErrors())">
+                    <span class="oi oi-warning">
+
+                    </span>
+                    <span class="ToolTipText">
+                        Missing Pre-requisite:
+                        @String.Join(", ", @Data.GetPreReqErrors().Select(course => course.CourseCode))
+
+                    </span>
                 </div>
             }
             @if ((ErrorStatus.MissingSiblingCourse & Data.Status) > 0)
             {
-                <div class="Tooltip">
-                    <span class="oi oi-link-broken"></span>
-                    <span class="ToolTipText">Missing sibling course: @Data.GetSiblingErrors() </span>
+                <div class="Tooltip"
+                        @onmouseover="() => Plan.HighlightTile(Data.GetSiblingErrors())"
+                        @onmouseout="() => Plan.UnhighlightTile(Data.GetSiblingErrors())"
+                     >
+                    <span class="oi oi-link-broken"
+
+                          ></span>
+                    <span class="ToolTipText">
+                        Missing sibling course:
+
+                        @String.Join(", ", @Data.GetSiblingErrors().Select(course => course.CourseCode))
+
+                    </span>
                 </div>
             }
         </div>
@@ -140,6 +166,10 @@
     [CascadingParameter]
     TileSlot Slot { get; set; }
 
+    //[Parameter]
+    //public List<Course> Highlights { get; set; }
+
+
     [Parameter]
     public TileData Data { get; set; }
 
@@ -156,20 +186,32 @@
     private string tileClass = "Tile"; //CSS class based on TileType
     private string typeClass; //CSS class based on TileType
     private string errorClass = ""; //Css class based on Errors. 
-
+    private string highlightClass = "";
     protected override void OnParametersSet()
     {
         if (CompletedFlag)
         {
             tileClass = "CompletedCourse";
         }
+
+        //If this tile is in charge of a highlighted course
+
         UpdateTileType();
     }
+
+
     public void UpdateTileType()
     {
         typeClass = "";
         errorClass = "";
-
+        if (Plan.Highlights.Exists(c => c.CourseCode == Data.Course?.CourseCode))
+        {
+            highlightClass = "Highlight";
+        }
+        else
+        {
+            highlightClass = "";
+        }
 
         switch (Data.TileType)
         {
@@ -212,11 +254,11 @@
             }
             if ((Data.Status & (ErrorStatus.MissingPrerequisite | ErrorStatus.WrongCampus | ErrorStatus.WrongSemester | ErrorStatus.MissingSiblingCourse)) > 0) //Checks to see i fit has any errors. 
             {
-                errorClass += " Error";
+                errorClass += "Error";
             }
             else if ((Data.Status & ErrorStatus.MissingAssumedKnowledge) > 0) //CHecks to see if it has any warnings. 
             {
-                errorClass += " Warning";
+                errorClass += "Warning";
             }
         }
     }
@@ -334,7 +376,7 @@
     //This will run when the button in the top right is clicked, deleting the data in the tile. 
     private void trashButton()
     {
-        Data.Status = 0;
+        Data.ClearAllWarnings();
         Data.Course = null;
         UpdateTileType();
     }
