@@ -1,9 +1,9 @@
 ﻿@page "/Admin/AddCourseAvailability"
 
-@inject CourseService CourseService 
+@inject CourseService CourseService
 @inject IToastService ToastService
 
-<EditForm OnSubmit="SubmitAvailability" Model="CA">
+<EditForm class="formfile" OnSubmit="SubmitAvailability" Model="CA">
     <h4>Select Course</h4>
     <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="CA.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
         <SelectedTemplate Context="course">
@@ -24,33 +24,44 @@
         <option value="@AvailableCampus.PortMacquarie">Port Macquarie</option>
     </select>
 
-    <h4>Select the constraint type</h4>
-    <select class="form-control selectpicker" @bind="CA.Runtime">
-        <option value="-1">Please select ...</option>
-        <option value="@CourseRuntime.Semester1">Semester 1</option>
-        <option value="@CourseRuntime.Semester2">Semester 2</option>
-        <option value="@(CourseRuntime.Semester1 | CourseRuntime.Semester2)">Semesters 1 and 2</option>
-    </select>
+    <h4>Select the Runtimes</h4>
+    <div class="inputGroup">
+        <input type="checkbox" id="sem1" name="sem1" @bind="s1" />
+        <label for="sem1">Semester 1</label>
+    </div>
+    <div class="inputGroup">
+        <input type="checkbox" id="sem2" name="sem2" @bind="s2" />
+        <label for="sem2">Semester 2</label>
+    </div>
 
     <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
 </EditForm>
 
 
-@code 
+@code
 {
     private CAModel CA;
     private IEnumerable<Course> Courses;
 
+    private bool s1, s2;
+
     protected override async Task OnInitializedAsync()
     {
         CA = new CAModel();
-        CA.Runtime = (CourseRuntime) (-1);
+        CA.Runtime = 0;
         Courses = await CourseService.GetAllCoursesAsync();
     }
 
     private async Task SubmitAvailability()
     {
-        if (await CourseService.GetCourseRuntimeAsync(CA.Course.CourseID, CA.Campus) == 0)
+        CA.Runtime |= s1 ? CourseRuntime.Semester1 : 0;
+        CA.Runtime |= s2 ? CourseRuntime.Semester2 : 0;
+
+        if (CA.Runtime == 0)
+        {
+            ToastService.ShowToast(ToastLevel.Error, $"Please select at least one runtime");
+        }
+        else if (await CourseService.GetCourseRuntimeAsync(CA.Course.CourseID, CA.Campus) == 0)
         {
             CourseAvailability courseAvailability = new CourseAvailability()
             {
