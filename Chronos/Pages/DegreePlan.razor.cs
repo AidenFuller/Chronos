@@ -133,8 +133,6 @@ namespace Chronos.Pages
                 ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed in the semester before {payload.Course.CourseCode}");
                 payload.Status |= ErrorStatus.MissingSiblingCourse;
                 payload.ErrorData[ErrorStatus.MissingSiblingCourse].Add(course);
-                FindTileData(course).Status |= ErrorStatus.MissingSiblingCourse;
-                FindTileData(course).ErrorData[ErrorStatus.MissingSiblingCourse].Add(payload.Course);
                 pairs.Add((course.CourseID, payload.Course.CourseID));
                 SetStatus(course, ErrorStatus.MissingSiblingCourse);
             }
@@ -164,8 +162,6 @@ namespace Chronos.Pages
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{payload.Course.CourseCode} must be completed in the semester before {course.CourseCode}");
                 FindTileData(course).ErrorData[ErrorStatus.MissingSiblingCourse].Add(payload.Course);
-                payload.Status |= ErrorStatus.MissingSiblingCourse;
-                payload.ErrorData[ErrorStatus.MissingSiblingCourse].Add(course);
                 pairs.Add((payload.Course.CourseID, course.CourseID));
                 payload.Status = ErrorStatus.MissingSiblingCourse;
                 SetStatus(course, ErrorStatus.MissingSiblingCourse);
