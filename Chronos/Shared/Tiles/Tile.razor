@@ -2,7 +2,7 @@
 @using Chronos.Shared.Enums;
 @using Chronos.Shared.Modals;
 
-<div class="@highlightClass @tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+<div class="@dropClass @highlightClass @tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
         @ondrop="HandleDrop"
         @ondragenter="HandleDragEnter"
@@ -344,7 +344,7 @@
 
     private void HandleDragEnter()
     {
-        if (Data != Plan.DragPayload)
+        if (Data != Plan.DragPayload && Plan.CanDataRunInBlock(Slot.BlockType, Data))
         {
             dropClass = "droppable";
         }

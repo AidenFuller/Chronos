@@ -36,6 +36,12 @@ namespace Chronos.Pages
         public int WarningCount { get; set; }
 
         //Updates the degree plan after a drag
+
+
+        public bool CanDataRunInBlock(CourseRuntime blockTypeTo, TileData draggedOn)
+        {
+            return ((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null);
+        }
         public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
         {
             if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
@@ -50,7 +56,7 @@ namespace Chronos.Pages
             {
                 ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course with a blank course.");
             }
-            if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
+            if (CanDataRunInBlock(blockTypeTo, draggedOn))
             {
                 Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
                 draggedOn.ClearAllWarnings();

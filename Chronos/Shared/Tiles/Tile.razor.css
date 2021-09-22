@@ -85,9 +85,9 @@
 }
 
 
-.droppable > .courseCode {
-    background-color: greenyellow !important;
-}
+
+
+
 
 .Elective > .courseCode {
     background-color: #F2DD60 !important;
@@ -224,6 +224,12 @@
 }
 .Highlight {
     border-color: red;
+    border-style: solid;
+    border-width: 5px;
+}
+
+.droppable{
+    border-color: green;
     border-style: solid;
     border-width: 5px;
 }
