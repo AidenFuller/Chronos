@@ -677,6 +677,8 @@ namespace Chronos.Pages
                 flag = false;
             else if (n % 2 == 1 && (td.Runtime & CourseRuntime.Semester2) == 0)
                 flag = false;
+            else if (output[n].Sum(c => c.Course?.Units ?? 10) + td.Course.Units > State.UnitsPerBlock)
+                flag = false;
             else if (!await CheckSiblingCourse(td, n))
                 flag = false;
             else if (int.Parse(td.Course.CourseCode[4].ToString()) > groupNumber + 1)
