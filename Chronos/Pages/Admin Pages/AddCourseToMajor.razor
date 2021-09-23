@@ -6,41 +6,57 @@
 @inject CourseService CourseService 
 @inject IToastService ToastService  
 
-<EditForm OnSubmit="SubmitCourseToMajor" Model="MCM">
-    <h4>Select a Degree to add a course to</h4>
-    <h4>Select a Degree</h4>
-    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="selectedDegree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="degree">
-            Bachelor of @degree.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="degree">
-            Bachelor of @degree.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
-    <h4>Select a Major</h4>
-    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="MCM.Major" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="major">
-            @major.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="major">
-            @major.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
-    <h4>Select a Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="MCM.Course" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            @course.Name (@course.CourseCode)
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            @course.Name (@course.CourseCode)
-        </ResultTemplate>
-    </BlazoredTypeahead>
+<div class="adminform">
+    <EditForm OnSubmit="SubmitCourseToMajor" Model="MCM">
+        <h4>Select a Degree</h4>
+        <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="selectedDegree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="degree">
+                Bachelor of @degree.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="degree">
+                Bachelor of @degree.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-    <h4>Compulsory?</h4>
-    <input type="checkbox" @bind-value="isCompulsory" />
+        @if (selectedDegree != null)
+        {
+            <h4>Select a Major</h4>
+            <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="MCM.Major" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+                <SelectedTemplate Context="major">
+                    @major.Name
+                </SelectedTemplate>
+                <ResultTemplate Context="major">
+                    @major.Name
+                </ResultTemplate>
+            </BlazoredTypeahead>
+        }
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
+        <h4>Select a Course</h4>
+        <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="MCM.Course" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                @course.Name (@course.CourseCode)
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                @course.Name (@course.CourseCode)
+            </ResultTemplate>
+        </BlazoredTypeahead>
+
+        <h4>Type</h4>
+        <ul class="inputGroup">
+            <InputRadioGroup Name="type" @bind-Value="isCompulsory">
+                <li>
+                    <InputRadio Value="0" id="dir" Name="type" />
+                    <label for="dir">Directed</label>
+                </li>
+                <li>
+                    <InputRadio Value="1" id="com" Name="type" />
+                    <label for="com">Compulsory</label>
+                </li>
+            </InputRadioGroup>
+        </ul>
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Add Course</button>
+    </EditForm>
+</div>
 
 @code {
 
@@ -53,7 +69,7 @@
     private Degree selectedDegree;
     private Major selectedMajor;
 
-    private bool isCompulsory;
+    private int isCompulsory;
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,7 +86,7 @@
     {
         if (!await MCService.DoesMajorContainCourse(MCM.Major.MajorID, MCM.Course.CourseID))
         {
-            await MCService.AddCourseToMajorAsync(MCM.Course.CourseID, MCM.Major.MajorID, isCompulsory);
+            await MCService.AddCourseToMajorAsync(MCM.Course.CourseID, MCM.Major.MajorID, isCompulsory == 1);
             ToastService.ShowToast(ToastLevel.Success, $"{MCM.Course.CourseCode} was added to {MCM.Major.Name}");
         }
         else

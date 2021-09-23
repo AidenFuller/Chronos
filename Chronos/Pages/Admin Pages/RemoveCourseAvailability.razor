@@ -3,33 +3,34 @@
 @inject CourseService CourseService
 @inject IToastService ToastService
 
-<EditForm OnSubmit="SubmitAvailability" Model="CA">
+<div class="adminform">
+    <EditForm OnSubmit="SubmitAvailability" Model="CA">
 
-    <h4>Select the Campus</h4>
-    <select class="form-control selectpicker" @bind="CA.Campus">
-        <option value="@AvailableCampus.Callaghan">Callaghan</option>
-        <option value="@AvailableCampus.Ourimbah">Ourimbah</option>
-        <option value="@AvailableCampus.NewcastleCity">NUSpace</option>
-        <option value="@AvailableCampus.PortMacquarie">Port Macquarie</option>
-    </select>
+        <h4>Select the Campus</h4>
+        <select class="form-control selectpicker" @bind="CA.Campus">
+            <option value="@AvailableCampus.Callaghan">Callaghan</option>
+            <option value="@AvailableCampus.Ourimbah">Ourimbah</option>
+            <option value="@AvailableCampus.NewcastleCity">NUSpace</option>
+            <option value="@AvailableCampus.PortMacquarie">Port Macquarie</option>
+        </select>
 
-    <h4>Select Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="CA.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            <!--This is the search Template and what will be returned.-->
-            @course.CourseCode - @course.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            <!--This is what is shown when it is selected.-->
-            @course.CourseCode - @course.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
+        <h4>Select Course</h4>
+        <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="CA.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                <!--This is the search Template and what will be returned.-->
+                @course.CourseCode (@course.Name)
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                <!--This is what is shown when it is selected.-->
+                @course.CourseCode (@course.Name)
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
 
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
-
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Availability</button>
+    </EditForm>
+</div>
 
 @code {
 

@@ -3,31 +3,37 @@
 @inject DegreeService DegreeService
 @inject IToastService ToastService
 
-<BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
-    <SelectedTemplate Context="degree">
-        Bachelor of @degree.Name
-    </SelectedTemplate>
-    <ResultTemplate Context="degree">
-        Bachelor of @degree.Name
-    </ResultTemplate>
-</BlazoredTypeahead>
+<div class="adminform">
+    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="SelectedDegree" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="degree">
+            Bachelor of @degree.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="degree">
+            Bachelor of @degree.Name
+        </ResultTemplate>
+    </BlazoredTypeahead>
 
-@if (SelectedDegree != null)
-{
-    <EditForm OnSubmit="ReplaceDegree" Model="SelectedDegree">
-        <h4>Degree Name</h4>
-        <InputText @bind-Value="SelectedDegree.Name" placeholder="Enter Degree Name" required />
-        <h4>Amount Of Units</h4>
-        <InputNumber step="20" @bind-Value="SelectedDegree.UnitLength" />
-        <h4>Can it be completed internationally?</h4>
-        <InputCheckbox @bind-Value="SelectedDegree.InternationalsAllowed" />
-        <h4>How many Elective Units?</h4>
-        <InputNumber step="10" @bind-Value="SelectedDegree.ElectiveUnits" />
+    @if (SelectedDegree != null)
+    {
+        <EditForm OnSubmit="ReplaceDegree" Model="SelectedDegree">
+            <h4>Degree Name</h4>
+            <InputText @bind-Value="SelectedDegree.Name" placeholder="Enter Degree Name" required />
+            <h4>Amount Of Units</h4>
+            <InputNumber step="20" @bind-Value="SelectedDegree.UnitLength" />
+            <h4>Domesticality</h4>
+            <ul class="inputGroup">
+                <li>
+                    <input id="r1" type="checkbox" name="checkbox" @bind="SelectedDegree.InternationalsAllowed">
+                    <label for="r1">International Students Accepted</label>
+                </li>
+            </ul>
+            <h4>How many Elective Units?</h4>
+            <InputNumber step="10" @bind-Value="SelectedDegree.ElectiveUnits" />
 
-        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
-    </EditForm>
-}
-
+            <button type="submit" class="submit-button submit-button-colour submit-button-animation">Edit Degree</button>
+        </EditForm>
+    }
+</div>
 
 @code {
     private Degree SelectedDegree;

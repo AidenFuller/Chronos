@@ -3,22 +3,24 @@
 @inject IToastService ToastService
 @inject MajorService MajorService 
 
-<h3> Add Major to Degree</h3>
-<EditForm OnSubmit="SubmitMajor" Model="major">
-    <h4>Major Name</h4>
-    <InputText @bind-Value="major.Name" placeholder="Enter Degree Name" required />
-    <h4>Degree you want to add it to.</h4>
-    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="degree">
-            Bachelor of @degree.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="degree">
-            Bachelor of @degree.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
+<div class="adminform">
+    <h3> Add Major to Degree</h3>
+    <EditForm OnSubmit="SubmitMajor" Model="major">
+        <h4>Major Name</h4>
+        <InputText @bind-Value="major.Name" placeholder="Enter Degree Name" required />
+        <h4>Degree you want to add it to.</h4>
+        <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="degree">
+                Bachelor of @degree.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="degree">
+                Bachelor of @degree.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Degree</button>
-</EditForm>
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Add Major</button>
+    </EditForm>
+</div>
 
 @code
 {
