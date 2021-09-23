@@ -459,7 +459,8 @@ namespace Chronos.Pages
                     directedUnits = 0;
                 }
 
-                foreach (Course c in completedCourseValidator)
+                
+                foreach (Course c in completedCourseValidator.Take(State.Degree.ElectiveUnits))
                 {
                     TileData td = new TileData()
                     {
