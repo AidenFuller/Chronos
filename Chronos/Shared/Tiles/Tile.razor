@@ -43,7 +43,8 @@
                     @onmouseover="() => Plan.HighlightTile(Data.GetPreReqWarnings())"
                      @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqWarnings())"
                      >
-                    <span class="oi oi-question-mark"></span>
+                    @*<span class="oi oi-question-mark"></span>*@
+                    <img class="ErrorIcon"  src="/Images/Orange.png"/>
                     <span class="ToolTipText">
                         Missing Assumed Knowledge:
                         @String.Join(", ", @Data.GetPreReqWarnings().Select(course => course.CourseCode))
@@ -55,9 +56,8 @@
                 <div class="Tooltip"
                     @onmouseover="() => Plan.HighlightTile(Data.GetPreReqErrors())"
                     @onmouseout="() => Plan.UnhighlightTile(Data.GetPreReqErrors())">
-                    <span class="oi oi-warning">
-
-                    </span>
+                    @*<span class="oi oi-warning"></span>*@
+                    <img class="ErrorIcon"  src="/Images/Red.png"/>
                     <span class="ToolTipText">
                         Missing Pre-requisite:
                         @String.Join(", ", @Data.GetPreReqErrors().Select(course => course.CourseCode))
@@ -71,12 +71,11 @@
                         @onmouseover="() => Plan.HighlightTile(Plan.GetPreSiblingErrorsCombined(Data).Result)"
                         @onmouseout="() => Plan.UnhighlightTile(Plan.GetPreSiblingErrorsCombined(Data).Result)"
                      >
-                    <span class="oi oi-link-broken"
+                    @*<span class="oi oi-link-broken"></span>*@
 
-                          ></span>
+                    <img class="ErrorIcon" src="/Images/Purple.png"/>
                     <span class="ToolTipText">
                         Missing sibling course:
-
                         @String.Join(", ", Plan.GetPreSiblingErrorsCombined(Data).Result.Select(course => course.CourseCode))
 
                     </span>
