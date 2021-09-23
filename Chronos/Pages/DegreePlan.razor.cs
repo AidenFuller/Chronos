@@ -31,6 +31,7 @@ namespace Chronos.Pages
         public List<TileData> DragFrom { get; set; }
         public CourseRuntime BlockTypeFrom { get; set; }
 
+        private bool hideLegend;
 
         public int ErrorCount { get; set; }
         public int WarningCount { get; set; }
@@ -330,6 +331,8 @@ namespace Chronos.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            hideLegend = true;
+
             Degree = State.Degree;
             Major = State.Major;
             Campus = State.Campus;

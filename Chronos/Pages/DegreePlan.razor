@@ -20,10 +20,10 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 
-    <button class="dropbtn"><b>Looking for color codes?</b></button>
-    <div class="show">
+    <button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
+    <div hidden="@hideLegend">
+        <h5>Course Color Codes:</h5>
         <ul class="ColorCodelegend">
-            <h5>Course Color Codes:</h5>
             <li><span class="Core"></span> Core</li>
             <li><span class="Compulsory"></span> Compulsory</li>
             <li><span class="Directed"></span> Directed</li>
