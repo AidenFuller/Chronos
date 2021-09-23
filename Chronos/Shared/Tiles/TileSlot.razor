@@ -15,14 +15,16 @@
     }
     else
     {
+
         @foreach (TileData tile in Tiles)
         {
-            <Tile Data=@tile CompletedFlag=@CompletedFlag/>
+            <Tile Data=@tile CompletedFlag=@CompletedFlag />
         }
         <div style="text-align: center;">
             <GhostTile Show="@showGhost" CompletedFlag=@CompletedFlag />
         </div>
-        
+
+
     }
 
 
