@@ -145,13 +145,5 @@
         background-color:white;
         color:purple;
     }
-.show{
-    visibility:hidden;
-}
-
-.dropbtn:hover  + .show
-{
-    visibility:visible;
-}
 
 
