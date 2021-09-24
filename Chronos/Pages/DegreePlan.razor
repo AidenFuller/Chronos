@@ -72,20 +72,22 @@
                                     break;
                                 }
                                 <p class="semester-label">Semester @(i + 1)</p>
-                                <div class="semester">
-                                    @* Assuming Semesters *@
+                                @* Assuming Semesters *@
 
-                                    @if (i == 0)
-                                    {
-                                        //Semester 1
+                                @if (i == 0)
+                                {
+                                    //Semester 1
+                                    <div class="semester vertical-line">
                                         <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                                    }
-                                    else
-                                    {
-                                        //Semester 2
+                                    </div>
+                                }
+                                else
+                                {
+                                    //Semester 2
+                                    <div class="semester">
                                         <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                                    }
-                                </div>
+                                    </div>
+                                }
                             }
                         </div>
                     }
