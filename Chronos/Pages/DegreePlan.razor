@@ -5,6 +5,7 @@
 @inject IToastService ToastService
 @inject SaveState State
 @inject NavigationManager NavManager
+@inject IJSRuntime js
 
 @page "/DegreePlan"
 
@@ -195,6 +196,10 @@
     </div>
     <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
         Save
+    </button>
+
+    <button class="json-save" @onclick=@DownloadPlanAsync>
+        Download Final Plan
     </button>
 
     <button class="json-save" @onclick=@(async () => await ResetAsync(true))>
