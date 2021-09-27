@@ -45,6 +45,11 @@ namespace Chronos.Pages
         }
         public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
         {
+            if (State.CompletedTiles.Contains(DragPayload) && draggedOn.Course != null)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course out. You must add it to the end of the line.");
+                return;
+            }
             if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{DragPayload.Course.CourseCode} does not run in {blockTypeTo}");
@@ -53,10 +58,7 @@ namespace Chronos.Pages
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{draggedOn.Course.CourseCode} does not run in {BlockTypeFrom}");
             }
-            if (State.CompletedTiles.Contains(DragPayload) && draggedOn.Course == null)
-            {
-                ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course with a blank course.");
-            }
+
             if (CanDataRunInBlock(blockTypeTo, draggedOn))
             {
                 Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
