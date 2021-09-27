@@ -41,17 +41,17 @@
 @if (isReady)
 {
     <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
-    <div>
-        <h4>Degree: @State.Degree.Name</h4>
-        @if(!(State.Major.Name.Equals("Default")))
-        {
-            <h4>Major: @State.Major.Name</h4>
-        }
-    </div>
+    
     <CascadingValue Value="this">
 
-        <div class="degreePlan">
-
+        <div id="degreePlan" class="degreePlan">
+            <div>
+                <h4>Degree: @State.Degree.Name</h4>
+                @if (!(State.Major.Name.Equals("Default")))
+                {
+                    <h4>Major: @State.Major.Name</h4>
+                }
+            </div>
 
             @*Pass boolean to determine if ghosts are showing to all children*@
             @if (State.CourseData == null)
@@ -61,6 +61,11 @@
             else
             {
                 bool EOF = false;
+                <div class="year-row">
+                    <div class="semester-label">Semester 1</div>
+                    <div class="splitter"></div>
+                    <div class="semester-label">Semester 2</div>
+                </div>
                 for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
                 {
                     <div class="year-row">
@@ -70,7 +75,10 @@
                             {
                                 break;
                             }
-                            <p class="semester-label">Semester @(i + 1)</p>
+                            if (i > 0)
+                            {
+                                <div class="splitter"></div>
+                            }
                             <div class="semester">
                                 @* Assuming Semesters *@
 
@@ -91,32 +99,30 @@
 
                 <br />
 
-                <div>
-                    <div style="float:left">
-                        <button @onclick="AddYear" class="btn-info">Add Year</button>
-                    </div>
-
-
-                    @*//-----------------------------------------------
-                    //This button will remove the empty year
-                    //----------------------------------------------*@
-
-                    <div style="float:right;">
-                        <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
-                    </div>
-                </div>
-
             }
         </div>
 
+        <div>
+            <div style="float:left">
+                <button @onclick="AddYear" class="btn-info">Add Year</button>
+            </div>
 
+
+            @*//-----------------------------------------------
+            //This button will remove the empty year
+            //----------------------------------------------*@
+
+            <div style="float:right;">
+                <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+            </div>
+        </div>
         <br />
         <br />
-        
+
 
         @* Container *@
         <div style="display:flex; text-align:center;">
-            
+
             <div style="flex: 0 0 49%; margin: 10px;">
                 <h4>Completed Courses</h4>
                 <div class="completedCourses">

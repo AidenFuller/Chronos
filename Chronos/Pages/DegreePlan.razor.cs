@@ -1007,7 +1007,7 @@ namespace Chronos.Pages
 
         private bool IsValidState()
         {
-            return State.CourseData.All(slot => slot.All(tile => tile.Status == 0 || tile.Status == ErrorStatus.MissingAssumedKnowledge));
+            return State.CourseData.All(slot => slot.All(tile => tile.Course is not null && (tile.Status == 0 || tile.Status == ErrorStatus.MissingAssumedKnowledge)));
         }
 
         private async Task DownloadPlanAsync()
@@ -1019,7 +1019,7 @@ namespace Chronos.Pages
             }
             else
             {
-                ToastService.ShowToast(ToastLevel.Error, "There are still inhibiting errors which prevents your plan from being valid");
+                ToastService.ShowToast(ToastLevel.Error, "There are still errors or blank tiles which prevents your plan from being valid");
             }
         }
     }
