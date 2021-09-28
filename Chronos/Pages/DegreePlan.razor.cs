@@ -45,7 +45,7 @@ namespace Chronos.Pages
         }
         public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
         {
-            if (State.CompletedTiles.Contains(DragPayload) && draggedOn.Course != null)
+            if (State.CompletedTiles.Contains(DragPayload))
             {
                 ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course out. You must add it to the end of the line.");
                 return;
