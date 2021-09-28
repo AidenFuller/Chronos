@@ -5,15 +5,40 @@
     height:100%;
 }
 #header_logo {
+    position: relative;
+    left: 0px;
+
     padding-top: 1em;
 }
 #settings_button {
     /*padding-top: 1em;*/
     padding: 10%;
+    position: relative;
+    right: 0px;
+    float:right;
 }
 
 #settings_button:hover {
     animation: spin 800ms ease-in-out 1;
+}
+
+#adminPanel {
+    background-color: white;
+
+    width: 200px;
+    height: auto;
+    top: 60px;
+    right: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 10px;
+    position: fixed;
+    padding: 10px
+}
+.adminSubmitButton{
+    width: 100%;
 }
 
 @keyframes spin {
