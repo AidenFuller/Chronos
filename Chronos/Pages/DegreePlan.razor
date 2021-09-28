@@ -70,41 +70,43 @@
         <div class="degreePlan">
 
 
-            @*Pass boolean to determine if ghosts are showing to all children*@
-            @if (State.CourseData == null)
-            {
-                <p>Loading...</p>
-            }
-            else
-            {
-                bool EOF = false;
-                for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
+                @*Pass boolean to determine if ghosts are showing to all children*@
+                @if (State.CourseData == null)
                 {
-                    <div class="year-row">
-                        @for (int i = 0; i < State.BlocksPerYear; i++)
-                        {
-                            if (EOF = !enumerator.MoveNext())
+                    <p>Loading...</p>
+                }
+                else
+                {
+                    bool EOF = false;
+                    for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
+                    {
+                        <div class="year-row">
+                            @for (int i = 0; i < State.BlocksPerYear; i++)
                             {
-                                break;
-                            }
-                            <p class="semester-label">Semester @(i + 1)</p>
-                            <div class="semester">
+                                if (EOF = !enumerator.MoveNext())
+                                {
+                                    break;
+                                }
+                                <p class="semester-label">Semester @(i + 1)</p>
                                 @* Assuming Semesters *@
 
                                 @if (i == 0)
                                 {
                                     //Semester 1
-                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                    <div class="semester vertical-line">
+                                        <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
+                                    </div>
                                 }
                                 else
                                 {
                                     //Semester 2
-                                    <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                    <div class="semester">
+                                        <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
+                                    </div>
                                 }
-                            </div>
-                        }
-                    </div>
-                }
+                            }
+                        </div>
+                    }
 
                 <br />
 
