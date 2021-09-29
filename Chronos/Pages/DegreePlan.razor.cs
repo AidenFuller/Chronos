@@ -31,11 +31,18 @@ namespace Chronos.Pages
         public List<TileData> DragFrom { get; set; }
         public CourseRuntime BlockTypeFrom { get; set; }
 
+        private bool hideLegend;
 
         public int ErrorCount { get; set; }
         public int WarningCount { get; set; }
 
         //Updates the degree plan after a drag
+
+
+        public bool CanDataRunInBlock(CourseRuntime blockTypeTo, TileData draggedOn)
+        {
+            return ((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null);
+        }
         public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
         {
             if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
@@ -50,7 +57,7 @@ namespace Chronos.Pages
             {
                 ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course with a blank course.");
             }
-            if (((blockTypeTo & DragPayload.Runtime) > 0 || DragPayload.Course == null) && ((BlockTypeFrom & draggedOn.Runtime) > 0 || draggedOn.Course == null))
+            if (CanDataRunInBlock(blockTypeTo, draggedOn))
             {
                 Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
                 draggedOn.ClearAllWarnings();
@@ -313,14 +320,16 @@ namespace Chronos.Pages
             DragPayload.ClearAllWarnings();
 
 
-
-            FiftyUnitWarning(slot);
+            if (slot != State.CompletedTiles)
+            {
+                FiftyUnitWarning(slot);
+            }
 
             await CheckPreceedingCourse(DragFrom, slot, DragPayload, null);
             await UpdateReliants(DragFrom, slot, DragPayload, null);
+
             if (slot != State.CompletedTiles)
             {
-
                 await ShowSwapWarnings(DragFrom, slot, DragPayload, null);
             }
             State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
@@ -330,6 +339,8 @@ namespace Chronos.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            hideLegend = true;
+
             Degree = State.Degree;
             Major = State.Major;
             Campus = State.Campus;
@@ -459,7 +470,8 @@ namespace Chronos.Pages
                     directedUnits = 0;
                 }
 
-                foreach (Course c in completedCourseValidator)
+                
+                foreach (Course c in completedCourseValidator.Take(State.Degree.ElectiveUnits))
                 {
                     TileData td = new TileData()
                     {
@@ -675,6 +687,8 @@ namespace Chronos.Pages
             if (n % 2 == 0 && (td.Runtime & CourseRuntime.Semester1) == 0)
                 flag = false;
             else if (n % 2 == 1 && (td.Runtime & CourseRuntime.Semester2) == 0)
+                flag = false;
+            else if (output[n].Sum(c => c.Course?.Units ?? 10) + td.Course.Units > State.UnitsPerBlock)
                 flag = false;
             else if (!await CheckSiblingCourse(td, n))
                 flag = false;

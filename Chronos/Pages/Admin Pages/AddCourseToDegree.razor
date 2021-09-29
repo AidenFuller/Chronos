@@ -5,28 +5,30 @@
 @inject DegreeCourseService DegreeCourseService
 @inject IToastService ToastService  
 
-<EditForm OnSubmit="SubmitDegreeToCourse" Model="DCM">
-    <h4>Select a Degree to add a course to</h4>
-    <h4>Select a Degree</h4>
-    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="DCM.Degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="degree">
-            Bachelor of @degree.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="degree">
-            Bachelor of @degree.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
-    <h4>Select a Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="DCM.Course" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            @course.Name (@course.CourseCode)
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            @course.Name (@course.CourseCode)
-        </ResultTemplate>
-    </BlazoredTypeahead>
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
+<div class="adminform">
+    <EditForm OnSubmit="SubmitDegreeToCourse" Model="DCM">
+        <h4>Select a Degree to add a course to</h4>
+        <h4>Select a Degree</h4>
+        <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="DCM.Degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="degree">
+                Bachelor of @degree.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="degree">
+                Bachelor of @degree.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
+        <h4>Select a Course</h4>
+        <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="DCM.Course" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                @course.Name (@course.CourseCode)
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                @course.Name (@course.CourseCode)
+            </ResultTemplate>
+        </BlazoredTypeahead>
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Add Course</button>
+    </EditForm>
+</div>
 
 @code 
 {

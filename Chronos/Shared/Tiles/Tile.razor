@@ -2,7 +2,7 @@
 @using Chronos.Shared.Enums;
 @using Chronos.Shared.Modals;
 
-<div class="@highlightClass @tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
+<div class="@dropClass @highlightClass @tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
         @ondrop="HandleDrop"
         @ondragenter="HandleDragEnter"
@@ -14,7 +14,7 @@
     @if (CompletedFlag)
     {
         //This tile is in the completed box
-        <div style="width:100%;">
+        <div  style=" width:100%;">
             CourseID: @Data.Course.CourseCode
             Description: @Data.Course.Name
             Units: @Data.Course.Units
@@ -101,7 +101,7 @@
 
 
 
-            <div class="courseCode">
+            <div style ="pointer-events: none;" class="courseCode">
                 @*---------------------------------------------
                     //This div is to show course code on top of the tile
                     //hr tag margin 0 to remove the white space in between the line
@@ -113,7 +113,7 @@
 
 
 
-        <div class="courseName">
+        <div style ="pointer-events: none;" class="courseName">
 
             @*--------------------------------------------------
                 //This div is to show the course name
@@ -123,7 +123,7 @@
             <p style="font-size:13px;"> @Data.Course.Name </p>
         </div>
 
-        <div class="courseDes">
+        <div style ="pointer-events: none;" class="courseDes">
 
             @*//---------------------------------------------------
                 //This piece of code is to show Units, Semester and available campus
@@ -343,7 +343,7 @@
 
     private void HandleDragEnter()
     {
-        if (Data != Plan.DragPayload)
+        if (Data != Plan.DragPayload && Plan.CanDataRunInBlock(Slot.BlockType, Data))
         {
             dropClass = "droppable";
         }

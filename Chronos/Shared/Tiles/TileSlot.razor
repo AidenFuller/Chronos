@@ -15,14 +15,16 @@
     }
     else
     {
+
         @foreach (TileData tile in Tiles)
         {
-            <Tile Data=@tile CompletedFlag=@CompletedFlag/>
+            <Tile Data=@tile CompletedFlag=@CompletedFlag />
         }
         <div style="text-align: center;">
             <GhostTile Show="@showGhost" CompletedFlag=@CompletedFlag />
         </div>
-        
+
+
     }
 
 
@@ -68,7 +70,11 @@
 
         //===== GhostTile Management =====
         //Ghosts are showing AND this tile slot is not the origin AND the payload runs in this semester
-        if (Plan.ShowGhosts == true && !Tiles.Contains(Plan.DragPayload) && RunsInSlot(Plan.DragPayload) && Tiles.Sum(c => c.Course?.Units ?? 10) != TOTAL_UNITS_ALLOWED)
+        if (Plan.ShowGhosts && CompletedFlag && Plan.DragPayload.Course is not null)
+        {
+            showGhost = true;
+        }
+        else if (Plan.ShowGhosts && !Tiles.Contains(Plan.DragPayload) && RunsInSlot(Plan.DragPayload) && Tiles.Sum(c => c.Course?.Units ?? 10) + (Plan.DragPayload.Course?.Units ?? 10) <= TOTAL_UNITS_ALLOWED)
         {
             showGhost = true;
         }

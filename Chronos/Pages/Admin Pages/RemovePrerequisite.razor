@@ -3,35 +3,35 @@
 @inject CourseService CourseService
 @inject IToastService ToastService
 
+<div class="adminform">
+    <EditForm OnSubmit="SubmitPrerequisites" Model="PCM">
+        <h4>Select Course</h4>
+        <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="PCM.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                <!--This is the search Template and what will be returned.-->
+                @course.CourseCode - @course.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                <!--This is what is shown when it is selected.-->
+                @course.CourseCode - @course.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-<EditForm OnSubmit="SubmitPrerequisites" Model="PCM">
-    <h4>Select Course</h4>
-    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="PCM.Course" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            <!--This is the search Template and what will be returned.-->
-            @course.CourseCode - @course.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            <!--This is what is shown when it is selected.-->
-            @course.CourseCode - @course.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
+        <h4>Select the course which is to be removed</h4>
+        <BlazoredTypeahead SearchMethod="SearchPrerequisites" @bind-Value="PCM.Prerequisite" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="course">
+                <!--This is the search Template and what will be returned.-->
+                @course.CourseCode - @course.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="course">
+                <!--This is what is shown when it is selected.-->
+                @course.CourseCode - @course.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-    <h4>Select the course which is to be removed</h4>
-    <BlazoredTypeahead SearchMethod="SearchPrerequisites" @bind-Value="PCM.Prerequisite" placeholder="Please search for your course..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="course">
-            <!--This is the search Template and what will be returned.-->
-            @course.CourseCode - @course.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="course">
-            <!--This is what is shown when it is selected.-->
-            @course.CourseCode - @course.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
-
-    <button type="submit" class="submit-button submit-button-colour submit-button-animation">Submit Course</button>
-</EditForm>
-
+        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Prerequisite</button>
+    </EditForm>
+</div>
 
 @code
 {

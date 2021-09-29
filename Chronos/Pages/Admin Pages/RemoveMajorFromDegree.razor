@@ -4,37 +4,38 @@
 @inject IToastService ToastService
 @inject MajorService MajorService
 
+<div class="adminform">
+    <EditForm OnSubmit="SubmitMajor" Model="MDM">
+        <h4>Degree you want to add it to.</h4>
+        <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="MDM.Degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="degree">
+                Bachelor of @degree.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="degree">
+                Bachelor of @degree.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-<EditForm OnSubmit="SubmitMajor" Model="MDM">
-    <h4>Degree you want to add it to.</h4>
-    <BlazoredTypeahead SearchMethod="SearchDegrees" @bind-Value="MDM.Degree" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="degree">
-            Bachelor of @degree.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="degree">
-            Bachelor of @degree.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
+        <h4>Major you want to remove</h4>
+        <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="MDM.Major" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
+            <SelectedTemplate Context="degree">
+                Bachelor of @degree.Name
+            </SelectedTemplate>
+            <ResultTemplate Context="degree">
+                Bachelor of @degree.Name
+            </ResultTemplate>
+        </BlazoredTypeahead>
 
-    <h4>Major you want to remove</h4>
-    <BlazoredTypeahead SearchMethod="SearchMajors" @bind-Value="MDM.Major" placeholder="Please search for the degree you want to add to..." EnableDropDown="true" ShowDropDownOnFocus="true">
-        <SelectedTemplate Context="degree">
-            Bachelor of @degree.Name
-        </SelectedTemplate>
-        <ResultTemplate Context="degree">
-            Bachelor of @degree.Name
-        </ResultTemplate>
-    </BlazoredTypeahead>
-
-    @if (processing)
-    {
-        <div class="spinner"></div>
-    }
-    else
-    {
-        <button type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Major</button>
-    }
-</EditForm>
+        @if (processing)
+        {
+            <div class="spinner"></div>
+        }
+        else
+        {
+            <button type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Major</button>
+        }
+    </EditForm>
+</div>
 
 @code
 {

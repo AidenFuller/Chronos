@@ -20,10 +20,10 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 
-    <button class="dropbtn"><b>Looking for color codes?</b></button>
-    <div class="show">
+    <button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
+    <div hidden="@hideLegend">
+        <h5>Course Color Codes:</h5>
         <ul class="ColorCodelegend">
-            <h5>Course Color Codes:</h5>
             <li><span class="Core"></span> Core</li>
             <li><span class="Compulsory"></span> Compulsory</li>
             <li><span class="Directed"></span> Directed</li>
@@ -37,6 +37,24 @@
     </div>     
 <hr />
 
+<div>
+    <h5>Instructions</h5>
+    <ul>
+        <li>Dragging: You are able to drag the tiles around on this page clicking and holding down the mouse button. Some effects this may have are:
+            <ul>
+                <li>Dropping the tile ontop of another tile will swap them IF they are can be swapped. The tile will have a green outline if this is applicable.</li>
+                <li>Dropping this on the "invisible" tile that pops up will place it in that semester.</li>
+                <li>Dropping this tile into the completed courses "invisible" tile will class it as a completed course.</li>
+            </ul>
+        </li>
+        <li>If you change the placement of a tile, warnings and errors may occur. If these occur, they will appear in the bottom right, on the tile and on the error list to ensure that
+        you can always track these problems.</li>
+        <li>If you hover over a row in the error list, it will highlight the courses that have this error.</li>
+        <li>If you hover over an error in a tile, it will highlight the tiles that are causing the error. </li>
+        <li>If you left click on a tile, it will open the respective Newcastle University page for that course. </li>
+    </ul>
+</div>
+
 @if (isReady)
 {
     <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
@@ -48,10 +66,8 @@
         }
     </div>
     <CascadingValue Value="this">
-        <div class="completedCourses" style="min-height: 20px; margin-bottom: 50px;">
-            <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
-        </div>
-            <div class="degreePlan">
+
+        <div class="degreePlan">
 
 
                 @*Pass boolean to determine if ghosts are showing to all children*@
@@ -72,127 +88,142 @@
                                     break;
                                 }
                                 <p class="semester-label">Semester @(i + 1)</p>
-                                <div class="semester">
-                                    @* Assuming Semesters *@
+                                @* Assuming Semesters *@
 
-                                    @if (i == 0)
-                                    {
-                                        //Semester 1
+                                @if (i == 0)
+                                {
+                                    //Semester 1
+                                    <div class="semester vertical-line">
                                         <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                                    }
-                                    else
-                                    {
-                                        //Semester 2
+                                    </div>
+                                }
+                                else
+                                {
+                                    //Semester 2
+                                    <div class="semester">
                                         <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                                    }
-                                </div>
+                                    </div>
+                                }
                             }
                         </div>
                     }
 
-                    <br />
+                <br />
 
-                    <div>
-                        <div style="float:left">
-                            <button @onclick="AddYear" class="btn-info">Add Year</button>
-                        </div>
-
-
-                        @*//-----------------------------------------------
-                            //This button will remove the empty year
-                            //----------------------------------------------*@
-
-                        <div style="float:right;">
-                            <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
-                        </div>
+                <div>
+                    <div style="float:left">
+                        <button @onclick="AddYear" class="btn-info">Add Year</button>
                     </div>
 
-                }
+
+                    @*//-----------------------------------------------
+                    //This button will remove the empty year
+                    //----------------------------------------------*@
+
+                    <div style="float:right;">
+                        <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+
+        <br />
+        <br />
+        
+
+        @* Container *@
+        <div style="display:flex; text-align:center;">
+            
+            <div style="flex: 0 0 49%; margin: 10px;">
+                <h4>Completed Courses</h4>
+                <div class="completedCourses">
+                    <TileSlot Tiles="@State.CompletedTiles" CompletedFlag="true" />
+                </div>
             </div>
-        </CascadingValue>
 
-    <br />
-    <br />
-    <h4>Errors:</h4>
-    <div> <!--Shows the list of errors that is currently occurring with the plan.-->
-        <table class="ErrorTable">
-            @* Pre Req Errors *@
-            @foreach (var semester in State.CourseData)
-            {
-                @foreach (var tileData in semester)
-                {
-                    @foreach (var error in tileData.GetPreReqErrors())
+            <div style="flex: 0 0 49%; margin: 10px; ">
+                <h4>Errors</h4>
+                <table class="ErrorTable">
+                    @* Pre Req Errors *@
+                    @foreach (var semester in State.CourseData)
                     {
-                        <tr class="PreReqError"
-                            @onmouseover="() => HighlightTile(error, tileData.Course)"
-                            @onmouseout="() => UnhighlightTile(error, tileData.Course)">
-                            <td>PREREQ ERROR</td>
-                            <td>
-                                <span style="font-weight:bold;">@error.CourseCode</span>
-                                must be completed the before
-                                <span style="font-weight:bold;">
+                        @foreach (var tileData in semester)
+                        {
+                            @foreach (var error in tileData.GetPreReqErrors())
+                            {
+                                <tr class="PreReqError"
+                                    @onmouseover="() => HighlightTile(error, tileData.Course)"
+                                    @onmouseout="() => UnhighlightTile(error, tileData.Course)">
+                                    <td>Prequisite Error</td>
+                                    <td>
+                                        <span style="font-weight:bold;">@error.CourseCode</span>
+                                        must be completed the before
+                                        <span style="font-weight:bold;">
 
-                                    @tileData.Course.CourseCode
-                                </span>
-                            </td>
-                        </tr>
+                                            @tileData.Course.CourseCode
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     }
-                }
-            }
 
-            @* Sibling Errors *@
-            @foreach (var semester in State.CourseData)
-            {
-                @foreach (var tileData in semester)
-                {
-                    @foreach (var error in tileData.GetSiblingErrors())
+                    @* Sibling Errors *@
+                    @foreach (var semester in State.CourseData)
                     {
-                        <tr class="SiblingError"
-                            @onmouseover="() => HighlightTile(error, tileData.Course)"
-                            @onmouseout="() => UnhighlightTile(error, tileData.Course)">
-                            <td>SIBLING ERROR</td>
-                            <td>
-                                <span style="font-weight:bold;">@error.CourseCode</span>
-                                must be completed the semester before
-                                <span style="font-weight:bold;">
+                        @foreach (var tileData in semester)
+                        {
+                            @foreach (var error in tileData.GetSiblingErrors())
+                            {
+                                <tr class="SiblingError"
+                                    @onmouseover="() => HighlightTile(error, tileData.Course)"
+                                    @onmouseout="() => UnhighlightTile(error, tileData.Course)">
+                                    <td>Sibling Error</td>
+                                    <td>
+                                        <span style="font-weight:bold;">@error.CourseCode</span>
+                                        must be completed the semester before
+                                        <span style="font-weight:bold;">
 
-                                    @tileData.Course.CourseCode
-                                </span>
-                            </td>
-                        </tr>
+                                            @tileData.Course.CourseCode
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     }
-                }
-            }
 
-            @* Warnings *@
+                    @* Warnings *@
 
-            @foreach (var semester in State.CourseData)
-            {
-                @foreach (var tileData in semester)
-                {
-                    @foreach (var error in tileData.GetPreReqWarnings())
+                    @foreach (var semester in State.CourseData)
                     {
-                        <tr class="PreReqWarning"
-                            @onmouseover="() => HighlightTile(error, tileData.Course)"
-                            @onmouseout="() => UnhighlightTile(error, tileData.Course)">
-                            <td>PREREQ ERROR</td>
-                            <td>
-                                <span style="font-weight:bold;">@error.CourseCode</span>
-                                should be completed before
-                                <span style="font-weight:bold;">
+                        @foreach (var tileData in semester)
+                        {
+                            @foreach (var error in tileData.GetPreReqWarnings())
+                            {
+                                <tr class="PreReqWarning"
+                                    @onmouseover="() => HighlightTile(error, tileData.Course)"
+                                    @onmouseout="() => UnhighlightTile(error, tileData.Course)">
+                                    <td>Prerequisite Warning</td>
+                                    <td>
+                                        <span style="font-weight:bold;">@error.CourseCode</span>
+                                        should be completed before
+                                        <span style="font-weight:bold;">
 
-                                    @tileData.Course.CourseCode
-                                </span>
-                            </td>
-                        </tr>
+                                            @tileData.Course.CourseCode
+                                        </span>
+                                    </td>
+                                </tr>
 
+                            }
+                        }
                     }
-                }
-            }
 
-        </table>
-        <p></p>
-    </div>
+                </table>
+            </div>
+        </div>
+    </CascadingValue>
     <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
         Save
     </button>

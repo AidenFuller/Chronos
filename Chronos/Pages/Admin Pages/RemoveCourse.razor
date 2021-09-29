@@ -3,26 +3,26 @@
 @inject CourseService CourseService
 @inject IToastService ToastService
 
+<div class="adminform">
+    <h4>Select a Course</h4>
+    <BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
+        <SelectedTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            @course.Name (@course.CourseCode)
+        </ResultTemplate>
+    </BlazoredTypeahead>
 
-<h4>Select a Course</h4>
-<BlazoredTypeahead SearchMethod="SearchCourses" @bind-Value="SelectedCourse" placeholder="Please search for the course to be removed..." EnableDropDown="true" ShowDropDownOnFocus="true">
-    <SelectedTemplate Context="course">
-        @course.Name (@course.CourseCode)
-    </SelectedTemplate>
-    <ResultTemplate Context="course">
-        @course.Name (@course.CourseCode)
-    </ResultTemplate>
-</BlazoredTypeahead>
-
-@if (processing)
-{
-    <div class="spinner"></div>
-}
-else
-{
-    <button @onclick="SubmitCourse" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Course</button>
-}
-
+    @if (processing)
+    {
+        <div class="spinner"></div>
+    }
+    else
+    {
+        <button @onclick="SubmitCourse" type="submit" class="submit-button submit-button-colour submit-button-animation">Remove Course</button>
+    }
+</div>
 
 @code {
 
