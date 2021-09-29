@@ -207,6 +207,10 @@
 .ErrorIcon{
     padding-bottom: 2px;
     transform:scale(1.5, 1.5);
+    width: 100%;
+    padding-bottom: 30px;
+    margin-left: 5px;
+
 }
 /* Tooltip text */
 .ToolTipText {
