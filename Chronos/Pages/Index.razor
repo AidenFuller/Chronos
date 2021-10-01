@@ -185,8 +185,18 @@
         //Update the degree variable
 
         SelectedDegree = degree;
-        Majors = await majorService.GetMajorsFromDegreeAsync(degree.DegreeID);
-        multipleMajors = Majors.Count() > 1;
+        if (SelectedDegree != null)
+        {
+            Majors = await majorService.GetMajorsFromDegreeAsync(degree.DegreeID);
+            multipleMajors = Majors.Count() > 1;
+            SelectedMajor = null;
+
+        }
+        else
+        {
+            multipleMajors = false;
+        }
+
 
         if (!multipleMajors)
         {
