@@ -19,7 +19,17 @@
         <hr /> <!--Using Horizontal Lines to break up the page.-->
         <br />
         <div class="form-alignment-center">
-            <InputFile OnChange="@LoadFiles" accept=".json"/>
+            <h4>
+                Insert File here
+            </h4>
+            <div style=" color: white; background-color: powderblue; border-color: mediumpurple">
+                <InputFile OnChange="@LoadFiles" accept=".json"/>
+            </div>
+            <br />
+            <h4>
+                Or
+            </h4>
+            <br />
             <!--Creating a Div to enclose all of the related forms below. -->
             <form action="login" method="POST">
                 <div class="degree-div">
@@ -50,11 +60,11 @@
                             <h4>Choose a Major</h4>
                         </p>
                         <BlazoredTypeahead SearchMethod="SearchMajors"
-                                            @bind-Value="SelectedMajor"
-                                            placeholder="Please search for your major..."
-                                            EnableDropDown="true"
-                                            ShowDropDownOnFocus="true"
-                                            Disabled="@IsDegreeSelectDisabled">
+                                           @bind-Value="SelectedMajor"
+                                           placeholder="Please search for your major..."
+                                           EnableDropDown="true"
+                                           ShowDropDownOnFocus="true"
+                                           Disabled="@IsDegreeSelectDisabled">
                             <SelectedTemplate Context="major">
                                 <!--This is the search Template and what will be returned.-->
                                 @major.Name
@@ -64,8 +74,8 @@
                                 @major.Name
                             </ResultTemplate>
                         </BlazoredTypeahead>
-                        
-                    }   
+
+                    }
                 </div>
                 <div class="semester-div">
                     <!--Another Div to break up spacing on the page, this is for the Semester type.-->
@@ -108,9 +118,8 @@
                                @bind-Values="SelectedCourses"
                                Disabled="IsItDisabled"
                                EnableDropDown="true"
-                               placeholder="Please enter a course..."
-                               >
-                               
+                               placeholder="Please enter a course...">
+
                 <SelectedTemplate Context="course">
                     <!--What the search will return when strings are inputted.-->
                     @course.CourseCode (@course.Name)
@@ -120,6 +129,7 @@
                     @course.CourseCode (@course.Name)
                 </ResultTemplate>
             </BlazoredTypeahead>
+            <br />
             @if (!readyToRender)
             {
                 <button class="submit-button submit-button-colour submit-button-animation" @onclick="SubmitParameters">Submit</button>
@@ -175,8 +185,18 @@
         //Update the degree variable
 
         SelectedDegree = degree;
-        Majors = await majorService.GetMajorsFromDegreeAsync(degree.DegreeID);
-        multipleMajors = Majors.Count() > 1;
+        if (SelectedDegree != null)
+        {
+            Majors = await majorService.GetMajorsFromDegreeAsync(degree.DegreeID);
+            multipleMajors = Majors.Count() > 1;
+            SelectedMajor = null;
+
+        }
+        else
+        {
+            multipleMajors = false;
+        }
+
 
         if (!multipleMajors)
         {

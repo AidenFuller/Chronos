@@ -52,10 +52,6 @@
     text-align: center;
 }
 
-.json-save {
-    float: left;
-    background-color: burlywood;
-}
 
 .ColorCodelegend {
     list-style: none;
@@ -148,17 +144,135 @@
     padding: 5px;
 }
 
+
 .dropbtn {
-    background-color: powderblue;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: 1px solid black;
-    border-radius:10px;
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: purple;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: purple;
+    border: 2px solid purple;
+    font-weight: 600;
+    transition: 250ms ease-out;
 }
+
     .dropbtn:hover {
-        background-color:white;
-        color:purple;
+        color: white;
+        background: purple;
     }
 
+.degreePageButtons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
 
+.btnAdd {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: dodgerblue;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: dodgerblue;
+    border: 2px solid dodgerblue;
+    font-weight:600;
+    transition: 250ms ease-out;
+}
+    .btnAdd:hover{
+        color: white;
+        background: dodgerblue;
+    }
+
+.btnRemove {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: red;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: red;
+    border: 2px solid red;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .btnRemove:hover {
+        color: white;
+        background: red;
+    }
+
+.btnStartNew {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: turquoise;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: turquoise;
+    border: 2px solid turquoise;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .btnStartNew:hover, .btnStartNew:focus {
+        color: white;
+        background: turquoise;
+    }
+
+.jsonSave {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: forestgreen;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: forestgreen;
+    border: 2px solid forestgreen;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .jsonSave:hover {
+        color: white;
+        background: forestgreen;
+    }
+
+.jsonReset {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: red;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: red;
+    border: 2px solid red;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .jsonReset:hover {
+        color: white;
+        background: red;
+    }

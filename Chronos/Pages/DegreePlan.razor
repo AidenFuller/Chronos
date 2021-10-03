@@ -21,35 +21,40 @@
         <h7><b>Year 2</b></h7>
     </div>*@
 
-    <button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
-    <div hidden="@hideLegend">
-        <h5>Course Color Codes:</h5>
-        <ul class="ColorCodelegend">
-            <li><span class="Core"></span> Core</li>
-            <li><span class="Compulsory"></span> Compulsory</li>
-            <li><span class="Directed"></span> Directed</li>
-            <li><span class="Elective"></span> Elective</li>
-            <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
-            <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
-            <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
-            <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
-            <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
-        </ul>
-    </div>     
+<br />
+
+<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
+<div hidden="@hideLegend">
+    <h5>Course Color Codes:</h5>
+    <ul class="ColorCodelegend">
+        <li><span class="Core"></span> Core</li>
+        <li><span class="Compulsory"></span> Compulsory</li>
+        <li><span class="Directed"></span> Directed</li>
+        <li><span class="Elective"></span> Elective</li>
+        <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
+        <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+        <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
+        <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
+        <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
+    </ul>
+</div>
 <hr />
 
 <div>
     <h5>Instructions</h5>
     <ul>
-        <li>Dragging: You are able to drag the tiles around on this page clicking and holding down the mouse button. Some effects this may have are:
+        <li>
+            Dragging: You are able to drag the tiles around on this page clicking and holding down the mouse button. Some effects this may have are:
             <ul>
                 <li>Dropping the tile ontop of another tile will swap them IF they are can be swapped. The tile will have a green outline if this is applicable.</li>
                 <li>Dropping this on the "invisible" tile that pops up will place it in that semester.</li>
                 <li>Dropping this tile into the completed courses "invisible" tile will class it as a completed course.</li>
             </ul>
         </li>
-        <li>If you change the placement of a tile, warnings and errors may occur. If these occur, they will appear in the bottom right, on the tile and on the error list to ensure that
-        you can always track these problems.</li>
+        <li>
+            If you change the placement of a tile, warnings and errors may occur. If these occur, they will appear in the bottom right, on the tile and on the error list to ensure that
+            you can always track these problems.
+        </li>
         <li>If you hover over a row in the error list, it will highlight the courses that have this error.</li>
         <li>If you hover over an error in a tile, it will highlight the tiles that are causing the error. </li>
         <li>If you left click on a tile, it will open the respective Newcastle University page for that course. </li>
@@ -128,9 +133,6 @@
             </div>
 
 
-            @*//-----------------------------------------------
-            //This button will remove the empty year
-            //----------------------------------------------*@
 
             <div style="float:right;">
                 <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
@@ -140,9 +142,11 @@
         <br />
 
 
-        @* Container *@
-        <div style="display:flex; text-align:center;">
 
+
+
+
+        <div style="display: flex; text-align: center;">
             <div style="flex: 0 0 49%; margin: 10px;">
                 <h4>Completed Courses</h4>
                 <div class="completedCourses">
@@ -228,13 +232,19 @@
                     }
 
                 </table>
+                <p></p>
             </div>
         </div>
+        @* Container *@
     </CascadingValue>
-    <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
-        Save
-    </button>
+    <div style="width:100%;" class="degreePageButtons">
 
+        <div style="float: right;">
+            <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+                Download Plan
+            </button>
+        </div>
+    </div>
     <button class="json-save" @onclick=@DownloadPlanAsync>
         Download Final Plan
     </button>
@@ -243,12 +253,12 @@
         Reset Plan
     </button>
 }
+
+
 else
 {
     <p>Loading...</p>
 }
 
-@code {
-    
-}
+<hr />
 
