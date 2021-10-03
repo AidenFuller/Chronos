@@ -1,10 +1,14 @@
 ﻿function downloadScreenshot() {
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
     html2canvas(document.querySelector("#degreePlan")).then(canvas => {
         saveAs(canvas.toDataURL(), 'degree-plan-final.png')
     });
 }
 
-
+ 
 function saveAs(uri, filename) {
     var link = document.createElement('a');
     if (typeof link.download === 'string') {

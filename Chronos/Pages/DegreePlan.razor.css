@@ -4,6 +4,7 @@
     width: 100%;
     height: 100%;
     padding: 10px;
+    position: relative;
 }
 
 .year-row {
@@ -85,7 +86,7 @@
     }
 
     .ColorCodelegend .Elective {
-        background-color: #BCE954;
+        background-color: #F2DD60;
     }
 
     .ColorCodelegend .Compulsory {
@@ -101,7 +102,7 @@
     }
 
     .ColorCodelegend .AddElective {
-        background-color: #BCE954;
+        background-color: #F2DD60;
     }
 
     .ColorCodelegend .AddDirected {
@@ -167,11 +168,19 @@
     }
 
 .degreePageButtons {
-    display: flex;
+    display: block;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
+    position: relative;
 }
+
+    .degreePageButtons > button {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin: 10px;
+    }
 
 .btnAdd {
     font-size: 14px;
@@ -242,18 +251,18 @@
     padding: 0.75em 1.5em;
     cursor: pointer;
     background: none;
-    color: forestgreen;
-    border: 2px solid;
+    color: white;
+    background: darkgoldenrod;
     letter-spacing: 1px;
-    color: forestgreen;
-    border: 2px solid forestgreen;
+    color: white;
+    border: 2px solid darkgoldenrod;
     font-weight: 600;
     transition: 250ms ease-out;
 }
 
     .jsonSave:hover {
-        color: white;
-        background: forestgreen;
+        color: darkgoldenrod;
+        background: white;
     }
 
 .jsonReset {
@@ -263,16 +272,35 @@
     padding: 0.75em 1.5em;
     cursor: pointer;
     background: none;
-    color: red;
-    border: 2px solid;
+    color: white;
+    background: red;
     letter-spacing: 1px;
-    color: red;
     border: 2px solid red;
     font-weight: 600;
     transition: 250ms ease-out;
 }
 
     .jsonReset:hover {
-        color: white;
-        background: red;
+        color: red;
+        background: white;
+    }
+
+.saveImage {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: white;
+    background: forestgreen;
+    letter-spacing: 1px;
+    border: 2px solid forestgreen;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .saveImage:hover {
+        color: forestgreen;
+        background: white;
     }

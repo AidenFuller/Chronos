@@ -13,34 +13,10 @@
 
 @using Chronos.Shared.Tiles;
 
-@*<div class="year-label">
-        <h7><b>Year 1</b></h7>
-    </div>
 
-    <div class="year-label">
-        <h7><b>Year 2</b></h7>
-    </div>*@
 
-<br />
 
-<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
-<div hidden="@hideLegend">
-    <h5>Course Color Codes:</h5>
-    <ul class="ColorCodelegend">
-        <li><span class="Core"></span> Core</li>
-        <li><span class="Compulsory"></span> Compulsory</li>
-        <li><span class="Directed"></span> Directed</li>
-        <li><span class="Elective"></span> Elective</li>
-        <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
-        <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
-        <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
-        <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
-        <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
-    </ul>
-</div>
-<hr />
-
-<div>
+<div style="width: 75%; display: inline-block;">
     <h5>Instructions</h5>
     <ul>
         <li>
@@ -61,10 +37,46 @@
     </ul>
 </div>
 
+<div style="width: 15%; float: right;" class="degreePageButtons">
+    @*<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>*@
+
+    <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+        Save Plan
+    </button>
+
+    <button class="saveImage" @onclick=@DownloadPlanAsync>
+        Download Final Plan
+    </button>
+
+    <button class="jsonReset" @onclick=@(async () => await ResetAsync(true))>
+        Reset Plan
+    </button>
+
+</div>
+
+<hr />
+
+<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
+<div hidden="@hideLegend">
+    <h5>Course Color Codes:</h5>
+    <ul class="ColorCodelegend">
+        <li><span class="Core"></span> Core</li>
+        <li><span class="Compulsory"></span> Compulsory</li>
+        <li><span class="Directed"></span> Directed</li>
+        <li><span class="Elective"></span> Elective</li>
+        <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
+        <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+        <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
+        <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
+        <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
+    </ul>
+</div>
+
+
+
+
 @if (isReady)
 {
-    <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
-    
     <CascadingValue Value="this">
 
         <div id="degreePlan" class="degreePlan">
@@ -99,7 +111,7 @@
                                 break;
                             }
 
-                            
+
                             @* Assuming Semesters *@
 
                             @if (i == 0)
@@ -117,7 +129,7 @@
                                     <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
                                 </div>
                             }
-                            
+
                         }
                     </div>
                 }
@@ -237,21 +249,7 @@
         </div>
         @* Container *@
     </CascadingValue>
-    <div style="width:100%;" class="degreePageButtons">
 
-        <div style="float: right;">
-            <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
-                Download Plan
-            </button>
-        </div>
-    </div>
-    <button class="json-save" @onclick=@DownloadPlanAsync>
-        Download Final Plan
-    </button>
-
-    <button class="json-save" @onclick=@(async () => await ResetAsync(true))>
-        Reset Plan
-    </button>
 }
 
 
