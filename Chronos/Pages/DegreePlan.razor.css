@@ -69,12 +69,16 @@
         font-size: 17px;
 }
 
+.LegendSymbol{
+    height: 25px;
+    margin-right: 5px;
+}
 .ColorCodelegend span {
-        float: left;
-        width: 20px;
-        height: 25px;
-        border: 1px solid black;
-        margin: 2px;
+    float: left;
+    width: 20px;
+    height: 25px;
+    border: 1px solid black;
+    margin: 2px;
 }
 
     .ColorCodelegend .Core {
