@@ -2,7 +2,9 @@
 
 .degreePlan {
     width: 100%;
-    height: 100%
+    height: 100%;
+    padding: 10px;
+    position: relative;
 }
 
 .year-row {
@@ -28,25 +30,21 @@
     align-items: center;
     flex-direction: row;
     justify-content: space-evenly;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding: 5px;
 }
 
-.vertical-line
-{
-    border-right-style: solid;
-    border-right-color: powderblue;
-    border-right-width: 4px;
-}
 .semester-label {
-    writing-mode: vertical-lr;
+    display: inline-block;
     text-align: center;
-    transform: rotate(180deg);
-    user-select: none;
-    -ms-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
+    width: 50%;
+    padding: 5px;
+}
+
+.splitter {
+    border: 2px solid powderblue;
+    width: 0;
+    margin-left: -5px;
+    background-color: powderblue;
 }
 
 .year-label {
@@ -55,10 +53,6 @@
     text-align: center;
 }
 
-.json-save {
-    float: left;
-    background-color: burlywood;
-}
 
 .ColorCodelegend {
     list-style: none;
@@ -112,7 +106,7 @@
     }
 
     .ColorCodelegend .AddElective {
-        background-color: #BCE954;
+        background-color: #F2DD60;
     }
 
     .ColorCodelegend .AddDirected {
@@ -155,17 +149,162 @@
     padding: 5px;
 }
 
+
 .dropbtn {
-    background-color: powderblue;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: 1px solid black;
-    border-radius:10px;
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: purple;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: purple;
+    border: 2px solid purple;
+    font-weight: 600;
+    transition: 250ms ease-out;
 }
+
     .dropbtn:hover {
-        background-color:white;
-        color:purple;
+        color: white;
+        background: purple;
     }
 
+.degreePageButtons {
+    display: block;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    position: relative;
+}
 
+    .degreePageButtons > button {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin: 10px;
+    }
+
+.btnAdd {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: dodgerblue;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: dodgerblue;
+    border: 2px solid dodgerblue;
+    font-weight:600;
+    transition: 250ms ease-out;
+}
+    .btnAdd:hover{
+        color: white;
+        background: dodgerblue;
+    }
+
+.btnRemove {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: red;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: red;
+    border: 2px solid red;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .btnRemove:hover {
+        color: white;
+        background: red;
+    }
+
+.btnStartNew {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: turquoise;
+    border: 2px solid;
+    letter-spacing: 1px;
+    color: turquoise;
+    border: 2px solid turquoise;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .btnStartNew:hover, .btnStartNew:focus {
+        color: white;
+        background: turquoise;
+    }
+
+.jsonSave {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: white;
+    background: darkgoldenrod;
+    letter-spacing: 1px;
+    color: white;
+    border: 2px solid darkgoldenrod;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .jsonSave:hover {
+        color: darkgoldenrod;
+        background: white;
+    }
+
+.jsonReset {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: white;
+    background: red;
+    letter-spacing: 1px;
+    border: 2px solid red;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .jsonReset:hover {
+        color: red;
+        background: white;
+    }
+
+.saveImage {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: white;
+    background: forestgreen;
+    letter-spacing: 1px;
+    border: 2px solid forestgreen;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+
+    .saveImage:hover {
+        color: forestgreen;
+        background: white;
+    }

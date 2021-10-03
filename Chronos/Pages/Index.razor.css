@@ -201,3 +201,41 @@ button.button-for-admin {
         transform: rotate(360deg)
     }
 }
+
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #A1D5E2;
+}
+
+.file-uploader {
+    flex: 0 1 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: #fff;
+    border-radius: 5px;
+    display: none;
+}
+
+
+label[for="file-input"] {
+    padding: 1em 1.5em;
+    flex: 1 1 auto;
+    text-align: center;
+    color: #FFF;
+    background-color: #1894AC;
+    box-shadow: 1px 0 10px rgba(0,0,0,.15);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.image-preview {
+    margin: 0 0 1rem;
+    min-height: 250px;
+    flex: 1 0 75%;
+    background-color: #c1c1c1;
+}

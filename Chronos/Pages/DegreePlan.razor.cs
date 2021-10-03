@@ -45,6 +45,11 @@ namespace Chronos.Pages
         }
         public async Task UpdateDegreePlanAsync(List<TileData> dragTo, TileData draggedOn, CourseRuntime blockTypeTo)
         {
+            if (State.CompletedTiles.Contains(DragPayload) || State.CompletedTiles.Contains(draggedOn))
+            {
+                ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course out. You must add it to the end of the line.");
+                return;
+            }
             if (DragPayload.Course is not null && (blockTypeTo & DragPayload.Runtime) == 0)
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{DragPayload.Course.CourseCode} does not run in {blockTypeTo}");
@@ -53,10 +58,7 @@ namespace Chronos.Pages
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{draggedOn.Course.CourseCode} does not run in {BlockTypeFrom}");
             }
-            if (State.CompletedTiles.Contains(DragPayload) && draggedOn.Course == null)
-            {
-                ToastService.ShowToast(ToastLevel.Error, "You cannot swap a completed course with a blank course.");
-            }
+
             if (CanDataRunInBlock(blockTypeTo, draggedOn))
             {
                 Utilities.SwapValues(State.CourseData, DragPayload, draggedOn);
@@ -1008,6 +1010,25 @@ namespace Chronos.Pages
             }
 
             StateHasChanged(); //Will update in all the components
+        }
+
+
+        private bool IsValidState()
+        {
+            return State.CourseData.All(slot => slot.All(tile => tile.Course is not null && (tile.Status == 0 || tile.Status == ErrorStatus.MissingAssumedKnowledge)));
+        }
+
+        private async Task DownloadPlanAsync()
+        {
+            if (IsValidState())
+            {
+                await js.InvokeAsync<string>("downloadScreenshot", null);
+                ToastService.ShowToast(ToastLevel.Success, "Your finished plan has been downloaded");
+            }
+            else
+            {
+                ToastService.ShowToast(ToastLevel.Error, "There are still errors or blank tiles which prevents your plan from being valid");
+            }
         }
     }
 }

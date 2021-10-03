@@ -1,17 +1,49 @@
-﻿<div class="fillHeight">
+﻿@inject NavigationManager NavManager
+<div class="fillHeight">
     <a href="/">
         <img id="header_logo" class="fillHeight" src="/Images/Chronos Logo.svg" />
     </a>
 </div>
-
-
 <div class="fillHeight">
+    <img id="settings_button" class="fillHeight" src="/Images/settings.svg" @onclick="() => hideAdminPanel = !hideAdminPanel" />
     @* Eventually turn this into a button *@
-    <a href="/Admin">
-        <img id="settings_button" class="fillHeight" src="/Images/settings.svg" />
-    </a>
+
+    @if (!hideAdminPanel)
+    {
+        <div id="adminPanel">
+            <p>Please insert admin password</p>
+            <input style="width:100%;"type="password" @bind="adminTextInput" />
+
+            <p style="color:red">@errorText</p>
+
+            <button @onclick="toAdmin" class="adminSubmitButton">Submit</button>
+        </div>
+    }
 </div>
 
-@code {
 
+
+
+
+
+@code {
+    private bool hideAdminPanel = true;
+    private string adminTextInput;
+    private string adminPassword = "admin";
+    public string errorText = "";
+
+    private void toAdmin()
+    {
+        if (adminTextInput != null && adminTextInput.Equals(adminPassword))
+        {
+            //Move page
+            NavManager.NavigateTo("/Admin");
+            hideAdminPanel = true;
+            adminTextInput = "";
+        }
+        else
+        {
+            errorText = "Incorrect Password";
+        }
+    }
 }

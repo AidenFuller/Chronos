@@ -5,6 +5,7 @@
 @inject IToastService ToastService
 @inject SaveState State
 @inject NavigationManager NavManager
+@inject IJSRuntime js
 
 @page "/DegreePlan"
 
@@ -12,46 +13,77 @@
 
 @using Chronos.Shared.Tiles;
 
-@*<div class="year-label">
-        <h7><b>Year 1</b></h7>
-    </div>
 
-    <div class="year-label">
-        <h7><b>Year 2</b></h7>
-    </div>*@
 
-    <button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
-    <div hidden="@hideLegend">
-        <h5>Course Color Codes:</h5>
-        <ul class="ColorCodelegend">
-            <li><span class="Core"></span> Core</li>
-            <li><span class="Compulsory"></span> Compulsory</li>
-            <li><span class="Directed"></span> Directed</li>
-            <li><span class="Elective"></span> Elective</li>
-            @*<li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
-            <li><span class="AddElective"></span> <b>+</b> Add Elective</li>*@
 
-            <li><img src="/Images/Orange.png" class="LegendSymbol" />Assumed Knowledge Error</li>
-            <li><img src="/Images/Red.png" class="LegendSymbol" />Hard Prerequisite Error</li>
-            <li><img src="/Images/Purple.png" class="LegendSymbol" />Sibling Course Error</li>
-        </ul>
-    </div>     
+<div style="width: 75%; display: inline-block;">
+    <h5>Instructions</h5>
+    <ul>
+        <li>
+            Dragging: You are able to drag the tiles around on this page clicking and holding down the mouse button. Some effects this may have are:
+            <ul>
+                <li>Dropping the tile ontop of another tile will swap them IF they are can be swapped. The tile will have a green outline if this is applicable.</li>
+                <li>Dropping this on the "invisible" tile that pops up will place it in that semester.</li>
+                <li>Dropping this tile into the completed courses "invisible" tile will class it as a completed course.</li>
+            </ul>
+        </li>
+        <li>
+            If you change the placement of a tile, warnings and errors may occur. If these occur, they will appear in the bottom right, on the tile and on the error list to ensure that
+            you can always track these problems.
+        </li>
+        <li>If you hover over a row in the error list, it will highlight the courses that have this error.</li>
+        <li>If you hover over an error in a tile, it will highlight the tiles that are causing the error. </li>
+        <li>If you left click on a tile, it will open the respective Newcastle University page for that course. </li>
+    </ul>
+</div>
+
+<div style="width: 15%; float: right;" class="degreePageButtons">
+    @*<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>*@
+
+    <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+        Save Plan
+    </button>
+
+    <button class="saveImage" @onclick=@DownloadPlanAsync>
+        Download Final Plan
+    </button>
+
+    <button class="jsonReset" @onclick=@(async () => await ResetAsync(true))>
+        Reset Plan
+    </button>
+
+</div>
+
 <hr />
+
+<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
+<div hidden="@hideLegend">
+    <h5>Course Color Codes:</h5>
+    <ul class="ColorCodelegend">
+        <li><span class="Core"></span> Core</li>
+        <li><span class="Compulsory"></span> Compulsory</li>
+        <li><span class="Directed"></span> Directed</li>
+        <li><span class="Elective"></span> Elective</li>
+        <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
+        <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+        <li><img src="/Images/Orange.png" class="LegendSymbol" />Assumed Knowledge Error</li>
+        <li><img src="/Images/Red.png" class="LegendSymbol" />Hard Prerequisite Error</li>
+        <li><img src="/Images/Purple.png" class="LegendSymbol" />Sibling Course Error</li>
+    </ul>
+</div>
 
 @if (isReady)
 {
-    <button class="btn-light" onclick="location.href='/'"> Back to home page </button> 
-    <div>
-        <h4>Degree: @State.Degree.Name</h4>
-        @if(!(State.Major.Name.Equals("Default")))
-        {
-            <h4>Major: @State.Major.Name</h4>
-        }
-    </div>
     <CascadingValue Value="this">
 
-        <div class="degreePlan">
-
+        <div id="degreePlan" class="degreePlan">
+            <div>
+                <h4>Degree: @State.Degree.Name</h4>
+                @if (!(State.Major.Name.Equals("Default")))
+                {
+                    <h4>Major: @State.Major.Name</h4>
+                }
+            </div>
 
             @*Pass boolean to determine if ghosts are showing to all children*@
             @if (State.CourseData == null)
@@ -61,6 +93,11 @@
             else
             {
                 bool EOF = false;
+                <div class="year-row">
+                    <div class="semester-label">Semester 1</div>
+                    <div class="splitter"></div>
+                    <div class="semester-label">Semester 2</div>
+                </div>
                 for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
                 {
                     <div class="year-row">
@@ -70,53 +107,55 @@
                             {
                                 break;
                             }
-                            <p class="semester-label">Semester @(i + 1)</p>
-                            <div class="semester">
-                                @* Assuming Semesters *@
 
-                                @if (i == 0)
-                                {
-                                    //Semester 1
+
+                            @* Assuming Semesters *@
+
+                            @if (i == 0)
+                            {
+                                //Semester 1
+                                <div class="semester">
                                     <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
-                                }
-                                else
-                                {
-                                    //Semester 2
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="splitter"></div>
+                                //Semester 2
+                                <div class="semester">
                                     <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
-                                }
-                            </div>
+                                </div>
+                            }
+
                         }
                     </div>
                 }
 
                 <br />
 
-                <div>
-                    <div style="float:left">
-                        <button @onclick="AddYear" class="btn-info">Add Year</button>
-                    </div>
-
-
-                    @*//-----------------------------------------------
-                    //This button will remove the empty year
-                    //----------------------------------------------*@
-
-                    <div style="float:right;">
-                        <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
-                    </div>
-                </div>
-
             }
         </div>
 
+        <div>
+            <div style="float:left">
+                <button @onclick="AddYear" class="btn-info">Add Year</button>
+            </div>
 
+
+
+            <div style="float:right;">
+                <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+            </div>
+        </div>
         <br />
         <br />
-        
 
-        @* Container *@
-        <div style="display:flex; text-align:center;">
-            
+
+
+
+
+
+        <div style="display: flex; text-align: center;">
             <div style="flex: 0 0 49%; margin: 10px;">
                 <h4>Completed Courses</h4>
                 <div class="completedCourses">
@@ -202,23 +241,19 @@
                     }
 
                 </table>
+                <p></p>
             </div>
         </div>
+        @* Container *@
     </CascadingValue>
-    <button class="json-save" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
-        Save
-    </button>
 
-    <button class="json-save" @onclick=@(async () => await ResetAsync(true))>
-        Reset Plan
-    </button>
 }
+
+
 else
 {
     <p>Loading...</p>
 }
 
-@code {
-    
-}
+<hr />
 
