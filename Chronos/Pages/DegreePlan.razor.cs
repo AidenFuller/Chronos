@@ -1011,5 +1011,24 @@ namespace Chronos.Pages
 
             StateHasChanged(); //Will update in all the components
         }
+
+
+        private bool IsValidState()
+        {
+            return State.CourseData.All(slot => slot.All(tile => tile.Course is not null && (tile.Status == 0 || tile.Status == ErrorStatus.MissingAssumedKnowledge)));
+        }
+
+        private async Task DownloadPlanAsync()
+        {
+            if (IsValidState())
+            {
+                await js.InvokeAsync<string>("downloadScreenshot", null);
+                ToastService.ShowToast(ToastLevel.Success, "Your finished plan has been downloaded");
+            }
+            else
+            {
+                ToastService.ShowToast(ToastLevel.Error, "There are still errors or blank tiles which prevents your plan from being valid");
+            }
+        }
     }
 }

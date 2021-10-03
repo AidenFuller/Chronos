@@ -5,6 +5,7 @@
 @inject IToastService ToastService
 @inject SaveState State
 @inject NavigationManager NavManager
+@inject IJSRuntime js
 
 @page "/DegreePlan"
 
@@ -12,34 +13,10 @@
 
 @using Chronos.Shared.Tiles;
 
-@*<div class="year-label">
-        <h7><b>Year 1</b></h7>
-    </div>
 
-    <div class="year-label">
-        <h7><b>Year 2</b></h7>
-    </div>*@
 
-<br />
 
-<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
-<div hidden="@hideLegend">
-    <h5>Course Color Codes:</h5>
-    <ul class="ColorCodelegend">
-        <li><span class="Core"></span> Core</li>
-        <li><span class="Compulsory"></span> Compulsory</li>
-        <li><span class="Directed"></span> Directed</li>
-        <li><span class="Elective"></span> Elective</li>
-        <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
-        <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
-        <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
-        <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
-        <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
-    </ul>
-</div>
-<hr />
-
-<div>
+<div style="width: 75%; display: inline-block;">
     <h5>Instructions</h5>
     <ul>
         <li>
@@ -60,20 +37,56 @@
     </ul>
 </div>
 
+<div style="width: 15%; float: right;" class="degreePageButtons">
+    @*<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>*@
+
+    <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+        Save Plan
+    </button>
+
+    <button class="saveImage" @onclick=@DownloadPlanAsync>
+        Download Final Plan
+    </button>
+
+    <button class="jsonReset" @onclick=@(async () => await ResetAsync(true))>
+        Reset Plan
+    </button>
+
+</div>
+
+<hr />
+
+<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>
+<div hidden="@hideLegend">
+    <h5>Course Color Codes:</h5>
+    <ul class="ColorCodelegend">
+        <li><span class="Core"></span> Core</li>
+        <li><span class="Compulsory"></span> Compulsory</li>
+        <li><span class="Directed"></span> Directed</li>
+        <li><span class="Elective"></span> Elective</li>
+        <li><span class="AddDirected"></span> <b>+</b> Add Directed</li>
+        <li><span class="AddElective"></span> <b>+</b> Add Elective</li>
+        <li><span class="oi oi-question-mark"></span> Assumed Knowledge Error</li>
+        <li><span class="oi oi-warning"></span> Hard Prerequisite Error</li>
+        <li><span class="oi oi-link-broken"></span> Sibling Course Error</li>
+    </ul>
+</div>
+
+
+
+
 @if (isReady)
 {
-
-    <div>
-        <h4>Degree: @State.Degree.Name</h4>
-        @if (!(State.Major.Name.Equals("Default")))
-        {
-            <h4>Major: @State.Major.Name</h4>
-        }
-    </div>
     <CascadingValue Value="this">
 
-        <div class="degreePlan">
-
+        <div id="degreePlan" class="degreePlan">
+            <div>
+                <h4>Degree: @State.Degree.Name</h4>
+                @if (!(State.Major.Name.Equals("Default")))
+                {
+                    <h4>Major: @State.Major.Name</h4>
+                }
+            </div>
 
             @*Pass boolean to determine if ghosts are showing to all children*@
             @if (State.CourseData == null)
@@ -83,6 +96,11 @@
             else
             {
                 bool EOF = false;
+                <div class="year-row">
+                    <div class="semester-label">Semester 1</div>
+                    <div class="splitter"></div>
+                    <div class="semester-label">Semester 2</div>
+                </div>
                 for (var enumerator = State.CourseData.GetEnumerator(); !EOF;)
                 {
                     <div class="year-row">
@@ -92,47 +110,46 @@
                             {
                                 break;
                             }
-                            <p class="semester-label">Semester @(i + 1)</p>
+
+
                             @* Assuming Semesters *@
 
                             @if (i == 0)
                             {
                                 //Semester 1
-                                <div class="semester vertical-line">
+                                <div class="semester">
                                     <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester1 />
                                 </div>
                             }
                             else
                             {
+                                <div class="splitter"></div>
                                 //Semester 2
                                 <div class="semester">
                                     <TileSlot Tiles="@enumerator.Current" BlockType=@Models.Enums.CourseRuntime.Semester2 />
                                 </div>
                             }
+
                         }
                     </div>
                 }
 
                 <br />
 
-                <hr />
-
-                <div class="degreePageButtons">
-                    <div style="float:left; display:inline-block">
-                        <button @onclick="AddYear" class="btnAdd">Add Year</button>
-                    </div>
-
-
-
-                    <div style="float: right; display: inline-block">
-                        <button @onclick="RemoveYear" class="btnRemove">Remove Year</button>
-                    </div>
-                </div>
-
             }
         </div>
 
+        <div>
+            <div style="float:left">
+                <button @onclick="AddYear" class="btn-info">Add Year</button>
+            </div>
 
+
+
+            <div style="float:right;">
+                <button @onclick="RemoveYear" class="btn-danger">Remove Year</button>
+            </div>
+        </div>
         <br />
         <br />
 
@@ -231,31 +248,8 @@
             </div>
         </div>
         @* Container *@
-    <div style="width:100%;" class="degreePageButtons">
-
-        <div style="float: right;">
-            <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
-                Download Plan
-            </button>
-        </div>
-
-        <div style="display: inline-block;">
-            <button class="btnStartNew" onclick="location.href='/'"> Return Home </button>
-        </div>
-
-        <div style="float: left;">
-            <button class="jsonReset" @onclick=@(async () => await ResetAsync(true))>
-                Reset Plan
-            </button>
-        </div>
-        @*<div class="planSave">
-        </div>*@
-    </div>
-
-
-        <br />
-        <br />
     </CascadingValue>
+
 }
 
 
