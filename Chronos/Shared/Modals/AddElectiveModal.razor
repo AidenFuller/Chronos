@@ -143,7 +143,7 @@
 
         //Remove courses not in the selected semesters
         CourseRuntime sem = GetSemesterSelections();
-        ret = ret.Where(x => (GetRuntime(x) & sem) > 0);
+        ret = ret.Where(x => !Plan.ContainsCourse(x) && (GetRuntime(x) & sem) > 0);
 
         if (ret.Count() > 10)
         {
