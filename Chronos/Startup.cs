@@ -46,7 +46,6 @@ namespace Chronos
             services.AddScoped<CourseService>();
             services.AddScoped<DegreeCourseService>();
             services.AddScoped<DegreeService>();
-            services.AddScoped<ElectiveService>();
             services.AddScoped<MajorCourseService>();
             services.AddScoped<MajorService>();
             services.AddScoped<SaveState>();
