@@ -872,6 +872,11 @@ namespace Chronos.Pages
 
             return courseList;
         }
+
+        public void ActivateStateHasChanged()
+        {
+            StateHasChanged();
+        }
         private void SetErrorData(TileData td, List<Course> errors, ErrorStatus error)
         {
             if (errors.Count != 0)
