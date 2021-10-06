@@ -41,8 +41,23 @@
 
     private async Task ReplaceCourse()
     {
-        await CourseService.ReplaceCourseAsync(SelectedCourse);
-        ToastService.ShowToast(ToastLevel.Success, $"The course has been updated");
+        bool error = false;
+        if (SelectedCourse.Units < 0)
+        {
+            error = true;
+            ToastService.ShowToast(ToastLevel.Error, "Units must be greater than 0.");
+        }
+        if (SelectedCourse.Units > 20)
+        {
+            error = true;
+            ToastService.ShowToast(ToastLevel.Error, "Units must be less than 20. ");
+        }
+        if (!error)
+        {
+            await CourseService.ReplaceCourseAsync(SelectedCourse);
+            ToastService.ShowToast(ToastLevel.Success, $"The course has been updated");
+        }
+
     }
 
     private async Task<IEnumerable<Course>> SearchCourses(string search)

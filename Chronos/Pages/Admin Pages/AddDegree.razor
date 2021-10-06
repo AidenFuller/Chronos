@@ -46,7 +46,6 @@
             degreeError = true;
             ToastService.ShowToast(ToastLevel.Error, "A degree must be a minimum of 3 years.");
         }
-
         if (!degreeError)
         {
             await DegreeService.AddDegreeAsync(degree);
