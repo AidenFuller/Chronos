@@ -128,7 +128,6 @@ namespace Chronos.Pages
                 pairs.Add((course.CourseID, payload.Course.CourseID));
             }
 
-
             foreach (Course course in await GetMissingPrerequisites(payload, State.CourseData.IndexOf(listTo), RequisiteType.HardRequisite))
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed before {payload.Course.CourseCode}");
@@ -255,19 +254,23 @@ namespace Chronos.Pages
             {
                 ToastService.ShowToast(ToastLevel.Warning, $"{course.CourseCode} is assumed knowledge of {td.Course.CourseCode}");
                 td.Status |= ErrorStatus.MissingAssumedKnowledge;
+                td.ErrorData[ErrorStatus.MissingAssumedKnowledge].Add(course);
             }
 
             foreach (Course course in await GetMissingPrerequisites(td, State.CourseData.IndexOf(slot), RequisiteType.HardRequisite))
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed before {td.Course.CourseCode}");
                 td.Status |= ErrorStatus.MissingPrerequisite;
+                td.ErrorData[ErrorStatus.MissingPrerequisite].Add(course);
             }
 
             foreach (Course course in await GetMissingPrerequisites(td, State.CourseData.IndexOf(slot), RequisiteType.MustPreceed))
             {
                 ToastService.ShowToast(ToastLevel.Error, $"{course.CourseCode} must be completed in the semester before {td.Course.CourseCode}");
                 td.Status |= ErrorStatus.MissingSiblingCourse;
+                td.ErrorData[ErrorStatus.MissingSiblingCourse].Add(course);
             }
+
         }
 
         public async Task CheckPreceedingCourse(List<TileData> listFrom, List<TileData> listTo, TileData payload, TileData swapped)

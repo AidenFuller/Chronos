@@ -313,7 +313,7 @@
                 Data.Runtime = await courseService.GetCourseRuntimeAsync(Data.Course.CourseID, Plan.Campus);
                 await Plan.UpdateTileErrors(Data, Slot.Tiles);
                 UpdateTileType();
-                StateHasChanged();
+                Plan.ActivateStateHasChanged();
             }
 
         }
