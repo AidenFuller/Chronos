@@ -42,7 +42,7 @@
     private async Task ReplaceCourse()
     {
         bool error = false;
-        if (SelectedCourse.Units < 0)
+        if (SelectedCourse.Units <= 0)
         {
             error = true;
             ToastService.ShowToast(ToastLevel.Error, "Units must be greater than 0.");
@@ -50,7 +50,7 @@
         if (SelectedCourse.Units > 20)
         {
             error = true;
-            ToastService.ShowToast(ToastLevel.Error, "Units must be less than 20. ");
+            ToastService.ShowToast(ToastLevel.Error, "Units must be less than or equal to 20.");
         }
         if (!error)
         {
