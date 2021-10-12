@@ -1,0 +1,284 @@
+﻿@page "/NewDegreePlan"
+
+@inject IToastService ToastService
+@inject IWebHostEnvironment env
+@inject NavigationManager NavManager
+@inject DegreeService degreeService
+@inject CourseService courseService
+@inject MajorService majorService
+@inject SaveState State 
+
+@using System
+@using System.Text
+@using Microsoft.AspNetCore.Hosting
+@using Newtonsoft.Json;
+
+
+<div class="form-alignment-center">
+    <br />
+    <!--Creating a Div to enclose all of the related forms below. -->
+    <form action="login" method="POST">
+        <div class="degree-div">
+            <h4>Choose your Degree</h4>
+            <!--This is a razor component that will effectively search for different Degrees based on their Names.-->
+            <BlazoredTypeahead SearchMethod="SearchDegrees"
+                                TValue="Degree"
+                                TItem="Degree"
+                                Value="SelectedDegree"
+                                ValueExpression="@(() => SelectedDegree)"
+                                ValueChanged="SelectedDegreeChanged"
+                                placeholder="Please search for your degree..."
+                                EnableDropDown="true"
+                                ShowDropDownOnFocus="true">
+                <SelectedTemplate Context="degree">
+                    <!--This is the search Template and what will be returned.-->
+                    Bachelor Of @degree.Name
+                </SelectedTemplate>
+                <ResultTemplate Context="degree">
+                    <!--This is what is shown when it is selected.-->
+                    Bachelor Of @degree.Name
+                </ResultTemplate>
+            </BlazoredTypeahead>
+
+            @if (SelectedDegree != null && multipleMajors)
+            {
+                <p>
+                    <h4>Choose a Major</h4>
+                </p>
+                <BlazoredTypeahead SearchMethod="SearchMajors"
+                                    @bind-Value="SelectedMajor"
+                                    placeholder="Please search for your major..."
+                                    EnableDropDown="true"
+                                    ShowDropDownOnFocus="true"
+                                    Disabled="@IsDegreeSelectDisabled">
+                    <SelectedTemplate Context="major">
+                        <!--This is the search Template and what will be returned.-->
+                        @major.Name
+                    </SelectedTemplate>
+                    <ResultTemplate Context="major">
+                        <!--This is what is shown when it is selected.-->
+                        @major.Name
+                    </ResultTemplate>
+                </BlazoredTypeahead>
+
+            }
+        </div>
+        <div class="semester-div">
+            <!--Another Div to break up spacing on the page, this is for the Semester type.-->
+            <h4>Choose your semester</h4>
+            <select name="semester" class="semester-selection" @bind="StartingBlock">
+                <!--Selection that allows for the Semester type a student is undertaking.-->
+                <!--Potentially change this to radio buttons, that are next to each other?-->
+                <option value="@CourseRuntime.Semester1" selected>Semester 1</option>
+                <option value="@CourseRuntime.Semester2">Semester 2</option>
+            </select>
+        </div>
+        <br />
+        <h4>Please select what campus you attend.</h4>
+        <div>
+            <select name="campus" class="semester-selection" @bind="ChosenCampus">
+                <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
+                <option value="@AvailableCampus.Callaghan" selected>Callaghan Campus</option>
+                <option value="@AvailableCampus.NewcastleCity">Newcastle Campus</option>
+                <option value="@AvailableCampus.Ourimbah">Ourimbah Campus</option>
+                <option value="@AvailableCampus.PortMacquarie">Port Macquarie Campus</option>
+                <option value="@AvailableCampus.SingaporeBCA | @AvailableCampus.SingaporePSB">Signapore Campus</option>
+                <option value="@AvailableCampus.Sydney">Sydney Campus</option>
+            </select>
+        </div>
+        <h4>Select your Semester length</h4>
+        <div>
+            <select name="campus" class="semester-selection" @bind="SemesterLength">
+                <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
+                <option value="20">20 Units</option>
+                <option value="30">30 Units</option>
+                <option value="40" selected>40 Units</option>
+            </select>
+        </div>
+    </form> <!--Initial Form ends here.-->
+    <br />
+    <h4>Please insert the courses you have completed here. </h4>
+    <!--This BlazoredTypeahead tag instead searches based on Courses, it is a multi select so you can selected multiple completed courses.-->
+    <!--Bind values are the courses that were selected-->
+    <BlazoredTypeahead SearchMethod="SearchCourses"
+                        @bind-Values="SelectedCourses"
+                        Disabled="IsItDisabled"
+                        EnableDropDown="true"
+                        placeholder="Please enter a course...">
+
+        <SelectedTemplate Context="course">
+            <!--What the search will return when strings are inputted.-->
+            @course.CourseCode (@course.Name)
+        </SelectedTemplate>
+        <ResultTemplate Context="course">
+            <!--What will be shown after selection of a course.-->
+            @course.CourseCode (@course.Name)
+        </ResultTemplate>
+    </BlazoredTypeahead>
+    <br />
+    @if (!readyToRender)
+    {
+        <button class="submit-button submit-button-colour submit-button-animation" @onclick="SubmitParameters">Submit</button>
+    }
+    else
+    {
+        <div class="spinner"></div>
+    }
+</div>
+
+
+@code {
+
+    protected override async Task OnInitializedAsync() //This will run when the page is ran.
+    {
+        Degrees = await degreeService.GetAllDegreesAsync(); //Grabs all the degrees from the database.
+        Courses = await courseService.GetAllCoursesAsync(); //Grabs all of the courses from the database.
+    }
+
+
+    private bool IsDegreeSelectDisabled = false;
+    private bool multipleMajors;
+
+    private async Task SelectedDegreeChanged(Degree degree)
+    {
+        //Update the degree variable
+
+        SelectedDegree = degree;
+        if (SelectedDegree != null)
+        {
+            Majors = await majorService.GetMajorsFromDegreeAsync(degree.DegreeID);
+            multipleMajors = Majors.Count() > 1;
+            SelectedMajor = null;
+
+        }
+        else
+        {
+            multipleMajors = false;
+        }
+
+
+        if (!multipleMajors)
+        {
+            SelectedMajor = Majors.First();
+        }
+    }
+
+
+
+    //This function will find courses based on what string is passed into the function.
+    private async Task<IEnumerable<Course>> SearchCourses(string search)
+    {
+        return await Task.FromResult(Courses.Where(x => x.CourseCode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.CourseCode).ToList());//Finds courses based on if they contain the string in their name or course code.
+    }
+    //This function will find degrees based on the string that is passed in.
+    private async Task<IEnumerable<Degree>> SearchDegrees(string search)
+    {
+        return await Task.FromResult(Degrees.Where(x => x.Name.ToLower().Contains(search.ToLower())).OrderBy(x => x.Name).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+    //This function will find all the majors based on the courses that have been chosen.
+    private async Task<IEnumerable<Major>> SearchMajors(string search)
+    {
+        if (SelectedDegree == null)
+        {
+            return new List<Major>();
+        }
+
+        if ((Majors?.FirstOrDefault()?.DegreeID ?? -1) != SelectedDegree.DegreeID)
+        {
+            Majors = await majorService.GetMajorsFromDegreeAsync(SelectedDegree.DegreeID);
+        }
+
+        Console.WriteLine(Majors.Count());
+        return await Task.FromResult(Majors.Where(x => x.Name.ToLower().Contains(search.ToLower()) && x.DegreeID == SelectedDegree.DegreeID).ToList()); //It will return degrees that contain the string in its name.
+    }
+
+
+    protected IEnumerable<Degree> Degrees { get; set; } //IEnumerables of degrees and courses to hold the databases.
+    protected IEnumerable<Course> Courses { get; set; }
+    protected IEnumerable<Major> Majors { get; set; }
+    private IList<Course> SelectedCourses; //This is the list of selected Courses from the search results above.
+    private Degree SelectedDegree; //This is the selected degree from the search results above.
+    private Major SelectedMajor;
+    private CourseRuntime StartingBlock = CourseRuntime.Semester1;
+    private AvailableCampus ChosenCampus = AvailableCampus.Callaghan;
+    private int SemesterLength = 40;
+
+    private string ShowAdminLogin => IsAdminLoginThere ? "block" : "none"; //This string will ensure if the admin login frame will show or not.
+    private String Username;
+    private bool IsItDisabled;
+    private bool IsAdminLoginThere = false; //This bool will be a checker to see if the Admin Login should appear or not.
+
+    private bool readyToRender = false;
+
+    //This function is here so it can toggle the admin button when the admin login button is hit.
+    private void ToggleAdminLogin()
+    {
+        IsAdminLoginThere = !IsAdminLoginThere;
+    }
+
+    //This function will run in order to submit the data to a state that can be used on another page.
+    private void SubmitParameters()
+    {
+        bool error = false;
+
+
+        if (SelectedDegree == null)
+        {
+            RenderFragment message =@<text>Degree has not been selected</text>;
+            ToastService.ShowToast(ToastLevel.Error, message);
+        }
+        if (SelectedMajor == null || SelectedMajor.Name == null)
+        {
+            error = true;
+            RenderFragment message = @<text>Major has not been selected</text>;
+            ToastService.ShowToast(ToastLevel.Error, message);
+        }
+        if (StartingBlock == 0)
+        {
+            error = true;
+            RenderFragment message = @<text>Starting Semester has not been selected</text>;
+            ToastService.ShowToast(ToastLevel.Error, message);
+        }
+
+        if (error == false)
+        {
+            //The data is set here to the respective slots in the states.
+            State.Degree = SelectedDegree;
+            State.Major = SelectedMajor;
+            State.RuntimeStart = StartingBlock;
+            State.CompletedCourses = SelectedCourses?.ToList() ?? new List<Course>();
+            State.Campus = ChosenCampus;
+            State.UnitsPerBlock = SemesterLength;
+            readyToRender = true;
+
+            NavManager.NavigateTo("DegreePlan");
+        }
+    }
+
+    private bool isLoading = false;
+    private long maxFileSize = 1024 * 15;
+
+    //This will load the data from a json file.
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+
+        var stream = e.File.OpenReadStream();
+        var path = $"{env.WebRootPath}\\{e.File.Name}";
+
+        byte[] buffer = new byte[stream.Length];
+
+        await stream.ReadAsync(buffer);
+        string json = Encoding.UTF8.GetString(buffer);
+
+        SaveState newState = JsonConvert.DeserializeObject<SaveState>(json);
+
+        State.CloneFrom(newState);
+
+        isLoading = false;
+        readyToRender = true;
+
+        NavManager.NavigateTo("DegreePlan");
+    }
+}
