@@ -16,7 +16,7 @@
 
             <p style="color:red">@errorText</p>
 
-            <button @onclick="toAdmin" class="adminSubmitButton">Submit</button>
+            <button @onclick="ToAdmin" class="adminSubmitButton">Submit</button>
         </div>
     }
 </div>
@@ -30,16 +30,16 @@
     private bool hideAdminPanel = true;
     private string adminTextInput;
     private string adminPassword = "admin";
-    public string errorText = "";
+    private string errorText = string.Empty;
 
-    private void toAdmin()
+    private void ToAdmin()
     {
-        if (adminTextInput != null && adminTextInput.Equals(adminPassword))
+        if (adminTextInput is not null && adminTextInput.Equals(adminPassword))
         {
             //Move page
             NavManager.NavigateTo("/Admin");
             hideAdminPanel = true;
-            adminTextInput = "";
+            adminTextInput = string.Empty;
         }
         else
         {

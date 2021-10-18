@@ -11,7 +11,7 @@ namespace Chronos.Services
 {
     public class DegreeCourseService
     {
-        private AppDbContext db;
+        private readonly AppDbContext db;
         public DegreeCourseService(AppDbContext dbContext)
         {
             db = dbContext;
@@ -43,7 +43,7 @@ namespace Chronos.Services
 
         public async Task<IEnumerable<Course>> GetCoreCoursesAsync(int degreeID)
         {
-            IEnumerable<int> courseIDs = db.CoreCourses.Where(i => i.DegreeID == degreeID).Select(i => i.CourseID); //This will make an IEnumerable of CourseIDs that are based on Core Courses from the DB. 
+            IEnumerable<int> courseIDs = await Task.FromResult(db.CoreCourses.Where(i => i.DegreeID == degreeID).Select(i => i.CourseID)); //This will make an IEnumerable of CourseIDs that are based on Core Courses from the DB. 
             
             return //This will return the Core Courses within that degree. 
                 from course in db.Courses

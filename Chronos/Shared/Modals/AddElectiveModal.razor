@@ -1,5 +1,5 @@
 ﻿@inject CourseService CourseService
-@using Models.Enums;
+
 <div class="directed-modal">
     <div>
         @foreach (var item in CheckableEnums)
@@ -60,15 +60,12 @@
 
 @code {
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
-    //[CascadingParameter] public IModalService Modal { get; set; }
     [Parameter] public DegreePlan Plan { get; set; }
     [Parameter] public CourseRuntime InputSem { get; set; }
 
     private Course selectedCourse;
-    private String errorString = "";
-    //private IEnumerable<Course> courses;
-
-
+    private String errorString;
+    private List<CheckableEnum> CheckableEnums { get; set; }
 
     //========== CHECKBOX MANAGEMENT ==========
     //http://5.9.10.113/66851989/bind-each-value-of-an-enum-to-a-checkbox-blazor
@@ -77,13 +74,13 @@
         public CourseRuntime DataPoint { get; set; }
         public bool IsSelected;
     }
-    public CourseRuntime SumValue { get; set; }
 
-
-
-    List<CheckableEnum> CheckableEnums { get; set; } = new List<CheckableEnum>();
     protected override void OnInitialized()
     {
+        errorString = string.Empty;
+        CheckableEnums = new List<CheckableEnum>();
+
+
         foreach (var DPvalue in Enum.GetValues(typeof(CourseRuntime)))
         {
             CheckableEnum e = new CheckableEnum() { DataPoint = (CourseRuntime)DPvalue };
@@ -120,7 +117,6 @@
     }
 
     //========== SEARCH MANAGEMENT ==========
-
     private async Task<IEnumerable<Course>> SearchCourses(string search)
     {
         if (Plan.Degree == null)
@@ -139,8 +135,6 @@
         //Sort and trim
         ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
 
-
-
         //Remove courses not in the selected semesters
         CourseRuntime sem = GetSemesterSelections();
         ret = ret.Where(x => !Plan.ContainsCourse(x) && (GetRuntime(x) & sem) > 0);
@@ -152,19 +146,9 @@
         }
 
         return ret;
-        //Remove courses already in the plan
-        ////Commented out as they will be disabled later
-        //IEnumerable<Course> currentCourses = Plan.getAllCourses();
-        //ret = ret.Except(currentCourses);
-
-        //Order and convert to list
-
-
-
     }
 
-
-    void SubmitForm()
+    private void SubmitForm()
     {
         errorString = "";
         if (selectedCourse == null)

@@ -7,7 +7,6 @@
 @inject IWebHostEnvironment env
 @inject NavigationManager NavManager 
 
-@using System
 @using System.Text
 @using Microsoft.AspNetCore.Hosting
 @using Newtonsoft.Json; 
@@ -54,10 +53,18 @@
 
         SaveState newState = JsonConvert.DeserializeObject<SaveState>(json);
 
-        State.CloneFrom(newState);
-        isDisabled = false;
+        if (newState is not null)
+        {
+            State.CloneFrom(newState);
+            isDisabled = false;
 
-        NavManager.NavigateTo("DegreePlan");
+            NavManager.NavigateTo("DegreePlan");
+        }
+        else
+        {
+            isDisabled = false;
+            ToastService.ShowToast(ToastLevel.Error, "That file is invalid");
+        }
     }
 }
 

@@ -37,35 +37,28 @@
 </CascadingValue>
 
 @code {
-    [Parameter]
-    public List<TileData> Tiles { get; set; }
+    [Parameter] public List<TileData> Tiles { get; set; }
+    [Parameter] public Models.Enums.CourseRuntime BlockType { get; set; }
+    [Parameter] public bool CompletedFlag { get; set; } = false;
 
-    [Parameter]
-    public Models.Enums.CourseRuntime BlockType { get; set; }
+    [CascadingParameter] public DegreePlan Plan { get; set; }
 
-    [Parameter]
-    public bool CompletedFlag { get; set; } = false;
-
-    [CascadingParameter]
-    public DegreePlan Plan { get; set; }
-
-    private bool showGhost = false;
+    private bool showGhost;
     private readonly int TOTAL_UNITS_ALLOWED = 50;
-
 
     protected override void OnParametersSet()
     {
+        showGhost = false;
 
-        //Console.WriteLine(BlockType);
         //Error Management
         foreach (TileData tile in Tiles)
         {
-            if (tile.Course == null) continue;
+            if (tile.Course == null)
+                continue;
             if ((tile.Runtime & BlockType) == 0)
             {
                 tile.Status |= ErrorStatus.WrongSemester;
             }
-            //Console.WriteLine($"{tile.Course.Name}, {tile.Status} : {tile.Course.Runtime}, {BlockType}, {tile.Course.Runtime & BlockType}");
         }
 
         //===== GhostTile Management =====

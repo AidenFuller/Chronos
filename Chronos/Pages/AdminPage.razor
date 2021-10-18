@@ -53,31 +53,8 @@
     </div>
 </div>
 
-
 <button @onclick="ResetTestData">Reset Test Data</button>
 <button @onclick="ClearDB">Clear Database</button>
-          
-@*<div style=" display: inline-block; align-items: center; justify-content: center;">
-    <button class="active" @onclick="@Navigate1">Add Course</button>
-</div>
-<div style="display: inline-block; align-items: center; justify-content: center; ">
-    <button class="active" @onclick="@Navigate2">Add Degree</button>
-</div>
-<div style="display: inline-block; align-items: center; justify-content: center; ">
-    <button class="active" @onclick="@Navigate3">Add Prerequisite</button>
-</div>
-<div style="display: inline-block; align-items: center; justify-content: center; ">
-    <button class="active" @onclick="@Navigate4">Add Course to Degree</button>
-</div>
-<div style="display: inline-block; align-items: center; justify-content: center; ">
-    <button class="active" @onclick="@Navigate5">Add Course to Major</button>
-</div>
-<div style="display: inline-block; align-items: center; justify-content: center; ">
-    <button class="active" @onclick="@Navigate6">Add Major to Degree</button>
-</div>
-<div style="display: inline-block; align-items: center; justify-content: center; ">
-    <button class="active" @onclick="@Navigate7">Add Course Availability</button>
-</div>*@
 
 @code
 {
@@ -93,34 +70,4 @@
         DBService.ClearDB();
         ToastService.ShowToast(ToastLevel.Success, "Database has been cleared");
     }
-    //void Navigate1()
-    //{
-    //    UriHelper.NavigateTo("Admin/AddCourse");
-    //}
-
-    //void Navigate2()
-    //{
-    //    UriHelper.NavigateTo("Admin/AddDegree");
-    //}
-    //void Navigate3()
-    //{
-    //    UriHelper.NavigateTo("Admin/AddPrerequisite");
-    //}
-    //void Navigate4()
-    //{
-    //    UriHelper.NavigateTo("Admin/AddCourseToDegree");
-    //}
-    //void Navigate5()
-    //{
-    //    UriHelper.NavigateTo("#");
-    //}
-    //void Navigate6()
-    //{
-    //    UriHelper.NavigateTo("#");
-    //}
-    //void Navigate7()
-    //{
-    //    UriHelper.NavigateTo("#");
-    //}
-
 }

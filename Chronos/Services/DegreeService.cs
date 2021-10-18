@@ -9,7 +9,7 @@ namespace Chronos.Services
 {
     public class DegreeService
     {
-        private AppDbContext db;
+        private readonly AppDbContext db;
         public DegreeService(AppDbContext dbContext)
         {
             db = dbContext;
