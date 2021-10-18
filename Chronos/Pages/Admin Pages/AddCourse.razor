@@ -37,25 +37,31 @@
         {
             error = true;
             //error
-            ToastService.ShowToast(ToastLevel.Error, "Course Code must match the format ABCD1234(A)");
+            ToastService.ShowToast(ToastLevel.Error, "Course Code must match the format ABCD1234(A).");
         }
         if (course.Units <= 0)
         {
             error = true;
             //error
-            ToastService.ShowToast(ToastLevel.Error, "Units must be greater than 0");
+            ToastService.ShowToast(ToastLevel.Error, "Units must be greater than 0.");
+        }
+        if (course.Units > 20)
+        {
+            error = true;
+            //error
+            ToastService.ShowToast(ToastLevel.Error, "Units must be equal to or less than 20.");
         }
         if (course.RequiredCompletedUnits < 0)
         {
             error = true;
             //stuff
-            ToastService.ShowToast(ToastLevel.Error, "Required Units must be greater than or equal to 0");
+            ToastService.ShowToast(ToastLevel.Error, "Required Units must be greater than or equal to 0.");
         }
         if (await CourseService.DoesCourseExist(course.CourseCode.ToUpper()))
         {
             error = true;
             //stuff
-            ToastService.ShowToast(ToastLevel.Error, "A course with this course code already exists in the database");
+            ToastService.ShowToast(ToastLevel.Error, "A course with this course code already exists in the database.");
         }
 
 

@@ -27,7 +27,7 @@
 
             @if ((GetRuntime(course) & InputSem) > 0)
             {
-                @course.CourseCode @course.Name @GetRuntime(course)
+                @($"{course.CourseCode} ({course.Name}) {GetRuntime(course)}")
             }
             else
             {
@@ -40,7 +40,7 @@
             <!--This is what is shown when it is selected.-->
             @if ((GetRuntime(course) & InputSem) > 0)
             {
-                <span>@course.CourseCode</span> <span>(@course.Name)</span> <span>@GetRuntime(course)</span>
+                @($"{course.CourseCode} ({course.Name}) {GetRuntime(course)}")
 
             }
             else
