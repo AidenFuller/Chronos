@@ -147,3 +147,232 @@
 .adminform button {
   margin-top: 20px;
   display: block; }
+
+.heading-for-landing {
+  text-align: center; }
+
+div.form-alignment-center {
+  padding-bottom: 2em;
+  padding-left: 18%;
+  padding-right: 18%;
+  position: relative;
+  text-align: center; }
+
+div.form-alignment-right {
+  position: absolute;
+  right: 0.75em;
+  display: block;
+  width: 500px;
+  height: 200px;
+  margin-bottom: 5em; }
+
+div.additional-information {
+  position: relative;
+  display: block;
+  padding-top: 100px; }
+
+div.login-center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+  text-align: center; }
+
+div.form-alignment-left-search {
+  position: relative;
+  width: 80%; }
+
+div.form-alignment-left-sem {
+  position: relative;
+  display: block;
+  align-items: start;
+  margin-bottom: 5em; }
+
+div.center-button {
+  text-align: center;
+  margin: auto;
+  padding: 2em; }
+
+.degree-selection {
+  height: 2em;
+  width: 10em;
+  border: 1px solid #26b050; }
+
+div.degree-div {
+  padding-bottom: 2em; }
+
+select.semester-selection {
+  height: 2em;
+  width: 20em;
+  border: 1px solid #26b050; }
+
+div.semester-div {
+  padding-bottom: 2em; }
+
+div.checklistColumns {
+  column-count: 3; }
+
+section.admin-login {
+  display: none; }
+
+button.button-for-admin {
+  border: 3px solid #26b050;
+  text-align: center;
+  margin: auto;
+  height: 20%;
+  width: 30%; }
+
+.column-left {
+  float: left;
+  width: 50%;
+  padding-bottom: 2em; }
+
+.column-right {
+  float: right;
+  width: 50%;
+  padding-bottom: 2em; }
+
+.submit-button {
+  text-transform: uppercase;
+  padding: 20px 60px;
+  border-radius: 150px;
+  display: inline-block;
+  position: relative;
+  border-width: 0;
+  text-align: center;
+  transition: all .6s;
+  color: white; }
+
+.submit-button-colour {
+  background-color: #59007F; }
+
+.submit-button:hover {
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px); }
+
+.submit-button:active {
+  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px); }
+
+.submit-button-animation {
+  animation: TheButtonMoves 1s ease-out .6s; }
+
+.submit-button::after {
+  content: "";
+  text-transform: uppercase;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 20px 60px;
+  border-radius: 150px;
+  display: inline-block;
+  background-color: #59007F;
+  text-align: center;
+  z-index: -1;
+  transition: all .6s;
+  color: white; }
+
+.submit-button-gradient::after {
+  background-color: #59007F; }
+
+.submit-button-animation:hover::after {
+  transform: scaleX(1.6) scaleY(1.8);
+  opacity: 0; }
+
+@keyframes TheButtonMoves {
+  0% {
+    opacity: 0;
+    transform: translateY(50px); }
+  100% {
+    opacity: 1;
+    transform: translateY(0); } }
+
+.spinner {
+  border: 16px solid silver;
+  border-top: 16px solid #337AB7;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 700ms linear infinite;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -40px;
+  margin-top: -40px; }
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #A1D5E2; }
+
+.file-uploader {
+  flex: 0 1 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: #fff;
+  border-radius: 5px;
+  display: none; }
+
+label[for="file-input"] {
+  padding: 1em 1.5em;
+  flex: 1 1 auto;
+  text-align: center;
+  color: #FFF;
+  background-color: #1894AC;
+  box-shadow: 1px 0 10px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  cursor: pointer; }
+
+.image-preview {
+  margin: 0 0 1rem;
+  min-height: 250px;
+  flex: 1 0 75%;
+  background-color: #c1c1c1; }
+
+.new-plan {
+  font-size: 14px;
+  /*margin: 0 .5em;*/
+  border-radius: 2em;
+  padding: 0.75em 1.5em;
+  cursor: pointer;
+  background: none;
+  color: white;
+  background: forestgreen;
+  letter-spacing: 1px;
+  border: 2px solid forestgreen;
+  font-weight: 600;
+  transition: 250ms ease-out; }
+
+.new-plan:hover {
+  color: forestgreen;
+  background: white; }
+
+.load-plan {
+  font-size: 14px;
+  /*margin: 0 .5em;*/
+  border-radius: 2em;
+  padding: 0.75em 1.5em;
+  cursor: pointer;
+  background: none;
+  color: white;
+  background: purple;
+  letter-spacing: 1px;
+  border: 2px solid purple;
+  font-weight: 600;
+  transition: 250ms ease-out; }
+
+.load-plan:hover {
+  color: purple;
+  background: white; }
