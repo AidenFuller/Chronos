@@ -46,8 +46,18 @@
 
     private async Task ReplaceDegree()
     {
-        await DegreeService.ReplaceDegreeAsync(SelectedDegree);
-        ToastService.ShowToast(ToastLevel.Success, $"The degree has been updated");
+        bool degreeError = false;
+        if (SelectedDegree.UnitLength < 240)
+        {
+            degreeError = true;
+            ToastService.ShowToast(ToastLevel.Error, "A degree must be a minimum of 3 years.");
+        }
+        if (degreeError)
+        {
+            await DegreeService.ReplaceDegreeAsync(SelectedDegree);
+            ToastService.ShowToast(ToastLevel.Success, $"The degree has been updated");
+        }
+
     }
 
     private async Task<IEnumerable<Degree>> SearchDegrees(string search)
