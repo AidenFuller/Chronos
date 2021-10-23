@@ -14,11 +14,8 @@
     @if (CompletedFlag)
     {
         //This tile is in the completed box
-        <div  style=" width:100%;">
-            CourseID: @Data.Course.CourseCode
-            Description: @Data.Course.Name
-            Units: @Data.Course.Units
-            Treated as: @Data.TileType;
+        <div style=" width:100%;">
+            @Data.Course.CourseCode - @Data.Course.Name - @Data.Course.Units Units
         </div>
     }
     else if (Data.Course is null)
