@@ -9,9 +9,9 @@ namespace Chronos.Services
     {
         private readonly AppDbContext db;
 
-        public DBResetService(string connectionString)
+        public DBResetService(AppDbContext db)
         {
-            db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlServer(connectionString).Options);
+            this.db = db;
         }
 
         ~DBResetService()
@@ -23,13 +23,13 @@ namespace Chronos.Services
         {
             db.Database.Migrate();
 
-            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [CoreCourses]");
-            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [MajorCourses]");
-            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Majors]");
-            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Courses]");
-            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [Degrees]");
-            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [CourseAvailabilities]");
-            db.Database.ExecuteSqlRaw("TRUNCATE TABLE [PrerequisiteCourses]");
+            db.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""CoreCourses""");
+            db.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""MajorCourses""");
+            db.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""Majors""");
+            db.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""Courses""");
+            db.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""Degrees""");
+            db.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""CourseAvailabilities""");
+            db.Database.ExecuteSqlRaw(@"TRUNCATE TABLE ""PrerequisiteCourses""");
 
             db.SaveChanges();
         }
