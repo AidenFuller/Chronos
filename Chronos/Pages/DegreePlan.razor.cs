@@ -24,6 +24,8 @@ namespace Chronos.Pages
         private List<List<TileData>> output;
         private List<int> states;
         private bool fiftyUnitsWarningBool;
+        // DragFrom Payload DragTo DraggedOn
+        private Stack<(List<TileData>, TileData, List<TileData>, TileData)> undoCache;
         #endregion
 
         #region Properties
@@ -44,6 +46,8 @@ namespace Chronos.Pages
             hideLegend = true;
             states = new List<int>();
             fiftyUnitsWarningBool = false;
+
+            undoCache = new Stack<(List<TileData>, TileData, List<TileData>, TileData)>();
 
             Degree = State.Degree;
             Major = State.Major;
@@ -403,6 +407,8 @@ namespace Chronos.Pages
                 }
                 State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
 
+                undoCache.Push((DragFrom, DragPayload, dragTo, draggedOn));
+
                 StateHasChanged();
             }
         }
@@ -739,8 +745,38 @@ namespace Chronos.Pages
             {
                 await ShowSwapWarnings(DragFrom, slot, DragPayload, null);
             }
+
+            undoCache.Push((DragFrom, DragPayload, slot, null));
+
             State.CompletedCourses = State.CompletedTiles.Select(c => c.Course).ToList();
         }
+
+        private async Task UndoAsync()
+        {
+            if (undoCache.Count > 0)
+            {
+                var tuple = undoCache.Pop();
+
+                DragPayload = tuple.Item2;
+                DragFrom = tuple.Item3;
+
+                var dragTo = tuple.Item1;
+                var draggedOn = tuple.Item4;
+
+
+                if (tuple.Item4 is not null)
+                {
+                    await UpdateDegreePlanAsync(dragTo, draggedOn, CourseRuntime.Semester1 | CourseRuntime.Semester2);
+                }
+                else
+                {
+                    await MovePayloadAsync(dragTo);
+                }
+                undoCache.Pop();
+            }
+        }
+
+
 
         private void FiftyUnitWarning(List<TileData> slot)
         {
