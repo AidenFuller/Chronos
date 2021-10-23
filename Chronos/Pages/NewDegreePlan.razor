@@ -13,23 +13,22 @@
 @using Microsoft.AspNetCore.Hosting
 @using Newtonsoft.Json;
 
-
 <div class="form-alignment-center">
     <br />
     <!--Creating a Div to enclose all of the related forms below. -->
     <form action="login" method="POST">
         <div class="degree-div">
-            <h4>Choose your Degree</h4>
+            <h4>Choose a degree</h4>
             <!--This is a razor component that will effectively search for different Degrees based on their Names.-->
             <BlazoredTypeahead SearchMethod="SearchDegrees"
-                                TValue="Degree"
-                                TItem="Degree"
-                                Value="SelectedDegree"
-                                ValueExpression="@(() => SelectedDegree)"
-                                ValueChanged="SelectedDegreeChanged"
-                                placeholder="Please search for your degree..."
-                                EnableDropDown="true"
-                                ShowDropDownOnFocus="true">
+                               TValue="Degree"
+                               TItem="Degree"
+                               Value="SelectedDegree"
+                               ValueExpression="@(() => SelectedDegree)"
+                               ValueChanged="SelectedDegreeChanged"
+                               placeholder="Please search for your degree..."
+                               EnableDropDown="true"
+                               ShowDropDownOnFocus="true">
                 <SelectedTemplate Context="degree">
                     <!--This is the search Template and what will be returned.-->
                     Bachelor Of @degree.Name
@@ -43,14 +42,14 @@
             @if (SelectedDegree != null && multipleMajors)
             {
                 <p>
-                    <h4>Choose a Major</h4>
+                    <h4>Choose a major</h4>
                 </p>
                 <BlazoredTypeahead SearchMethod="SearchMajors"
-                                    @bind-Value="SelectedMajor"
-                                    placeholder="Please search for your major..."
-                                    EnableDropDown="true"
-                                    ShowDropDownOnFocus="true"
-                                    Disabled="@IsDegreeSelectDisabled">
+                                   @bind-Value="SelectedMajor"
+                                   placeholder="Please search for your major..."
+                                   EnableDropDown="true"
+                                   ShowDropDownOnFocus="true"
+                                   Disabled="@IsDegreeSelectDisabled">
                     <SelectedTemplate Context="major">
                         <!--This is the search Template and what will be returned.-->
                         @major.Name
@@ -65,7 +64,7 @@
         </div>
         <div class="semester-div">
             <!--Another Div to break up spacing on the page, this is for the Semester type.-->
-            <h4>Choose your semester</h4>
+            <h4>Choose a starting semester</h4>
             <select name="semester" class="semester-selection" @bind="StartingBlock">
                 <!--Selection that allows for the Semester type a student is undertaking.-->
                 <!--Potentially change this to radio buttons, that are next to each other?-->
@@ -74,19 +73,15 @@
             </select>
         </div>
         <br />
-        <h4>Please select what campus you attend.</h4>
+        <h4>Select the campus of attendance</h4>
         <div>
             <select name="campus" class="semester-selection" @bind="ChosenCampus">
                 <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
                 <option value="@AvailableCampus.Callaghan" selected>Callaghan Campus</option>
-                <option value="@AvailableCampus.NewcastleCity">Newcastle Campus</option>
-                <option value="@AvailableCampus.Ourimbah">Ourimbah Campus</option>
-                <option value="@AvailableCampus.PortMacquarie">Port Macquarie Campus</option>
-                <option value="@AvailableCampus.SingaporeBCA | @AvailableCampus.SingaporePSB">Signapore Campus</option>
-                <option value="@AvailableCampus.Sydney">Sydney Campus</option>
             </select>
         </div>
-        <h4>Select your Semester length</h4>
+        <br />
+        <h4>Select a semester unit length</h4>
         <div>
             <select name="campus" class="semester-selection" @bind="SemesterLength">
                 <!--A div to allow columns for the checkboxes for the choice of Campuses.-->
@@ -97,7 +92,7 @@
         </div>
     </form> <!--Initial Form ends here.-->
     <br />
-    <h4>Please insert the courses you have completed here. </h4>
+    <h4>Select all previously completed courses</h4>
     <!--This BlazoredTypeahead tag instead searches based on Courses, it is a multi select so you can selected multiple completed courses.-->
     <!--Bind values are the courses that were selected-->
     <BlazoredTypeahead SearchMethod="SearchCourses"
