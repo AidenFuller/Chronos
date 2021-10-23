@@ -66,6 +66,10 @@ namespace Chronos.Pages
             {
                 await ResetAsync(false);
             }
+            else
+            {
+                isReady = true;
+            }
         }
         #endregion
 
