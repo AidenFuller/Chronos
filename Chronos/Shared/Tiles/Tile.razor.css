@@ -47,13 +47,28 @@
 
 .CompletedCourse {
     display: flex;
-    background-color: white;
     width: 100%;
     border: 2px solid black;
     /*border-radius: 10px;*/
     background-color: #ffffff;
     padding: 5px;
 }
+
+    .CompletedCourse.Core {
+        background-color: #BEBEBE !important;
+    }
+
+    .CompletedCourse.Compulsory {
+        background-color: #659EC7 !important;
+    }
+
+    .CompletedCourse.Directed {
+        background-color: #ADD8E6 !important;
+    }
+
+    .CompletedCourse.Elective {
+        background-color: #F2DD60 !important;
+    }
 
 .CompletedCourse:hover {
     background-color: grey;
