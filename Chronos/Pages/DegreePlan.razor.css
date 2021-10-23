@@ -308,3 +308,23 @@
         color: forestgreen;
         background: white;
     }
+
+.undoButton {
+    font-size: 14px;
+    /*margin: 0 .5em;*/
+    border-radius: 2em;
+    padding: 0.75em 1.5em;
+    cursor: pointer;
+    background: none;
+    color: white;
+    background-color: #3333ff;
+    letter-spacing: 1px;
+    border: 2px solid #3333ff;
+    border-color: #3333ff;
+    font-weight: 600;
+    transition: 250ms ease-out;
+}
+    .undoButton:hover {
+        color: #3333ff;
+        background: white;
+    }
