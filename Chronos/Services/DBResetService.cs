@@ -7,7 +7,7 @@ namespace Chronos.Services
 {
     public class DBResetService
     {
-        private AppDbContext db;
+        private readonly AppDbContext db;
 
         public DBResetService(string connectionString)
         {
@@ -205,7 +205,6 @@ namespace Chronos.Services
             #endregion
        
             db.SaveChanges();
-
 
             #region COMP CourseAvailability
             db.CourseAvailabilities.Add(new Models.CourseAvailability() { CourseID = CourseID("COMP1010"), Campus = AvailableCampus.Callaghan, Runtime = CourseRuntime.Semester1 });
@@ -405,12 +404,6 @@ namespace Chronos.Services
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG4430"), PrerequisiteCourseID = CourseID("SENG2130"), CourseRequisite = RequisiteType.AssumedKnowledge });
             #endregion
 
-            //foreach (Models.Course c in db.Courses)
-            //{
-            //    Console.WriteLine($"{c.CourseCode}, {c.CourseID}");
-            //}
-
-
             var degree = "Computer Science";
             db.Degrees.Add(new Models.Degree() { InternationalsAllowed = true, Name = degree, UnitLength = 240, ElectiveUnits = 20 });
             db.SaveChanges();
@@ -569,7 +562,6 @@ namespace Chronos.Services
 
             //SENG COURSE AVAILABILITY
             db.PrerequisiteCourses.Add(new Models.PrerequisiteCourse() { CourseID = CourseID("SENG4211B"), PrerequisiteCourseID = CourseID("SENG4211A"), CourseRequisite = RequisiteType.MustPreceed });
-
 
             db.SaveChanges();
         }

@@ -1,8 +1,6 @@
 ﻿@inject MajorCourseService MajorCourseService
 @inject CourseService CourseService
 
-@using Models.Enums;
-
 
 <div class="directed-modal">
     <div>
@@ -67,8 +65,12 @@
     [CascadingParameter] public BlazoredModalInstance ModalInstance { get; set; }
     [Parameter] public DegreePlan Plan { get; set; }
     [Parameter] public CourseRuntime InputSem { get; set; }
+
     private Course selectedCourse;
-    private String errorString = "";
+    private string errorString;
+    private List<CheckableEnum> CheckableEnums { get; set; }
+
+
     //========== CHECKBOX MANAGEMENT ==========
     //http://5.9.10.113/66851989/bind-each-value-of-an-enum-to-a-checkbox-blazor
     private class CheckableEnum
@@ -79,9 +81,12 @@
 
 
 
-    List<CheckableEnum> CheckableEnums { get; set; } = new List<CheckableEnum>();
+
     protected override void OnInitialized()
     {
+        errorString = string.Empty;
+        CheckableEnums = new List<CheckableEnum>();
+
         foreach (var DPvalue in Enum.GetValues(typeof(CourseRuntime)))
         {
             CheckableEnum e = new CheckableEnum() { DataPoint = (CourseRuntime)DPvalue };
@@ -118,11 +123,11 @@
     //========== SEARCH MANAGEMENT ==========
     private async Task<IEnumerable<Course>> SearchMajorCourses(string search)
     {
-
         if (Plan.Degree == null)
         {
             return new List<Course>();
         }
+
         IEnumerable<Course> courses = await MajorCourseService.GetNonCompulsoryCoursesAsync(Plan.Major.MajorID);
         if(GetSemesterSelections() <= 0)
         {
@@ -136,11 +141,6 @@
         CourseRuntime sem = GetSemesterSelections();
         ret = ret.Where(x => !Plan.ContainsCourse(x) && (GetRuntime(x) & sem) > 0);
 
-        //Remove courses already in the plan
-        ////Commented out as they will be disabled later
-        //IEnumerable<Course> currentCourses = Plan.getAllCourses();
-        //ret = ret.Except(currentCourses);
-
         //Order and convert to list
         ret = ret.OrderBy(x => x.CourseCode).ToList(); //It will return degrees that contain the string in its name.
 
@@ -149,14 +149,13 @@
 
     }
     //========== FORM MANAGEMENT ==========
-    void SubmitForm()
+    private void SubmitForm()
     {
-        errorString = "";
+        errorString = string.Empty;
         if (selectedCourse == null)
         {
             errorString = "You need to specify an input";
         }
-
         else if ((GetRuntime(selectedCourse) & InputSem) > 0)
         {
             ModalInstance.CloseAsync(ModalResult.Ok(selectedCourse));
@@ -164,9 +163,7 @@
         else
         {
             //Wrong Semester
-            errorString = selectedCourse.CourseCode + " does not run in " + InputSem;
+            errorString = $"{selectedCourse.CourseCode} does not run in {InputSem}";
         }
     }
-
-
 }

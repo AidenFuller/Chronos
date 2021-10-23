@@ -15,7 +15,6 @@ namespace Chronos.Shared.Wrappers
         public TileType TileType { get; set; }
         public CourseRuntime Runtime { get; set; }
         
-
         public TileData()
         {
             ErrorData = new();
@@ -23,9 +22,6 @@ namespace Chronos.Shared.Wrappers
             ErrorData.Add(ErrorStatus.MissingPrerequisite, new List<Course>());
             ErrorData.Add(ErrorStatus.MissingSiblingCourse, new List<Course>());
         }
-
-
-
 
         //========== ERROR MANAGEMENT ==========
         public Dictionary<ErrorStatus, List<Course>> ErrorData { get; set; }

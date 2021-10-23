@@ -48,7 +48,7 @@ namespace Chronos.Services
 
         public async Task<IEnumerable<Major>> GetMajorsFromDegreeAsync(int degreeID)
         {
-            IEnumerable<int> MajorIDs = db.Majors.Where(i => i.DegreeID == degreeID).Select(i => i.MajorID); //Create an IEnumerable of all of the Majors in the Database of Degrees.
+            IEnumerable<int> MajorIDs = await Task.FromResult(db.Majors.Where(i => i.DegreeID == degreeID).Select(i => i.MajorID)); //Create an IEnumerable of all of the Majors in the Database of Degrees.
 
             return //Returns all of the majors in the Database by joining the majors based on their ids. 
               from Major in db.Majors

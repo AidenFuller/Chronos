@@ -37,22 +37,26 @@
     </ul>
 </div>
 
-<div style="width: 15%; float: right;" class="degreePageButtons">
-    @*<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>*@
+@if (isReady)
+{
+    <div style="width: 15%; float: right;" class="degreePageButtons">
+        @*<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>*@
 
-    <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
-        Save Plan
-    </button>
+        <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+            Save Plan
+        </button>
 
-    <button class="saveImage" @onclick=@DownloadPlanAsync>
-        Download Final Plan
-    </button>
+        <button class="saveImage" @onclick=@DownloadPlanAsync>
+            Download Final Plan
+        </button>
 
-    <button class="jsonReset" @onclick=@(async () => await ResetAsync(true))>
-        Reset Plan
-    </button>
+        <button class="jsonReset" @onclick=@(async () => await ResetAsync(true))>
+            Reset Plan
+        </button>
 
-</div>
+    </div>
+}
+
 
 <hr />
 

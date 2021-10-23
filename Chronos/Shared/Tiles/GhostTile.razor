@@ -1,19 +1,15 @@
-﻿
-
-
-
-@if (fastHide == false)
+﻿@if (!fastHide)
 {
-    if (CompletedFlag == false)
+    if (!CompletedFlag)
     {
-        <div class="@hide @expand Tile" @ondrop="HandleDrop"
+        <div class="@hide @expand Tile" @ondrop="HandleDropAsync"
              @ondragenter="HandleDragEnter"
              @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
         </div>
     }
     else
     {
-        <div class="@hide @expand CompletedTile" @ondrop="HandleDrop"
+        <div class="@hide @expand CompletedTile" @ondrop="HandleDropAsync"
              @ondragenter="HandleDragEnter"
              @ondragleave="HandleDragLeave" ondragover="event.preventDefault()">
         </div>
@@ -23,74 +19,58 @@
 
 @code {
     //Core control to show or hide the tile
-    [Parameter]
-    public bool Show { get; set; } = false;
+    [Parameter] public bool Show { get; set; } = false;
+    [Parameter] public bool CompletedFlag { get; set; } = false;
 
-    [Parameter]
-    public bool CompletedFlag { get; set; } = false;
-
-    [CascadingParameter]
-    TileSlot Slot { get; set; }
-
-    [CascadingParameter]
-    DegreePlan Plan { get; set; }
+    [CascadingParameter] TileSlot Slot { get; set; }
+    [CascadingParameter] DegreePlan Plan { get; set; }
 
     //Expand = make fatter
     //Blank = Skinny
-    private string expand = "";
+    private string expand;
 
     //Blank = Showing
     //Hiding = Ready for animation
     //Hidden = Element not rendered
-    private string hide = "Hiding";
+    private string hide;
 
     //Remove the element quickly without animation
-    private bool fastHide = false;
+    private bool fastHide;
 
     protected override void OnParametersSet()
     {
+        expand = string.Empty;
+        fastHide = false;
         //Show with animation
-        if (Show == true)
+        if (Show)
         {
             //Show the tile
-            hide = "";
+            hide = string.Empty;
         }
         else
         {
             //In hiding state, reset everything
-            fastHide = false;
             hide = "Hiding";
-            expand = "";
-
         }
     }
 
-
     // Handling Dropping
-    private async Task HandleDrop()
+    private async Task HandleDropAsync()
     {
-        //FastHide works by toggling so the div gets unrendered. When OnParameter retriggered and it is set to false again.
         fastHide = true;
         hide = "Hidden";
         Show = false;
-        await Plan.MovePayloadTo(Slot.Tiles);
-        //StateHasChanged();
+        await Plan.MovePayloadAsync(Slot.Tiles);
     }
-
-
 
     private void HandleDragEnter()
     {
         //Add class "Expand" so it will expand
         expand = "Expand";
-
     }
     private void HandleDragLeave()
     {
-        expand = "";
+        // Remove the css class
+        expand = string.Empty;
     }
-
-
-
-
 }

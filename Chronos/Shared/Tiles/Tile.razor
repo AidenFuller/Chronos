@@ -4,7 +4,7 @@
 
 <div class="@dropClass @highlightClass @tileClass @typeClass @errorClass" draggable="true" @ondragstart="@HandleDragStart" @onclick="Clicked"
         ondragover="event.preventDefault()"
-        @ondrop="HandleDrop"
+        @ondrop="HandleDropAsync"
         @ondragenter="HandleDragEnter"
         @ondragleave="HandleDragLeave"
         @ondragend="HandleDragEnd">
@@ -86,7 +86,7 @@
         @if (Data.TileType != TileType.Compulsory && Data.TileType != TileType.Core)
         {
 
-        <div class="TrashButton" @onclick="trashButton" @onclick:stopPropagation="true">
+        <div class="TrashButton" @onclick="TrashButton" @onclick:stopPropagation="true">
             <p>&#10006;</p>
         </div>
          } 
@@ -143,7 +143,7 @@
                             //Can put letter wrap or overflow wrap to Anywhere/Break-word when testing data will be modified to test multiple sems and location
                             //Delete this comment before final submission
                             //-----------------------------------------*@
-                        <span style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; "><b>@semesterStringOut(Data.Runtime)</b> </span>
+                        <span style="font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; "><b>@SemesterStringOut(Data.Runtime)</b> </span>
                     </div>
 
                     @*//-------------------------------------------------
@@ -159,57 +159,61 @@
 
 @code {
 
-    [CascadingParameter]
-    DegreePlan Plan { get; set; }
-
-    [CascadingParameter]
-    TileSlot Slot { get; set; }
-
-    //[Parameter]
-    //public List<Course> Highlights { get; set; }
-
-
-    [Parameter]
-    public TileData Data { get; set; }
-
-    [Parameter]
-    public bool CompletedFlag { get; set; } = false;
-
-    //[Parameter]
-    //public string Width { get; set; } = "200px";
-
-    //private string Height = "100px";
-
-    [CascadingParameter] public IModalService Modal { get; set; }
-
-    private string tileClass = "Tile"; //CSS class based on TileType
+    #region Fields
+    private string tileClass; //CSS class based on TileType
     private string typeClass; //CSS class based on TileType
-    private string errorClass = ""; //Css class based on Errors. 
-    private string highlightClass = "";
+    private string errorClass; //Css class based on Errors. 
+    private string highlightClass;
+    private string dropClass;
+    #endregion
+
+    #region Cascading Parameters
+    [CascadingParameter] private DegreePlan Plan { get; set; }
+    [CascadingParameter] private TileSlot Slot { get; set; }
+    [CascadingParameter] private IModalService Modal { get; set; }
+    #endregion
+
+    #region Parameters
+    [Parameter] public TileData Data { get; set; }
+    [Parameter] public bool CompletedFlag { get; set; } = false;
+    #endregion
+
+
+
+    #region Constructor
     protected override void OnParametersSet()
     {
         if (CompletedFlag)
         {
             tileClass = "CompletedCourse";
         }
+        else
+        {
+            tileClass = "Tile";
+        }
 
-        //If this tile is in charge of a highlighted course
+        errorClass = string.Empty;
+        highlightClass = string.Empty;
+
 
         UpdateTileType();
     }
+    #endregion
 
-
-    public void UpdateTileType()
+    #region Functions
+    private void UpdateTileType()
     {
-        typeClass = "";
-        errorClass = "";
+        typeClass = string.Empty;
+        errorClass = string.Empty;
+        dropClass = string.Empty;
+
         if (Plan.Highlights.Exists(c => c.CourseCode == Data.Course?.CourseCode))
         {
             highlightClass = "Highlight";
         }
         else
         {
-            highlightClass = "";
+            highlightClass = string.Empty;
         }
 
         switch (Data.TileType)
@@ -242,7 +246,7 @@
                 break;
         }
 
-        if (CompletedFlag == false)
+        if (!CompletedFlag)
         {
             if (Data.Course is not null)
             {
@@ -263,18 +267,17 @@
     }
 
     //This is what will run when a course is clicked on. 
-    async void Clicked()
+    private async void Clicked()
     {
         if (Data.Course is not null) //If the course exists, it will show the University page for it. 
         {
             var parameters = new ModalParameters();
-            var url = "https://www.newcastle.edu.au/course/" + Data.Course.CourseCode;
+            var url = $"https://www.newcastle.edu.au/course/{Data.Course.CourseCode}";
             parameters.Add("url", url);
             var options = new ModalOptions()
             {
                 Position = ModalPosition.Center,
                 Animation = ModalAnimation.FadeInOut(0.5),
-                //ContentScrollable = true,
                 Class = "Tile-Modal"
             };
             Modal.Show<IFrame>(Data.Course.CourseCode, parameters, options);
@@ -288,7 +291,6 @@
             {
                 Position = ModalPosition.Center,
                 Animation = ModalAnimation.FadeInOut(0.5),
-                //ContentScrollable = true,
                 Class = "Tile-Modal"
             };
 
@@ -302,14 +304,17 @@
             {
                 //Directed course
                 form = Modal.Show<AddDirectedModal>("Add a Directed course", parameters, options);
-
+            }
+            else
+            {
+                Console.WriteLine("Massive error");
             }
 
             var result = await form.Result;
 
             if (!result.Cancelled)
             {
-                Data.Course = (Course)result.Data;
+                Data.Course = (Course) result.Data;
                 Data.Runtime = await courseService.GetCourseRuntimeAsync(Data.Course.CourseID, Plan.Campus);
                 await Plan.UpdateTileErrors(Data, Slot.Tiles);
                 UpdateTileType();
@@ -329,17 +334,12 @@
 
         //Show ghost tiles
         Plan.ShowGhostTiles();
-
     }
-
     private void HandleDragEnd()
     {
         //Hide ghost tiles
         Plan.HideGhostTiles();
     }
-
-
-    string dropClass = "";
 
     private void HandleDragEnter()
     {
@@ -348,20 +348,19 @@
             dropClass = "droppable";
         }
     }
-
     private void HandleDragLeave()
     {
-        dropClass = "";
+        dropClass = string.Empty;
     }
 
-    private async Task HandleDrop()
+    private async Task HandleDropAsync()
     {
-        dropClass = "";
+        dropClass = string.Empty;
         if (Data == Plan.DragPayload) return;
         await Plan.UpdateDegreePlanAsync(Slot.Tiles, Data, Slot.BlockType);
     }
 
-    private String semesterStringOut(CourseRuntime c)
+    private String SemesterStringOut(CourseRuntime c)
     {
         String courseStr = c.ToString();
         String s = "Semesters: " + courseStr;
@@ -373,18 +372,12 @@
     }
 
     //This will run when the button in the top right is clicked, deleting the data in the tile. 
-    private void trashButton()
+    private void TrashButton()
     {
         Data.ClearAllWarnings();
         Data.Course = null;
         UpdateTileType();
         Plan.ActivateStateHasChanged();
     }
-
-
-
-
-
-
-
+    #endregion
 }
