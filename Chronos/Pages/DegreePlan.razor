@@ -42,7 +42,7 @@
     <div style="width: 15%; float: right;" class="degreePageButtons">
         @*<button class="dropbtn" @onclick="() => hideLegend = !hideLegend"><b>Looking for a color legend?</b></button>*@
         
-        <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.json", JsonConvert.SerializeObject(State), "application/octet-stream"))>
+        <button class="jsonSave" @onclick=@(async () => await DownloadService.DownloadFileFromText("degree-plan.chrn", JsonConvert.SerializeObject(State), "application/octet-stream"))>
             Save Plan
         </button>
 
