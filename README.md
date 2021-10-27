@@ -1,29 +1,13 @@
-# README #
+# Chonos #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Chronos is a management tool for configuring and designing a sequence of courses for efficiently completing a degree.
 
-### What is this repository for? ###
+It uses Blazor along with a sophisticated constraint propagation algorithm in order to arrange a given set of courses into manageable states.
+A demo can be found here: https://chronos.voider.io/
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Contributors ###
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* Aiden Fuller
+* Sam Gillard
+* Josh Roworth
+* Asim Faiaz
