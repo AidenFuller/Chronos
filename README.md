@@ -1,4 +1,4 @@
-# Chonos #
+# Chronos #
 
 Chronos is a management tool for configuring and designing a sequence of courses for efficiently completing a degree.
 
