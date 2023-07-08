@@ -4,7 +4,7 @@ Chronos is a management tool for configuring and designing a sequence of courses
 
 It uses Blazor along with a sophisticated constraint propagation algorithm in order to arrange a given set of courses into manageable states.
 
-EDIT: demo no longer live
+This was done as part of a final year project for the University of Newcastle's Computer Science program
 
 ### Contributors ###
 
